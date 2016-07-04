@@ -178,7 +178,7 @@ uint16_t Temp_16;
   GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 735, 243, "м", CENTER_MODE, 1, &RIAD_16pt,0);
   GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 735, 366, "об/мин", CENTER_MODE, 1, &RIAD_16pt,0);
   
-  UpdateScreen = 1;
+  //UpdateScreen = 1;
 }
 
 void Run_GUI(void){
@@ -678,7 +678,7 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
   }
   
 //KB_Status.EVENT =0;
- UpdateScreen = 1;  
+ //UpdateScreen = 1;  
  return;
 }
 
@@ -732,7 +732,7 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
  }
  if(DISP.TS_ZoneNumber != -1){    
   DISP.Event = 1;
-  UpdateScreen = 1;
+  //UpdateScreen = 1;
 
       } 
 
@@ -806,7 +806,7 @@ void ReleaseFunction(void){
   } 
 //  } 
 
-  UpdateScreen = 1;
+  //UpdateScreen = 1;
   DISP.ReleaseTask = 0;
   RESmutex_2 = 0;
 }
@@ -822,12 +822,12 @@ void KBD_Repeat_Handle(void){
       RESmutex_2 = 1;
       if (RateChange  == 1){
         UpDownRate(1);  
-        UpdateScreen = 1;
+        //UpdateScreen = 1;
         return;
       }
       if (RateChange  == 2) {
         UpDownRate(0);
-        UpdateScreen = 1;
+        //UpdateScreen = 1;
       }
    return;
 }

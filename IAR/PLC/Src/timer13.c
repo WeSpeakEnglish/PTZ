@@ -1,6 +1,6 @@
 #include "timer13.h"
 #include "tim.h"
-
+#include "rtc.h"
 #include "initial.h"
 #include "core.h"
 #include "gui.h"
@@ -25,7 +25,7 @@ static uint32_t Counter = 0;
 static uint32_t CounterUPD = 0;
 
 static uint8_t FlagKBD_Repeat = 0;
- //TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
+TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
 
  switch (Counter){
   case 0:
@@ -79,11 +79,11 @@ static uint8_t FlagKBD_Repeat = 0;
       RESmutex_2 = 1;
       if (RateChange  == 1){
         UpDownRate(1);  
-        UpdateScreen = 1;
+        //UpdateScreen = 1;
       }
       if (RateChange  == 2) {
         UpDownRate(0);
-        UpdateScreen = 1;
+        //UpdateScreen = 1;
       }
       
      CounterUPD = 0; 
@@ -91,7 +91,6 @@ static uint8_t FlagKBD_Repeat = 0;
     }
     CounterUPD++;
     break;
-
   
 }  
  if (SOUND.CounterSound < SOUND.SoundPeriod) {
@@ -103,6 +102,5 @@ static uint8_t FlagKBD_Repeat = 0;
  Counter++;
  Counter%=100; 
  
-
  return;
 }

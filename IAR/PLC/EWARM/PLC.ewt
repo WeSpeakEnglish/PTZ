@@ -1307,6 +1307,9 @@
         <name>$PROJ_DIR$\..\Src\tim.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\timer11.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\timer13.c</name>
       </file>
       <file>

@@ -13,7 +13,7 @@ SDRAM_Initialization_Sequence(&hsdram1);
   
   Timer14_Init_Deal(1000, 0);   //just init timer
   Timer13_Init();
-  
+  Timer11_Init();
   UB_Touch_Init();
 //  BD_Init_TW8819();
   

@@ -37,6 +37,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "timer13.h"
+#include "timer11.h"
 #include "timer14.h"
 /* USER CODE END 0 */
 
@@ -162,7 +163,7 @@ void TIM1_TRG_COM_TIM11_IRQHandler(void)
   /* USER CODE END TIM1_TRG_COM_TIM11_IRQn 0 */
   HAL_TIM_IRQHandler(&htim11);
   /* USER CODE BEGIN TIM1_TRG_COM_TIM11_IRQn 1 */
-
+  TIM11_IRQHandler();
   /* USER CODE END TIM1_TRG_COM_TIM11_IRQn 1 */
 }
 
