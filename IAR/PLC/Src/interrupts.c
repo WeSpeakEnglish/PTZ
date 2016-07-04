@@ -25,13 +25,13 @@ void   EXTI9_5_IRQHandler(void)        //; EXTI Line 9..5
         
 // NVIC_ClearPendingIRQ (EXTI9_5_IRQn);
         
-  if(!RESmutex_2){ 
+  //if(!RESmutex_2){ 
         
       TimeIsReady = 1;   
-  }
-  else{
-   TimeIsReady = 0; 
-  }
+ // }
+ // else{
+ //  TimeIsReady = 0; 
+ // }
    EXTI->PR |= EXTI_PR_PR7;
         return;
 }

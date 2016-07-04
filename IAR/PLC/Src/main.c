@@ -82,7 +82,7 @@ int main(void)
   /* USER CODE BEGIN 3 */
    RoutineFast(); // get and run deals from medium queue 
 
- if(UpdateScreen|| DISP.ReleaseFlag || TimeIsReady){
+ if(UpdateScreen){
   Run_GUI();
 
   Show_GUI();

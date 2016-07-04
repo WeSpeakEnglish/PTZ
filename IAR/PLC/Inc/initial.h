@@ -28,6 +28,7 @@
 #include "memory.h"
 #include "timer13.h"
 #include "timer14.h"
+#include "timer11.h"
 #include "stmpe811.h" 
 #include "ff.h"
 #include "rtc.h"

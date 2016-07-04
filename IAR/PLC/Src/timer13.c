@@ -64,28 +64,18 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
     
     if((KB_Status.EVENT && KB_Status.PRESSED) &&((CounterUPD % 20) == 18))
     { 
-      RESmutex_2 = 1;
+      //RESmutex_2 = 1;
     KBD_Handle(KB_Status.code);
     FlagKBD_Repeat =1;
     CounterUPD = 0;
     }
     if((!KB_Status.PRESSED) && (Touch_Data.status == TOUCH_RELEASED)){
-      RESmutex_2 = 0;
       CounterUPD = 0;
     }
     if(KB_Status.EVENT && !KB_Status.PRESSED && FlagKBD_Repeat)
       {KBD_Handle(KB_Status.code); FlagKBD_Repeat =0;}
     if((CounterUPD % 20) == 18){
-      RESmutex_2 = 1;
-      if (RateChange  == 1){
-        UpDownRate(1);  
-        //UpdateScreen = 1;
-      }
-      if (RateChange  == 2) {
-        UpDownRate(0);
-        //UpdateScreen = 1;
-      }
-      
+    
      CounterUPD = 0; 
      
     }
@@ -94,7 +84,6 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
   
 }  
  if (SOUND.CounterSound < SOUND.SoundPeriod) {
-  // if(KB_Status.PRESSED)
    Bip(SOUND.CounterSound%2); 
    SOUND.CounterSound++;
  }
