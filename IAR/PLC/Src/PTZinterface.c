@@ -80,14 +80,22 @@ uint16_t Number;
    {{690,415},{784,498}},   //28  CAM
  };   
 
-void Load_GUI_0(void){
+void Load_GUI_0(void){ 
+  
+ uint16_t x = 0;
+ uint16_t i = 0;
+ 
  DISP.Screen = 0; 
+
  
   GUI_Free();
  
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
- 
+  for (i = 0; i < 8; i++){
+  Images[i] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4 + 99*i, 394); //HOME
+  }
+
 }
 
 void Run_GUI(void){
