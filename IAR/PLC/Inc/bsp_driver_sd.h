@@ -66,7 +66,7 @@
 #define SD_PRESENT               ((uint8_t)0x01)
 #define SD_NOT_PRESENT           ((uint8_t)0x00)
 
-#define SD_DATATIMEOUT           ((uint32_t)100000000)
+#define SD_DATATIMEOUT           ((uint32_t)1000)
 //#define SD_DATATIMEOUT           ((uint32_t)50000000)
 /* USER CODE BEGIN 0 */
 

@@ -1,6 +1,21 @@
 #include "memory.h"
 #include "fmc.h"
 #include "lcd.h"
+#include "ff.h"
+#include "sdmmc.h"
+#include "bsp_driver_sdram.h"
+
+uint8_t SD_mount(uint8_t MountUmount ){
+static  FATFS fs; //fat object FATFS
+uint8_t res;
+if(MountUmount){ 
+  res = f_mount(&fs,"0:",1);
+  HAL_SD_WideBusOperation_Config(&hsd1, SDMMC_BUS_WIDE_4B); 
+}
+ else   f_mount(NULL, "0:", 0);//unmount the drive
+return res;
+}
+
 
 void SDRAM_free(void){
  uint32_t i;
@@ -69,7 +84,7 @@ HAL_SDRAM_SendCommand(hsdram, &Cmd, 0x1000);
 #define SDRAM_MODEREG_CAS_LATENCY_2              ((uint16_t)0x0020)
 #define SDRAM_MODEREG_CAS_LATENCY_3 ((uint16_t) 0x0030)
 #define SDRAM_MODEREG_OPERATING_MODE_STANDARD ((uint16_t) 0x0000)
-#define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE ((uint16_t) 0x0200)
+//#define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE ((uint16_t) 0x0200)
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000) 
 
 tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_8          |        //Step 7: Program the external memory mode register

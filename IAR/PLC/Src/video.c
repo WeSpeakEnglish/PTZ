@@ -13,6 +13,7 @@
 #include "OSDBasic.h"
 #include "OSDinitTable.h"
 #include "DispInfo.h"
+#include "sdmmc.h"
 
 
 volatile DMA2D_Status PLC_DMA2D_Status = {1};
@@ -224,18 +225,20 @@ ImgSize LoadBitmapFromSD(uint8_t *NameOfFile, uint32_t AddressOfImage)//
   uint32_t input_color_mode = 0;
   uint8_t pbmp[DisplayWIDTH*4];
   uint8_t res; //variable for return values
-  FATFS fs; //fat object FATFS
+
   FIL OurFile; // this is our file here
   UINT br; //just counter
   DWORD PositionOfFile, LineBytesSize;
   
-  res = f_mount(&fs,"0:",1);
-if (res == FR_OK){
+ 
+ 
+
+
   //open the file
   res = f_open(&OurFile,(char const*)NameOfFile,FA_READ);
   if (res == FR_OK)f_read(&OurFile, pbmp, 30, &br);
 
- }
+
  else{
    //не удалось смонтировать диск
    Size.height = Size.width =0;
@@ -298,7 +301,7 @@ if (res == FR_OK){
   f_read(&OurFile, pbmp, LineBytesSize + (Size.width) % 4, &br);
   } 
   f_close(&OurFile);//close the file
-  f_mount(NULL, "0:", 0);//unmount the drive
+
   
   return Size;
 }  

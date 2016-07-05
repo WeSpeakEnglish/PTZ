@@ -14,7 +14,7 @@ stlinkserialNo=9069AF3F
 stlinkfoundProbes=
 LeaveTargetRunning=_ 1
 [DebugChecksum]
-Checksum=955226336
+Checksum=-127916712
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]

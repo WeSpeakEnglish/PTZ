@@ -23,5 +23,6 @@ void SDRAM_free(void);
 void NAND_free(void);
 void NAND_readId(void);
 void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram);
+uint8_t SD_mount(uint8_t MountUmount );
 #endif
 

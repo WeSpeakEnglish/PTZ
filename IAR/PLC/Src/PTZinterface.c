@@ -8,20 +8,27 @@
 #include "timer14.h"
 #include "timer13.h"
 #include "ltdc.h"
-
+#include "memory.h"
 #include "lm75.h"
 #include "spi_mem.h"
+#include "ff.h"
 
 
 GUI_Object* Images[300]; 
+
 GUI_Object* Text[80];
-GUI_Object* Rect1;
-GUI_Object* Poly2;
-GUI_Object* Poly3;
+GUI_Object* Lines[20];
+GUI_Object* Polygons[20];
+
+
 uint8_t StrDate[11]="25.04.2016";
 uint8_t StrTime[9]="20:00:00";
-uint8_t StrDATA[16][8];
+uint8_t StrDATA[8][16];
 
+
+
+const uint8_t String_1[] = "Загрузка изображений в память:";
+const uint8_t String_2[] = "атм";
 
 
 volatile uint8_t UpdateScreen = 0;
@@ -89,10 +96,17 @@ void Load_GUI_0(void){
 
  
   GUI_Free();
+  Text[0] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 140, 240, (uint32_t)String_1, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
+  Itoa(StrDATA[0],0);
+  Text[1] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 400, 240, (uint32_t)StrDATA[0], LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
+ 
+  PreLoadImages(SDRAM_BANK_ADDR);
  
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
+
+  
   Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
   Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
   Images[2] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[106], 202 , 394); //turn up/dowm
@@ -108,7 +122,15 @@ void Load_GUI_0(void){
   Images[11] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[187], 126 + 77*3 , 0); // the pressure red sign
   Images[12] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[188], 126 + 77*4 , 0); // the valve red sign
   Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 126 + 77*5 , 0); // the filter red sign
-  Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the filter red sign
+  Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the hydro red sign
+  
+  Images[15] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[10], 46 , 89); // the gypo and drop
+  Lines[0] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 134, 38 , 188); // just line y, x1,x2
+  Images[16] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
+  Lines[1] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 189, 38 , 188); // just line y, x1,x2
+  Images[17] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
+  Lines[2] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 244, 38 , 188); // just line y, x1,x2
+  Images[18] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
 }
 
 void Run_GUI(void){
@@ -458,7 +480,7 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
   uint16_t i = 0;
   static uint8_t Name[]="000.bmp";
   ImgSize SizesIMG;
-  
+  if (SD_mount(1)  == FR_OK){ //mount SD card in 4-bit mode
   for(i = startIndex; i < stopIndex+1; i++){
     Name[0] = (i/100) + 0x30;
     Name[1] = (i/10 - 10*(i/100))  + 0x30;
@@ -470,8 +492,20 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
    IMAGES.ImgArray[IMAGES.Number].ysize   = SizesIMG.height; 
    IMAGES.ImgArray[IMAGES.Number].address = address;
    address += ((uint32_t)SizesIMG.height ) * ((uint32_t)SizesIMG.width) * 3;
-   IMAGES.Number++;
+    if(UpdateScreen){
+  Itoa(StrDATA[0],i + 1);    
+  Run_GUI();
+  Show_GUI();
+  UpdateScreen = 0;
+  DISP.ReleaseFlag = 0;
   }
+   IMAGES.Number++;
+  }  
+  Text[0]->existance = 0; //delete
+  Text[1]->existance = 0; //delete
+  SD_mount(0); //unmount SD card in 4-bit mode
+}
+
   return address;
 }
 

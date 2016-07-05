@@ -71,7 +71,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   //MPU_Config(); 
   InitPeriph();
-  
+  Load_GUI_0(); 
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
