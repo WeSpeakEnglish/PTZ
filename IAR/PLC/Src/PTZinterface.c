@@ -83,7 +83,7 @@ uint16_t Number;
 void Load_GUI_0(void){ 
   
  uint16_t x = 0;
- uint16_t i = 0;
+ //uint16_t i = 0;
  
  DISP.Screen = 0; 
 
@@ -92,10 +92,23 @@ void Load_GUI_0(void){
  
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
-  for (i = 0; i < 8; i++){
-  Images[i] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4 + 99*i, 394); //HOME
-  }
 
+  Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
+  Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
+  Images[2] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[106], 202 , 394); //turn up/dowm
+  Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[107], 301 , 394); //hydrocilinder
+  Images[4] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[108], 400 , 394); //microchip
+  Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[196], 499 , 394); //piece of... with green
+  Images[6] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[109], 598 , 394); //tractor and wrench
+  Images[7] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[110], 697 , 394); // videocam
+  
+  Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
+  Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
+  Images[10] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[177], 126 + 77*2 , 0); // the termometer red sign
+  Images[11] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[187], 126 + 77*3 , 0); // the pressure red sign
+  Images[12] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[188], 126 + 77*4 , 0); // the valve red sign
+  Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 126 + 77*5 , 0); // the filter red sign
+  Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the filter red sign
 }
 
 void Run_GUI(void){
@@ -418,6 +431,27 @@ void ReleaseFunction(void){
 void KBD_Repeat_Handle(void){
       
    return;
+}
+
+
+void Test1(void){
+static uint8_t Toggle1;
+
+if(Toggle1){
+  Toggle1 = 0;
+
+}
+else{ 
+  Toggle1 = 1;
+
+}
+  Images[8]->z_index =  Toggle1;
+  Images[9]->z_index =  Toggle1;
+  Images[10]->z_index = Toggle1;
+  Images[11]->z_index = Toggle1;
+  Images[12]->z_index = Toggle1;
+  Images[13]->z_index = Toggle1;
+  Images[14]->z_index = Toggle1;
 }
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex){
