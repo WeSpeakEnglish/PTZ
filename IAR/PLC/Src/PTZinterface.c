@@ -14,6 +14,21 @@
 #include "ff.h"
 
 
+struct{
+ uint8_t PressTransmiss;
+ uint8_t PressPneumosys;
+ uint8_t PressEngineOil;
+ uint8_t Speed;
+ uint8_t RateEngine;
+ float Square;
+ float TimeOfRun;
+ uint16_t Passes;
+ float SquarePerHour;
+ float PetrolPerHour;
+ float PetrolPerSquare;
+ 
+}PTZ;
+
 GUI_Object* Images[300]; 
 
 GUI_Object* Text[80];
@@ -30,11 +45,17 @@ uint8_t StrDATA[8][16];
 const uint8_t String_1[] = "Загрузка изображений в память:";
 const uint8_t String_2[] = "атм";
 
+const Point Poly1_points[4]={{227,311},{363,317},{355,311},{363,304}};
+const Point Poly2_points[4]={{411,198},{477,202},{477,194}};
+const Point TurnCenter1 = {399,303};
+const Point TurnCenter2 = {520,198};
+
 
 volatile uint8_t UpdateScreen = 0;
 volatile uint8_t CAM_flag = 0;
 
 uint8_t Temp8;
+uint8_t StartTestFlag = 0;
 
 uint8_t RateChange = 0;
 
@@ -130,13 +151,33 @@ void Load_GUI_0(void){
   Lines[1] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 189, 38 , 188); // just line y, x1,x2
   Images[17] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
   Lines[2] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 244, 38 , 188); // just line y, x1,x2
+  
   Images[18] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
+  Images[19] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[23], 86 , 320); // the tractor with clockwise arrow
+  
+  Images[20] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
+  Images[21] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
+  Images[22] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[56], 316 , 325); // the far light sign
+  Images[23] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[111], 354 , 320); // the FIRST big letter
+  Images[24] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[111], 395 , 320); // the SECOND big letter
+  Images[25] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[61], 440 , 324); // the T letter in the ring letter
+  Images[26] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[64], 474 , 324); // the Oil mark 
+  Images[27] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
+  
+  Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
+  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[6], 366 , 267);            // the coil
+  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[11], 433 , 267);            // the ((P)) sign
+  
+
+  Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points, 4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
+  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 3, &TurnCenter2, 53500);
+  StartTestFlag = 1;
 }
 
 void Run_GUI(void){
 
 
-if(TimeIsReady){
+ if(TimeIsReady){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
     PCF8563_read_datetime(&dt);
@@ -455,17 +496,40 @@ void KBD_Repeat_Handle(void){
    return;
 }
 
+// hanlders for test controls and others
+void Test2(void){  
+ static uint16_t Counter1; 
+
+ if(StartTestFlag){
+   if(Counter1 > 600){
+     BigArrow(1200 - Counter1);
+     MiddleArrow( (Counter1-600)*2/3);
+   }
+   else{ 
+     BigArrow(Counter1);
+     MiddleArrow((600 - Counter1)*2/3);
+    }
+
+
+
+ Counter1++; 
+ if(Counter1 == 1200) Counter1 = 0;
+ }
+
+
+}
+
 
 void Test1(void){
 static uint8_t Toggle1;
+static uint8_t Counter;
 
-if(Toggle1){
+if(StartTestFlag){
+ if(Toggle1){
   Toggle1 = 0;
-
-}
-else{ 
+  }
+ else{ 
   Toggle1 = 1;
-
 }
   Images[8]->z_index =  Toggle1;
   Images[9]->z_index =  Toggle1;
@@ -474,8 +538,25 @@ else{
   Images[12]->z_index = Toggle1;
   Images[13]->z_index = Toggle1;
   Images[14]->z_index = Toggle1;
+
+  Counter++;
+ }
 }
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
+
+///!-- here is the our controls
+void BigArrow(uint16_t SetValue) // in the parts of 0.1 kmph
+{
+  Polygons[0]->params[3] = 4000 + SetValue * 296;
+ return;
+}
+
+void MiddleArrow(uint16_t SetValue) // in the parts of 0.1 kmph
+{
+  Polygons[1]->params[3] = 53500 + SetValue * 386;
+ return;
+}
+////-----------------------------------------------------------------------------------------------------
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex){
   uint16_t i = 0;
   static uint8_t Name[]="000.bmp";

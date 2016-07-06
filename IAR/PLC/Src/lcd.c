@@ -681,7 +681,7 @@ void LCD_FillCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius)
   * @param  PointCount: Number of points
   * @retval None
   */
-void LCD_FillPolygon(pPoint Points, uint16_t PointCount)
+void LCD_FillPolygon(pPoint Points, uint16_t PointCount, uint8_t FAST)
 {
   int16_t X = 0, Y = 0, X2 = 0, Y2 = 0, X_center = 0, Y_center = 0, X_first = 0, Y_first = 0, pixelX = 0, pixelY = 0, counter = 0;
   uint16_t  image_left = 0, image_right = 0, image_top = 0, image_bottom = 0;
@@ -731,9 +731,16 @@ void LCD_FillPolygon(pPoint Points, uint16_t PointCount)
     X2 = Points->X;
     Y2 = Points->Y;    
     
+    if(!FAST){ 
     LCD_FillTriangle(X, X2, X_center, Y, Y2, Y_center);
     LCD_FillTriangle(X, X_center, X2, Y, Y_center, Y2);
-    LCD_FillTriangle(X_center, X2, X, Y_center, Y2, Y);   
+    LCD_FillTriangle(X_center, X2, X, Y_center, Y2, Y);
+    }
+    else  {
+    LCD_FillTriangleFAST(X, X2, X_center, Y, Y2, Y_center);
+    LCD_FillTriangleFAST(X, X_center, X2, Y, Y_center, Y2);
+    LCD_FillTriangleFAST(X_center, X2, X, Y_center, Y2, Y);
+    }
   }
   
   LCD_FillTriangle(X_first, X2, X_center, Y_first, Y2, Y_center);
@@ -837,7 +844,7 @@ static void DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *c, uint16_t Si
   * @param  y3: Point 3 Y position
   * @retval None
   */
-/*
+
 void LCD_FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3)
 { 
   int16_t deltax = 0, deltay = 0, x = 0, y = 0, xinc1 = 0, xinc2 = 0, 
@@ -906,7 +913,7 @@ void LCD_FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16
   } 
 }
 
-  */
+ 
 
 static void LL_FillBuffer(uint32_t LayerIndex, void *pDst, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t ColorIndex) 
 {
@@ -1177,7 +1184,8 @@ dataIMG.Bytes[3] = 0xFF;
  }
 }
  /// -- try to draw triangle
-void LCD_FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3){
+// Very FAST redaction but not SO exact like triangle mode, sutable for objets without small angles
+void LCD_FillTriangleFAST(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3){
  
 struct point{
  uint16_t x;
@@ -1241,4 +1249,4 @@ for (sy = A.y; sy <= C.y; sy++) {
 }
 
 }
-
+//

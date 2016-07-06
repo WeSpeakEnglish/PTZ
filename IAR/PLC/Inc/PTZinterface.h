@@ -41,8 +41,12 @@ void ReleaseFunction(void);
 uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  const uint16_t Y);
 void KBD_Repeat_Handle(void);
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex);
-void Test1(void);
 
+void BigArrow(uint16_t SetValue);
+void MiddleArrow(uint16_t SetValue);
+
+void Test1(void);
+void Test2(void);
 #endif
 
 

@@ -176,9 +176,11 @@ void     LCD_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp);
 
 void     LCD_FillRect(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2);
 void     LCD_FillCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);
-void     LCD_FillPolygon(pPoint Points, uint16_t PointCount);
+
+void     LCD_FillPolygon(pPoint Points, uint16_t PointCount, uint8_t FAST);
 void     LCD_FillEllipse(int Xpos, int Ypos, int XRadius, int YRadius);
 void     LCD_FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3);
+void     LCD_FillTriangleFAST(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3);
 
 void     LCD_DisplayOff(void);
 void     LCD_DisplayOn(void);

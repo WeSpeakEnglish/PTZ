@@ -25,6 +25,7 @@ void TIM11_IRQHandler(void){
 static uint32_t Counter = 0;
 
 if(Counter%8 == 0) Test1();
+Test2();
 
 UpdateScreen = 1;
  

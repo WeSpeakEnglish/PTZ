@@ -89,8 +89,8 @@ static float32_t Y;
   Xo = (float32_t)Coord0.X;
   Yo = (float32_t)Coord0.Y;
 
-  Coord.X = (uint16_t)(Xo + (((X - Xo)*cosV)) + (((Yo - Y)*sinV))+0.5);
-  Coord.Y = (uint16_t)(Yo + (((X - Xo)*sinV)) + (((Y - Yo)*cosV))+0.5);
+  Coord.X = (uint16_t)(Xo + (((X - Xo)*cosV)) + (((Yo - Y)*sinV)) + 0.5);
+  Coord.Y = (uint16_t)(Yo + (((X - Xo)*sinV)) + (((Y - Yo)*cosV)) + 0.5);
 
 return Coord;
 }
