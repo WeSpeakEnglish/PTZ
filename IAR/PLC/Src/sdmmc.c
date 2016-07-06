@@ -15,15 +15,29 @@ HAL_SD_CardInfoTypedef SDCardInfo1;
 
 void MX_SDMMC1_SD_Init(void)
 {
+uint8_t SD_state;
 
   hsd1.Instance = SDMMC1;
   hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
   hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
   hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
   hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
-  hsd1.Init.HardwareFlowControl =  SDMMC_HARDWARE_FLOW_CONTROL_ENABLE;// SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+  hsd1.Init.HardwareFlowControl =  SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;// SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
   hsd1.Init.ClockDiv = 0;
+  
+ SD_state = HAL_SD_Init(&hsd1, &SDCardInfo1);
 
+  if (SD_state == HAL_OK)
+  {
+    if (HAL_SD_WideBusOperation_Config(&hsd1, SDMMC_BUS_WIDE_4B) != SD_OK)
+    {
+      SD_state = HAL_ERROR;
+    }
+    else
+    {
+      SD_state = HAL_OK;
+    }
+  }
 }
 
 void HAL_SD_MspInit(SD_HandleTypeDef* hsd)

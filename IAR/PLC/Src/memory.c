@@ -9,8 +9,9 @@ uint8_t SD_mount(uint8_t MountUmount ){
 static  FATFS fs; //fat object FATFS
 uint8_t res;
 if(MountUmount){ 
+ 
   res = f_mount(&fs,"0:",1);
-  HAL_SD_WideBusOperation_Config(&hsd1, SDMMC_BUS_WIDE_4B); 
+
 }
  else   f_mount(NULL, "0:", 0);//unmount the drive
 return res;
