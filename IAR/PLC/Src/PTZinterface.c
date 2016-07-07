@@ -47,9 +47,12 @@ const uint8_t String_2[] = "àòì";
 
 const Point Poly1_points[4]={{227,311},{363,317},{355,311},{363,304}};
 const Point Poly2_points[4]={{411,198},{477,202},{477,194}};
+const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
+const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
 const Point TurnCenter1 = {399,303};
 const Point TurnCenter2 = {520,198};
-
+const Point TurnCenter3 = {710,123};
+const Point TurnCenter4 = {710,311};
 
 volatile uint8_t UpdateScreen = 0;
 volatile uint8_t CAM_flag = 0;
@@ -165,12 +168,15 @@ void Load_GUI_0(void){
   Images[27] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
   
   Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
-  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[6], 366 , 267);            // the coil
-  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[11], 433 , 267);            // the ((P)) sign
+  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
+  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
   
 
   Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points, 4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
-  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 3, &TurnCenter2, 53500);
+  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 3, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
+  Polygons[2] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly3_points, 4, &TurnCenter3, 0); //the small arrow 
+  Polygons[3] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly4_points, 4, &TurnCenter4, 0); //the second small arrow 
+  
   StartTestFlag = 1;
 }
 
@@ -502,12 +508,16 @@ void Test2(void){
 
  if(StartTestFlag){
    if(Counter1 > 600){
-     BigArrow(1200 - Counter1);
-     MiddleArrow( (Counter1-600)*2/3);
+     BIG_Arrow(1200 - Counter1);
+     RPM_Arrow( (Counter1-600)*2/3);
+     FUEL_Arrow((1200-Counter1)/6);
+     TEMP_Arrow(40+ (12000- Counter1*10)/75);
    }
    else{ 
-     BigArrow(Counter1);
-     MiddleArrow((600 - Counter1)*2/3);
+     BIG_Arrow(Counter1);
+     FUEL_Arrow(Counter1/6);
+     TEMP_Arrow(40+ (Counter1*10)/75);
+     RPM_Arrow((600 - Counter1)*2/3);
     }
 
 
@@ -545,15 +555,27 @@ if(StartTestFlag){
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
 
 ///!-- here is the our controls
-void BigArrow(uint16_t SetValue) // in the parts of 0.1 kmph
+void BIG_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
   Polygons[0]->params[3] = 4000 + SetValue * 296;
  return;
 }
 
-void MiddleArrow(uint16_t SetValue) // in the parts of 0.1 kmph
+void RPM_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
   Polygons[1]->params[3] = 53500 + SetValue * 386;
+ return;
+}
+
+void FUEL_Arrow(uint16_t SetValue) // in the parts of 0.01 kmph
+{
+  Polygons[2]->params[3] = SetValue * 1800;
+ return;
+}
+
+void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
+{
+  Polygons[3]->params[3] = (SetValue - 40) * 2250;
  return;
 }
 ////-----------------------------------------------------------------------------------------------------

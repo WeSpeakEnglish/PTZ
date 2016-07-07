@@ -42,8 +42,10 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
 void KBD_Repeat_Handle(void);
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex);
 
-void BigArrow(uint16_t SetValue);
-void MiddleArrow(uint16_t SetValue);
+void BIG_Arrow(uint16_t SetValue);
+void RPM_Arrow(uint16_t SetValue);
+void FUEL_Arrow(uint16_t SetValue);
+void TEMP_Arrow(uint16_t SetValue);
 
 void Test1(void);
 void Test2(void);

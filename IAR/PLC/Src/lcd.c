@@ -1139,11 +1139,23 @@ void LCD_Fill_Image(ImageInfo * Image, uint32_t x, uint32_t y){
   
  address = ProjectionLayerAddress[LayerOfView] + 4 * y * DisplayWIDTH + 4 * x;
  FillImageSoft(Image->address, address, Image->xsize, Image->ysize);
-
+//LL_ConvertImageToARGB8888((void *)Image->address, (void *)address, Image->xsize, Image->ysize, CM_RGB888);
 }
 
 
 
+void FillImageDMA(uint32_t ImageAddress, uint32_t address, uint32_t xSize, uint32_t ySize){
+uint32_t S_Y,j;
+uint8_t* pImageAddress = (uint8_t*)ImageAddress;
+ 
+ for(j = 0; j < ySize; j++){
+   S_Y = 4 * j * DisplayWIDTH;
+   
+   ///RGB888 DMA
+   LL_ConvertLineToARGB8888((void*)pImageAddress, (void*)(address  + S_Y), xSize, CM_RGB888);
+   pImageAddress += 3*xSize;
+ }
+}
 void FillImageSoft(uint32_t ImageAddress, uint32_t address, uint32_t xSize, uint32_t ySize){
 uint32_t S_Y, i , j;
 uint8_t* pImageAddress = (uint8_t*)ImageAddress;
@@ -1151,20 +1163,18 @@ dataIMG.Bytes[3] = 0xFF;
  
  for(j = 0; j < ySize; j++){
    S_Y = 4 * j * DisplayWIDTH;
+   
+
   for(i = 0; i < xSize; i++){
     
-    dataIMG.Bytes[0] = *pImageAddress++; 
-    dataIMG.Bytes[1] = *pImageAddress++;
-    dataIMG.Bytes[2] = *pImageAddress++;
-       
-   
-    
-//       if(data & 0xFF000000) // is it not transparent?
-       *(__IO uint32_t*)(address + i * 4 + S_Y) = dataIMG.DWord;
-   }
+   dataIMG.Bytes[0] = *pImageAddress++; 
+   dataIMG.Bytes[1] = *pImageAddress++;
+   dataIMG.Bytes[2] = *pImageAddress++;
+
+      *(__IO uint32_t*)(address + i * 4 + S_Y) = dataIMG.DWord;
+ }
  }
 }
-
 void LCD_Fill_ImageTRANSP(ImageInfo * Image, uint32_t x, uint32_t y){
 static uint32_t address;
 address = ProjectionLayerAddress[LayerOfView] + 4 * y * DisplayWIDTH + 4 * x;
