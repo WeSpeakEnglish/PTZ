@@ -28,6 +28,18 @@ struct{
  float PetrolPerSquare;
  
 }PTZ;
+/// CONST STRs
+const uint8_t str1[] = "אעל"; //1
+const uint8_t str2[] = "ךל";  //2
+const uint8_t str3[] = "rpm";  //3
+const uint8_t str4[] = "ק";  //3
+
+uint8_t StrTransmiss[] =           "0.0   ";
+uint8_t StrPneumosys[] =           "0.0   ";
+uint8_t StrPressEngineOil[] =      "0.0   ";
+uint8_t StrSpeed[] =               "0     ";
+uint8_t StrRPM[] =                 "0.0 ";
+uint8_t StrTIME[] =                "0.0 ";
 
 GUI_Object* Images[300]; 
 
@@ -50,7 +62,7 @@ const Point Poly2_points[4]={{411,198},{477,202},{472,198},{477,194}};
 const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
 const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
 const Point TurnCenter1 = {399,303};
-const Point TurnCenter2 = {520,198};
+const Point TurnCenter2 = {520,200};
 const Point TurnCenter3 = {710,123};
 const Point TurnCenter4 = {710,311};
 
@@ -129,7 +141,18 @@ void Load_GUI_0(void){
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
-
+  Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
+  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[10] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, StrTIME, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, str4, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, str2, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 163, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
   
   Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
   Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
