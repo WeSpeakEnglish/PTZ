@@ -46,7 +46,7 @@ const uint8_t String_1[] = "Загрузка изображений в память:";
 const uint8_t String_2[] = "атм";
 
 const Point Poly1_points[4]={{227,311},{363,317},{355,311},{363,304}};
-const Point Poly2_points[4]={{411,198},{477,202},{477,194}};
+const Point Poly2_points[4]={{411,198},{477,202},{472,198},{477,194}};
 const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
 const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
 const Point TurnCenter1 = {399,303};
@@ -173,7 +173,7 @@ void Load_GUI_0(void){
   
 
   Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points, 4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
-  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 3, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
+  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
   Polygons[2] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly3_points, 4, &TurnCenter3, 0); //the small arrow 
   Polygons[3] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly4_points, 4, &TurnCenter4, 0); //the second small arrow 
   
