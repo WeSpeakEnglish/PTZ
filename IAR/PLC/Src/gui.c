@@ -104,8 +104,9 @@ void GUI_Release(){  // create GUI
              LCD_Fill_ImageTRANSP((ImageInfo *)GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);
                    break;
           case FILLED_TRIANGLE:   
-             LCD_FillTriangle(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2], GUI_Objects[i].params[3], GUI_Objects[i].params[4], GUI_Objects[i].params[5]);
-                   break;
+            // LCD_FillTriangle(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2], GUI_Objects[i].params[3], GUI_Objects[i].params[4], GUI_Objects[i].params[5]);
+            LCD_FillTriangleFAST((pPoint)GUI_Objects[i].params[0]); 
+            break;
           case FILLED_POLY: 
              LCD_FillPolygon((pPoint)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1],0);
                    break;
@@ -126,7 +127,16 @@ void GUI_Release(){  // create GUI
              RotatePoly((pPoint)(GUI_Objects[i].params[0]),  (uint16_t)(GUI_Objects[i].params[1]),(pPoint)GUI_Objects[i].params[2], GUI_Objects[i].params[3]);
              LCD_FillPolygon((pPoint)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1],1); 
              RestorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1]));
-              break;    
+              break;
+          case FILLED_TRIANGLE_FAST :
+               LCD_FillTriangleFAST((pPoint)GUI_Objects[i].params[0]);
+              break;     
+          case ROTATING_FILLED_TRIANGLE_FAST :
+               StorePoly((pPoint)(GUI_Objects[i].params[0]),3); 
+               RotatePoly((pPoint)(GUI_Objects[i].params[0]),  3,(pPoint)GUI_Objects[i].params[1], GUI_Objects[i].params[2]);
+               LCD_FillTriangleFAST((pPoint)GUI_Objects[i].params[0]);
+               RestorePoly((pPoint)(GUI_Objects[i].params[0]),3);
+              break; 
         }
       } 
     }
@@ -165,7 +175,7 @@ void Show_GUI(void){
  LayerOfView++;
  LayerOfView %= 2;
 // FillImageSoft(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView], 800, 480);  
- _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView]);
+ //_HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView]);
             
 
             

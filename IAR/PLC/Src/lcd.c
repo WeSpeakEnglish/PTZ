@@ -685,6 +685,7 @@ void LCD_FillPolygon(pPoint Points, uint16_t PointCount, uint8_t FAST)
 {
   int16_t X = 0, Y = 0, X2 = 0, Y2 = 0, X_center = 0, Y_center = 0, X_first = 0, Y_first = 0, pixelX = 0, pixelY = 0, counter = 0;
   uint16_t  image_left = 0, image_right = 0, image_top = 0, image_bottom = 0;
+  static Point ResultPoints[3];
   
   image_left = image_right = Points->X;
   image_top= image_bottom = Points->Y;
@@ -737,9 +738,25 @@ void LCD_FillPolygon(pPoint Points, uint16_t PointCount, uint8_t FAST)
     LCD_FillTriangle(X_center, X2, X, Y_center, Y2, Y);
     }
     else  {
-    LCD_FillTriangleFAST(X, X2, X_center, Y, Y2, Y_center);
-    LCD_FillTriangleFAST(X, X_center, X2, Y, Y_center, Y2);
-    LCD_FillTriangleFAST(X_center, X2, X, Y_center, Y2, Y);
+    ResultPoints[0].X = X;
+    ResultPoints[0].Y = Y;
+    ResultPoints[1].X = X2;
+    ResultPoints[1].Y = Y2;  
+    ResultPoints[2].X = X_center;
+    ResultPoints[2].Y = Y_center;    
+    LCD_FillTriangleFAST(ResultPoints);
+    ResultPoints[1].X = X_center;
+    ResultPoints[1].Y = Y_center;  
+    ResultPoints[2].X = X2;
+    ResultPoints[2].Y = Y2;  
+    LCD_FillTriangleFAST(ResultPoints);
+    ResultPoints[0].X = X_center;
+    ResultPoints[0].Y = Y_center;  
+    ResultPoints[1].X = X2;
+    ResultPoints[1].Y = Y2;
+    ResultPoints[2].X = X;
+    ResultPoints[2].Y = Y;
+    LCD_FillTriangleFAST(ResultPoints);
     }
   }
   
@@ -1194,41 +1211,78 @@ dataIMG.Bytes[3] = 0xFF;
  }
 }
  /// -- try to draw triangle
+void sorttreug (uint16_t Ax,uint16_t Ay, uint16_t Bx, uint16_t By, uint16_t Cx, uint16_t Cy)
+{
+ uint16_t tmp;
+ uint16_t Y[3]={Ay,By,Cy};
+ uint16_t X[3]={Ax,Bx,Cx};
+ for (uint16_t i = 0; i<2;i++)
+ for (uint16_t j = 0; j<2;j++)
+ if (Y[j]<Y[j+1])
+ {
+ tmp=Y[j+1];
+ Y[j+1]=Y[j];
+ Y[j]=tmp;
+ tmp=X[j+1];
+ X[j+1]=X[j];
+ X[j]=tmp;
+ }
+ Cy=Y[0];By=Y[1];Ay=Y[2];
+ Cx=X[0];Bx=X[1];Ax=X[2];
+ uint16_t x1,x2;
+ for (uint16_t sy = Ay; sy <= Cy; sy++)
+ {
+ x1 = Ax + (sy - Ay) * (Cx - Ax) / (Cy - Ay);
+ if (sy < By)
+ x2 = Ax + (sy - Ay) * (Bx - Ax) / (By - Ay);
+ else
+ {
+ if (Cy == By)
+ x2 = Bx;
+ else
+ x2 = Bx + (sy - By) * (Cx - Bx) / (Cy - By);
+ }
+ if (x1 > x2)
+ {
+ tmp = x1;
+ x1 = x2;
+ x2 = tmp;
+ }
+// line(x1,sy+1, x2, sy+1);
+  DrawFastLineHorizontal(sy, x1, x2);
+ }
+}
 // Very FAST redaction but not SO exact like triangle mode, sutable for objets without small angles
-void LCD_FillTriangleFAST(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uint16_t y2, uint16_t y3){
- 
-struct point{
- uint16_t x;
- uint16_t y; 
-};
-
-struct point A, B, C;
+void LCD_FillTriangleFAST(pPoint Points){
+ sorttreug (Points[0].X, Points[0].Y, Points[1].X, Points[1].Y, Points[2].X, Points[2].Y);
+/*
+Point A, B, C;
 static uint8_t i, indexA, indexB, indexC;
-static uint16_t sy, tmp;
+static uint16_t sy, tmp, x1, x2;
 
 indexA = 1; //let A is first point
-if((y2 < y1) && (y2 < y3)) indexA = 2;
-if((y3 < y2) && (y3 < y1)) indexA = 3;
+if((Points[1].Y < Points[0].Y) && (Points[1].Y < Points[2].Y)) indexA = 2;
+if((Points[2].Y < Points[1].Y) && (Points[2].Y <  Points[0].Y)) indexA = 3;
 
 switch (indexA){
-	case 1: A.y = y1; A.x = x1;
+	case 1: A.Y = Points[0].Y; A.X = Points[0].X;
 			break;
-	case 2: A.y = y2; A.x = x2;
+	case 2: A.Y = Points[1].Y; A.X = Points[1].X;
 			break;
-	case 3: A.y = y3; A.x = x3;
+	case 3: A.Y = Points[2].Y; A.X = Points[2].X;
 			break;
 }
 
 indexC = 1; //let C is first point
-if((y2 > y1) && (y2 > y3)) indexC = 2;
-if((y3 > y2) && (y3 > y1)) indexC = 3;
+if((Points[1].Y  > Points[0].Y) && (Points[1].Y  > Points[2].Y)) indexC = 2;
+if((Points[2].Y > Points[1].Y) && (Points[2].Y > Points[0].Y)) indexC = 3;
 
 switch (indexC){
-	case 1: C.y = y1; C.x = x1;
+	case 1: C.Y = Points[0].Y; C.X = Points[0].X;
 			break;
-	case 2: C.y = y2; C.x = x2;
+	case 2: C.Y = Points[1].Y; C.X = Points[1].X;
 			break;
-	case 3: C.y = y3; C.x = x3;
+	case 3: C.Y = Points[2].Y; C.X = Points[2].X;
 			break;
 }
 
@@ -1236,27 +1290,29 @@ for (i = 1; i < 4; i++)
 	if((i != indexA) && (i != indexC)) indexB = i;
 
 switch (indexB){
-	case 1: B.y = y1; B.x = x1;
+	case 1: B.Y = Points[0].Y; B.X = Points[0].X;
 			break;
-	case 2: B.y = y2; B.x = x2;
+	case 2: B.Y = Points[1].Y; B.X = Points[1].X;
 			break;
-	case 3: B.y = y3; B.x = x3;
+	case 3: B.Y = Points[2].Y; B.X = Points[2].X;
 			break;
 }
 
-for (sy = A.y; sy <= C.y; sy++) {
-  x1 = A.x + (sy - A.y) * (C.x - A.x) / (C.y - A.y);
-  if (sy < B.y)
-    x2 = A.x + (sy - A.y) * (B.x - A.x) / (B.y - A.y);
+for (sy = A.Y; sy <= C.Y; sy++) {
+  x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
+  if (sy < B.Y)
+    x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
   else {
-    if (C.y == B.y)
-      x2 = B.x;
+    if (C.Y == B.Y)
+      x2 = B.X;
     else
-      x2 = B.x + (sy - B.y) * (C.x - B.x) / (C.y - B.y);
+      x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
   }
   if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
    DrawFastLineHorizontal(sy, x1, x2);
 }
 
+  */
+  
 }
 //

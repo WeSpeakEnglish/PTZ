@@ -29,10 +29,10 @@ struct{
  
 }PTZ;
 /// CONST STRs
-const uint8_t str1[] = "атм"; //1
-const uint8_t str2[] = "км";  //2
-const uint8_t str3[] = "rpm";  //3
-const uint8_t str4[] = "ч";  //3
+//const uint8_t str1[] = "атм"; //1
+//const uint8_t str2[] = "км";  //2
+//const uint8_t str3[] = "rpm";  //3
+//const uint8_t str4[] = "ч";  //3
 
 uint8_t StrTransmiss[] =           "0.0   ";
 uint8_t StrPneumosys[] =           "0.0   ";
@@ -41,12 +41,12 @@ uint8_t StrSpeed[] =               "0     ";
 uint8_t StrRPM[] =                 "0.0 ";
 uint8_t StrTIME[] =                "0.0 ";
 
-GUI_Object* Images[300]; 
+GUI_Object* Images[180]; 
 
 GUI_Object* Text[80];
 GUI_Object* Lines[20];
-GUI_Object* Polygons[20];
-
+GUI_Object* Polygons[10];
+GUI_Object* Triangles[8];
 
 uint8_t StrDate[11]="25.04.2016";
 uint8_t StrTime[9]="20:00:00";
@@ -55,12 +55,18 @@ uint8_t StrDATA[8][16];
 
 
 const uint8_t String_1[] = "Загрузка изображений в память:";
-const uint8_t String_2[] = "атм";
+//const uint8_t String_2[] = "атм";
 
 const Point Poly1_points[4]={{227,311},{363,317},{355,311},{363,304}};
+//const Point Poly1_points[4]={{227,311},{363,317},{363,304}};
 const Point Poly2_points[4]={{411,198},{477,202},{472,198},{477,194}};
-const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
-const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
+//const Point Poly2_points[4]={{411,198},{477,202},{477,194}};
+//const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
+const Point Poly3_points[4]={{662,123},{704,120},{704,126}};
+//const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
+const Point Poly4_points[4]={{662,311},{704,308},{704,314}};
+//const Point Poly5_points[4]={{662,311},{704,308},{704,314}};
+
 const Point TurnCenter1 = {399,303};
 const Point TurnCenter2 = {520,200};
 const Point TurnCenter3 = {710,123};
@@ -124,9 +130,7 @@ uint16_t Number;
  };   
 
 void Load_GUI_0(void){ 
-  
- uint16_t x = 0;
- //uint16_t i = 0;
+//
  
  DISP.Screen = 0; 
 
@@ -142,26 +146,26 @@ void Load_GUI_0(void){
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
   Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
-  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+//  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, str1, LEFT_MODE, 1, &RIAD_16pt,0);
   Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
-  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+//  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, str1, LEFT_MODE, 1, &RIAD_16pt,0);
   Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
-  Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+//  Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, str1, LEFT_MODE, 1, &RIAD_16pt,0);
   Text[10] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, StrTIME, RIGHT_MODE, 1, &RIAD_16pt,0);
-  Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, str4, LEFT_MODE, 1, &RIAD_16pt,0);
-  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
-  Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, str2, LEFT_MODE, 1, &RIAD_16pt,0);
-  Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 163, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
-  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
+//  Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, str4, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 415, 232, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
+//  Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, str2, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
+//  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
   
-  Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
-  Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
-  Images[2] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[106], 202 , 394); //turn up/dowm
-  Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[107], 301 , 394); //hydrocilinder
-  Images[4] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[108], 400 , 394); //microchip
-  Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[196], 499 , 394); //piece of... with green
-  Images[6] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[109], 598 , 394); //tractor and wrench
-  Images[7] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[110], 697 , 394); // videocam
+  Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
+  Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
+  Images[2] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[106], 202 , 394); //turn up/dowm
+  Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[107], 301 , 394); //hydrocilinder
+  Images[4] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[108], 400 , 394); //microchip
+  Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[196], 499 , 394); //piece of... with green
+  Images[6] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[109], 598 , 394); //tractor and wrench
+  Images[7] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[110], 697 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
@@ -171,34 +175,37 @@ void Load_GUI_0(void){
   Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 126 + 77*5 , 0); // the filter red sign
   Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the hydro red sign
   
-  Images[15] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[10], 46 , 89); // the gypo and drop
-  Lines[0] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 134, 38 , 188); // just line y, x1,x2
-  Images[16] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
-  Lines[1] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 189, 38 , 188); // just line y, x1,x2
-  Images[17] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
-  Lines[2] =   GUI_SetObject(HORIZONTAL_LINE_TYPE,0xFFAAAAAA, 1, 3, 244, 38 , 188); // just line y, x1,x2
-  
-  Images[18] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
-  Images[19] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[23], 86 , 320); // the tractor with clockwise arrow
-  
-  Images[20] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
-  Images[21] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
-  Images[22] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[56], 316 , 325); // the far light sign
-  Images[23] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[111], 354 , 320); // the FIRST big letter
-  Images[24] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[111], 395 , 320); // the SECOND big letter
-  Images[25] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[61], 440 , 324); // the T letter in the ring letter
-  Images[26] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[64], 474 , 324); // the Oil mark 
-  Images[27] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF070707, 1, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
-  
-  Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
-  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
-  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
-  
+  Images[15] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[10], 46 , 89); // the gypo and drop
 
-  Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points, 4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
-  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points, 4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
-  Polygons[2] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly3_points, 4, &TurnCenter3, 0); //the small arrow 
-  Polygons[3] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly4_points, 4, &TurnCenter4, 0); //the second small arrow 
+  Images[16] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
+
+  Images[17] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
+
+  
+  Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
+  Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[23], 86 , 320); // the tractor with clockwise arrow
+  
+  Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
+  Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
+  Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[56], 316 , 325); // the far light sign
+  Images[23] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[111], 359 , 320); // the FIRST big letter
+  Images[24] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[111], 400 , 320); // the SECOND big letter
+  Images[25] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[61], 440 , 324); // the T letter in the ring letter
+  Images[26] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[64], 474 , 324); // the Oil mark 
+  Images[27] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
+  
+  Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
+  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
+  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
+  
+  Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[186], 696 , 135);            // the fuel sign
+
+  Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points,4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
+  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points,4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
+  Polygons[2] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly3_points, &TurnCenter3, 0); //the small arrow 
+  Polygons[3] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly4_points, &TurnCenter4, 0); //the second small arrow 
+  
+//  Triangles[0] =  GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly5_points,&TurnCenter4,20000); //the second small arrow
   
   StartTestFlag = 1;
 }
@@ -592,13 +599,13 @@ void RPM_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 
 void FUEL_Arrow(uint16_t SetValue) // in the parts of 0.01 kmph
 {
-  Polygons[2]->params[3] = SetValue * 1800;
+  Polygons[2]->params[2] = SetValue * 1800;
  return;
 }
 
 void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 {
-  Polygons[3]->params[3] = (SetValue - 40) * 2250;
+  Polygons[3]->params[2] = (SetValue - 40) * 2250;
  return;
 }
 ////-----------------------------------------------------------------------------------------------------

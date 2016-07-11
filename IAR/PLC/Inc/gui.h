@@ -24,6 +24,8 @@
 #define         IMAGE_WITH_TRANSP               16
 #define         FILLED_POLY_FAST                17
 #define         ROTATING_FILLED_POLY_TYPE_FAST  18
+#define         FILLED_TRIANGLE_FAST            19
+#define         ROTATING_FILLED_TRIANGLE_FAST   20
 ////////////////////////
 
 #include "variables.h"

@@ -97,9 +97,13 @@ return Coord;
 
 void RotatePoly(Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg){
   int i;
+
   float32_t angle = 1.7453292e-5 * (float32_t)angle_deg;  
   for(i = 0; i < NumbOfPoints; i++){
    pToPoints[i] = RotatePoint(pToPoints[i], *Origin, angle);
+   ///!! Magic?!
+  // if(pToPoints[i].X == OldOne.X && pToPoints[i].Y == OldOne.Y)
+   // break;
   }
   RotatedF = 1;
 }
@@ -109,7 +113,7 @@ void StorePoly(const Point* pToPoints, uint8_t NumbOfPoints) //we can store our 
   if(NumbOfPoints < MAX_POLY_POINTS){
   if(!RotatedF){  
     for(i = 0; i < NumbOfPoints; i++) StoreArrayOfPoly[i] = pToPoints[i];
-    RotatedF = 1;
+  //  RotatedF = 1;
    }
   }
 }

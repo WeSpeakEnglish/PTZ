@@ -1,0 +1,1982 @@
+
+Unused fragments:
+  Section name     Index  Offset       Size  Object
+  ------------     -----  ------       ----  ------
+  .iar.as_table        1     0x0    0x20000  command line/config
+    __as_table_start
+  .iar.as_entries      2     0x0    0x10000
+    __as_entries_start
+  .text                9    0xa8       0x24  adc.o
+    HAL_ADC_MspDeInit
+  .rodata              8     0x0     0x23f0  ARIALB_16pt.o
+    ARIALB_16ptBitmaps
+  .rodata              9     0x0      0x700
+    ARIALB_16ptDescriptors
+  .data               10     0x0        0xc
+    ARIALB_16pt
+  .text                8    0x3e        0x4  bsp_driver_sd.o
+    BSP_SD_ITConfig
+  .text                8    0x42        0x2
+    BSP_SD_DetectIT
+  .text                8    0x44        0x2
+    BSP_SD_DetectCallback
+  .text                8    0xa6       0x60
+    BSP_SD_ReadBlocks_DMA
+  .text                8   0x106       0x60
+    BSP_SD_WriteBlocks_DMA
+  .text                8   0x166       0x26
+    BSP_SD_Erase
+  .text                8   0x18c        0xa
+    BSP_SD_IRQHandler
+  .text                8   0x196        0xc
+    BSP_SD_DMA_Tx_IRQHandler
+  .text                8   0x1a2        0xc
+    BSP_SD_DMA_Rx_IRQHandler
+  .text                8     0x0        0x6  bsp_driver_sdram.o
+    BSP_SDRAM_Init
+  .text                8     0x6       0x20
+    BSP_SDRAM_ReadData
+  .text                8    0x26       0x20
+    BSP_SDRAM_ReadData_DMA
+  .text                8    0x46       0x20
+    BSP_SDRAM_WriteData
+  .text                8    0x66       0x20
+    BSP_SDRAM_WriteData_DMA
+  .text                8    0x86       0x1c
+    BSP_SDRAM_Sendcmd
+  .text                8    0xa2        0xe
+    BSP_SDRAM_DMA_IRQHandler
+  .text                8    0xb0        0x4
+  .text                8    0xb4        0x4
+  .data                9     0x0        0x1
+    BSP_SDRAM_Init::sdramstatus
+  .text               10   0x1aa       0x86  can.o
+    HAL_CAN_MspDeInit
+  .text                8     0x0       0x22  core.o
+    HAL_MPU_Disable
+  .text                8    0x22       0x1c
+    HAL_MPU_Enable
+  .text                8    0x3e       0x2c
+    RoutineSlow
+  .text                8    0x6a       0x2c
+    RoutineMedium
+  .text                8    0xca        0x2
+    emptyD
+  .text                8   0x16e       0x7a
+    S_push
+  .text                8   0x1e8       0x6e
+    M_push
+  .text                8   0x256       0x64
+    F_push
+  .text                8   0x2ba       0x7e
+    F_push2
+  .text                8   0x338       0x58
+    S_pull
+  .text                8   0x456       0x16
+    DelayOnMediumQ
+  .text                8   0x46c       0x16
+    DelayOnSlowQ
+  .text                8   0x482       0x66
+    DelayUsOnProcessRoutine
+  .text                8   0x4e8        0x4
+  .text                8   0x4ec        0x4
+  .text                8   0x4f0        0x4
+  .text                8   0x4f4        0x4
+  .text                8   0x520        0x4
+  .text                8   0x524        0x4
+  .text                8   0x528        0x4
+  .text                8   0x544        0x4
+  .text                8   0x548        0x4
+  .text                8   0x54c        0x4
+  .text                8   0x550        0x4
+  .text                8   0x554        0x4
+  .text                8   0x558       0x5a
+    MPU_Config
+  .bss                 9     0x0        0x1
+    Semaphore
+  .bss                10     0x0        0x4
+    TicksGlobalUS
+  .bss                13     0x0        0x1
+    mutexS
+  .bss                19     0x0        0x1
+    RoutineSlow::branch
+  .bss                20     0x0        0x1
+    RoutineMedium::branch
+  .bss                22     0x0        0x1
+    S_last
+  .bss                25     0x0        0x1
+    S_first
+  .bss                31     0x0        0x4
+    DelayUsOnProcessRoutine::OldTicksGlobalUS
+  .bss                32     0x0        0x4
+    DelayUsOnProcessRoutine::Difference
+  .data               33     0x0        0x4
+    DelayUsOnProcessRoutine::pointerFunction
+  .data               34     0x0        0x4
+    DelayUsOnProcessRoutine::TimeDelay
+  .text                9    0xa0       0x24  dac.o
+    HAL_DAC_MspDeInit
+  .text                8    0xf8        0x4  diskio.o
+  .data                8     0x0        0x1  DispInfo.o
+    AudioVol
+  .data                9     0x0        0x1
+    AudioBalance
+  .data               10     0x0        0x1
+    AudioBass
+  .data               11     0x0        0x1
+    AudioTreble
+  .bss                12     0x0        0x1
+    AudioEffect
+  .bss                13     0x0        0x1
+    AudioMuteOn
+  .bss                14     0x0        0x2
+    OSDLastKeyInTime
+  .bss                15     0x0        0x2
+    OSDDisplayedTime
+  .bss                17     0x0        0x1
+    InputMain
+  .rodata             19     0x0       0x10
+    INTERSIL_COLOR_8
+  .rodata             20     0x0       0x10
+    TECHWELL_COLOR_8
+  .text               21    0xb4        0x4
+    CheckAndClearOSD
+  .text                9    0x60       0x20  dma2d.o
+    HAL_DMA2D_MspDeInit
+  .bss                 8     0x0        0x1  fatfs.o
+    retSDRAMDISK
+  .bss                 9     0x0        0x4
+    SDRAMDISK_Path
+  .rodata             12     0x0       0x10  ff.o
+  .rodata             13     0x0        0xc
+  .rodata             14     0x0       0x14
+  .rodata             15     0x0       0x14
+  .text               17   0xcfa       0x9a
+    dir_read
+  .text               17   0xddc       0x44
+    dir_remove
+  .text               17   0xe20       0x76
+    get_fileinfo
+  .text               17   0xe96       0x30
+    get_achar
+  .text               17   0xec6       0xce
+    pattern_matching
+  .text               17  0x1cb2      0x296
+    f_write
+  .text               17  0x2354       0xb2
+    f_opendir
+  .text               17  0x2406       0x30
+    f_closedir
+  .text               17  0x2436       0x70
+    f_readdir
+  .text               17  0x24a6       0x3a
+    f_findnext
+  .text               17  0x24e0       0x34
+    f_findfirst
+  .text               17  0x2514       0x4c
+    f_stat
+  .text               17  0x2560      0x146
+    f_getfree
+  .text               17  0x26a6       0xb6
+    f_truncate
+  .text               17  0x275c       0xe0
+    f_unlink
+  .text               17  0x283c      0x1b4
+    f_mkdir
+  .text               17  0x29f0       0x66
+    f_chmod
+  .text               17  0x2a56      0x13e
+    f_rename
+  .text               17  0x2b94       0x6c
+    f_utime
+  .text               17  0x2c00       0xd8
+    f_getlabel
+  .text               17  0x2cd8      0x1e4
+    f_setlabel
+  .text               17  0x2ebc      0x750
+    f_mkfs
+  .text               17  0x360c        0x4
+  .text               17  0x3610        0x4
+  .text               17  0x3614        0x4
+  .text               17  0x3618        0x4
+  .text               17  0x361c        0x4
+  .text               17  0x3620        0x4
+  .text               17  0x3624        0x4
+  .text               17  0x3628        0x4
+  .text               17  0x362c        0x4
+  .text               17  0x3630       0x5e
+    f_gets
+  .text               17  0x368e       0x50
+    putc_bfd
+  .text               17  0x36de       0x46
+    f_putc
+  .text               17  0x3724       0x4e
+    f_puts
+  .text               17  0x3772      0x2dc
+    f_printf
+  .rodata             18     0x0       0x18
+    f_mkfs::vst
+  .rodata             19     0x0       0x18
+    f_mkfs::cst
+  .text                9    0x6a       0x4e  ff_gen_drv.o
+    FATFS_UnLinkDriverEx
+  .text                9    0xb8        0xe
+    FATFS_UnLinkDriver
+  .text                9    0xc6        0x6
+    FATFS_GetAttachedDriversNbr
+  .text                8     0x0       0x5c  files.o
+    WriteNewTextFileSD
+  .rodata             12     0x0        0x4
+  .text               10   0x1e2       0x56  fmc.o
+    HAL_FMC_MspDeInit
+  .text               10   0x264        0x4
+  .text               10   0x268        0xa
+    HAL_NAND_MspDeInit
+  .text               10   0x272        0xa
+    HAL_SDRAM_MspDeInit
+  .bss                12     0x0        0x4
+    FMC_DeInitialized
+  .text                9   0x784        0xa  gui.o
+    GUI_Del_Obj
+  .text                9   0x78e        0xc
+    GUI_Hide_Obj
+  .text                9   0x79a        0x8
+    GUI_SetVisibility_Obj
+  .text                9    0xb4       0x30  i2c.o
+    HAL_I2C_MspDeInit
+  .text                8     0x0       0x30  ImageControl.o
+    SetYCbCrSharpReg
+  .text                8    0x30        0x4
+  .text                8    0x34       0x58
+    SetRGBContrast
+  .text                8    0x8c       0x56
+    SetRGBBright
+  .text                8    0xe2       0x22
+    ResetRGBSharp
+  .bss                 8     0x0        0x1  InputsTW.o
+    InputMainLoss
+  .bss                 9     0x0        0x2
+    IVF
+  .bss                10     0x0        0x4
+    IHF
+  .data               11     0x0        0x1
+    DecoderMode
+  .data               12     0x0        0x1
+    YUVMode
+  .data               13     0x0        0x1
+    TW9900Mode
+  .text               14     0x0       0x32
+    IsNoInput
+  .text               14    0x32       0x48
+    ReadVInputSTD
+  .text               14    0x7a       0x46
+    Mute
+  .bss                 9     0x0        0x1  keyboard.o
+    ReadyFlagKb
+  .text               11     0x0       0x1c
+    getKB_event
+  .text               12    0xf0       0x9e  lcd.o
+    LCD_LayerRgb565Init
+  .text               12   0x200       0x16
+    LCD_SetTransparency
+  .text               12   0x216       0x14
+    LCD_SetLayerAddress
+  .text               12   0x22a       0x3c
+    LCD_SetLayerWindow
+  .text               12   0x266       0x1e
+    LCD_SetColorKeying
+  .text               12   0x284       0x10
+    LCD_ResetColorKeying
+  .text               12   0x294       0x12
+    LCD_SetTextColor
+  .text               12   0x2a6       0x12
+    LCD_GetTextColor
+  .text               12   0x2b8       0x14
+    LCD_SetBackColor
+  .text               12   0x2cc       0x14
+    LCD_GetBackColor
+  .text               12   0x2e0       0x14
+    LCD_SetFont
+  .text               12   0x2f4       0x14
+    LCD_GetFont
+  .text               12   0x308      0x120
+    LCD_ReadPixel
+  .text               12   0x428       0x38
+    LCD_Clear
+  .text               12   0x460       0x94
+    LCD_ClearStringLine
+  .text               12   0x682       0x28
+    LCD_DisplayStringAtLine
+  .text               12   0x6aa       0x96
+    LCD_DrawHLine
+  .text               12   0x740       0x98
+    LCD_DrawVLine
+  .text               12   0xc5c      0x146
+    LCD_DrawEllipse
+  .text               12   0xda2       0x66
+    LCD_DrawPixel
+  .text               12   0xe98       0xc0
+    LCD_DrawBitmap
+  .text               12   0xf58        0x4
+  .text               12   0xf5c        0x4
+  .text               12   0xf60       0xf6
+    LCD_FillCircle
+  .text               12  0x1310      0x10e
+    LCD_FillEllipse
+  .text               12  0x1520        0x4
+  .text               12  0x16b8       0x9e
+    LL_FillBuffer
+  .text               12  0x1756       0x88
+    LL_ConvertLineToARGB8888
+  .text               12  0x1a6c        0x4
+  .text               12  0x1f14        0x4
+  .text                8     0x0       0x60  lm75.o
+    GetTempLM75
+  .noinit              9     0x0  0x4000000  memory.o
+    my_array_in_NAND
+  .text               12    0x42       0x26
+    NAND_free
+  .rodata             17     0x0        0x4
+  .bss                 8     0x0        0xc  OSDBasic.o
+    OSDStrInfo
+  .bss                 9     0x0        0x4
+    ptrFont
+  .text               10   0x1cc       0xd8
+    utoa
+  .rodata              8     0x0        0x8  OSDFont.o
+    FontAll_LUT4
+  .rodata              9     0x0       0x10
+    FontAll_LUT8
+  .rodata             10     0x0       0x20
+    FontAll_LUT16
+  .rodata             12     0x0        0x8
+    Font2_LUT4
+  .rodata             13     0x0       0x10
+    Font2_LUT8
+  .rodata             14     0x0       0x20
+    Font2_LUT16
+  .rodata             16     0x0        0x8
+    Logo_LUT4
+  .rodata             17     0x0       0x10
+    Logo_LUT8
+  .rodata             18     0x0       0x20
+    Logo_LUT16
+  .rodata             19     0x0     0x1d88
+    Logo
+  .text               21    0x5c       0x66
+    FOSDWinAlpha
+  .text               21    0xc2       0x5c
+    FOSDSetWindowX
+  .text               21   0x11e       0x50
+    FOSDGetWindowY
+  .text               21   0x16e       0x5a
+    FOSDSetWindowY
+  .text               21   0x1c8       0x3c
+    FOSDSetWindowW
+  .text               21   0x204       0xc8
+    FOSDWinScreen
+  .text               21   0x31c       0x6c
+    FOSDDefaultLUT
+  .text               21   0x5a8        0x4
+  .text               21   0x5b8      0x13c
+    FOSDRampLUT
+  .text               21   0x6f4      0x144
+    FOSDDisplayLUT
+  .rodata             22     0x0       0x20
+    FOsdPaletteColor
+  .bss                 8     0x0       0x24  PTZinterface.o
+    PTZ
+  .rodata             10     0x0        0x4
+    str2
+  .rodata             11     0x0        0x4
+    str3
+  .data               15     0x0        0x8
+    StrSpeed
+  .data               16     0x0        0x8
+    StrRPM
+  .bss                35     0x0        0x1
+    Temp8
+  .bss                37     0x0        0x1
+    RateChange
+  .text               42   0xbdc       0x3a
+    ViewScreen
+  .text               42   0xc48        0x2
+    KBD_Repeat_Handle
+  .text               42  0x1004       0x9c
+    solveTriangleZones
+  .rodata              8     0x0     0x5f90  RIAD_30pt.o
+    RIAD_30ptBitmaps
+  .rodata              9     0x0      0x700
+    RIAD_30ptDescriptors
+  .data               10     0x0        0xc
+    RIAD_30pt
+  .rodata              8     0x0     0x9a50  RIAD_40pt.o
+    RIAD_40ptBitmaps
+  .rodata              9     0x0      0x700
+    RIAD_40ptDescriptors
+  .data               10     0x0        0xc
+    RIAD_40pt
+  .rodata              8     0x0    0x255cc  RIAD_80pt.o
+    RIAD_80ptBitmaps
+  .rodata              9     0x0      0x700
+    RIAD_80ptDescriptors
+  .data               10     0x0        0xc
+    RIAD_80pt
+  .rodata              8     0x0       0x48  rtc.o
+    weekday_names
+  .bss                10     0x0        0x1
+    LV_sec
+  .bss                11     0x0        0x1
+    C_Mon
+  .text               12     0x0       0x24
+    PCF8563_write_byte
+  .text               12    0x24       0x28
+    PCF8563_read_byte
+  .text               12    0x4c        0xc
+    PCF8563_Init
+  .text               12    0x58       0x18
+    bin2bcd
+  .text               12    0x8c       0x90
+    PCF8563_set_datetime
+  .text               12   0x1b8        0x2
+    Set_Alarm
+  .text               12   0x1ba       0x10
+    config_CLKOUT
+  .text               12   0x1ca       0x10
+    config_PCF8563_Timer
+  .text               12   0x1da       0x14
+    config_PCF8563_Interrupt
+  .text               12   0x2c2       0x32
+    CheckTheTick
+  .text               12   0x2f8        0x4
+  .text               12   0x2fc        0x4
+  .text               12   0x300        0x4
+  .bss                13     0x0        0x1
+    CheckTheTick::oldFlag
+  .text               10    0xdc       0x2c  sdmmc.o
+    HAL_SD_MspDeInit
+  .data                8     0x0        0x1  sdram_diskio.o
+    Stat
+  .rodata              9     0x0       0x14
+    SDRAMDISK_Driver
+  .text               10     0x0       0x20
+    SDRAMDISK_initialize
+  .text               10    0x20       0x1a
+    SDRAMDISK_status
+  .text               10    0x3a       0x32
+    SDRAMDISK_read
+  .text               10    0x6c       0x34
+    SDRAMDISK_write
+  .text               10    0xa0       0x58
+    SDRAMDISK_ioctl
+  .text               10    0xf8        0x4
+  .rodata              8     0x0      0x800  sound.o
+    saw_wave_array
+  .text               14   0x1a8       0x3e  spi.o
+    HAL_SPI_MspDeInit
+  .text                8     0x0       0x60  spi_mem.o
+    sEE_WritePage
+  .text                8    0x60      0x17a
+    sEE_WriteBuffer
+  .text                8   0x1da       0x56
+    sEE_ReadBuffer
+  .text                8   0x230        0xa
+    sEE_ReadByte
+  .text                8   0x23a       0x34
+    sEE_SendByte
+  .text                8   0x26e       0x22
+    sEE_WriteEnable
+  .text                8   0x290       0x22
+    sEE_WriteDisable
+  .text                8   0x2b2       0x30
+    sEE_WriteStatusRegister
+  .text                8   0x2e2       0x30
+    sEE_ReadStatusRegister
+  .text                8   0x312       0x36
+    sEE_WaitEepromStandbyState
+  .text                8   0x348        0x4
+  .text                8   0x34c        0x4
+  .text                8   0x350        0x4
+  .text                8   0x354        0x4
+  .text               11     0x0        0x4  startup_stm32f746xx.o
+  .text               17     0x0        0x4
+  .text               24     0x0        0x4
+  .text               32     0x0        0x4
+  .text               33     0x0        0x4
+  .text               37     0x0        0x4
+  .text               38     0x0        0x4
+  .text               39     0x0        0x4
+  .text               41     0x0        0x4
+  .text               44     0x0        0x4
+  .text               51     0x0        0x4
+  .text               52     0x0        0x4
+  .text               62     0x0        0x4
+  .text               63     0x0        0x4
+  .text               66     0x0        0x4
+  .text               85     0x0        0x4
+  .text               89     0x0        0x4
+  .text              105     0x0        0x4
+  .text              106     0x0        0x4
+  .text              107     0x0        0x4
+  .text                9    0x22       0x50  stm32f7xx_hal.o
+    HAL_DeInit
+  .text                9    0x72        0x2
+  .text                9    0x74        0x2
+    HAL_MspDeInit
+  .text                9    0xc6       0x10
+    HAL_SuspendTick
+  .text                9    0xd6        0xe
+    HAL_ResumeTick
+  .text                9    0xe4        0x4
+    HAL_GetHalVersion
+  .text                9    0xe8        0x8
+    HAL_GetREVID
+  .text                9    0xf0        0xa
+    HAL_GetDEVID
+  .text                9    0xfa        0xe
+    HAL_DBGMCU_EnableDBGSleepMode
+  .text                9   0x108        0xe
+    HAL_DBGMCU_DisableDBGSleepMode
+  .text                9   0x116        0xe
+    HAL_DBGMCU_EnableDBGStopMode
+  .text                9   0x124       0x10
+    HAL_DBGMCU_DisableDBGStopMode
+  .text                9   0x134        0xe
+    HAL_DBGMCU_EnableDBGStandbyMode
+  .text                9   0x142       0x10
+    HAL_DBGMCU_DisableDBGStandbyMode
+  .text                9   0x152        0xe
+    HAL_EnableCompensationCell
+  .text                9   0x160        0xe
+    HAL_DisableCompensationCell
+  .text                9   0x16e        0xe
+    HAL_EnableFMCMemorySwapping
+  .text                9   0x17c       0x10
+    HAL_DisableFMCMemorySwapping
+  .text                9   0x190        0x4
+  .text                9   0x194        0x4
+  .text                9   0x198        0x4
+  .text                9   0x19c        0x4
+  .text                9   0x1a0        0x4
+  .text                9   0x1a8        0x4
+  .text                9   0x1ac        0x4
+  .text                9   0x1b0        0x4
+  .text                9   0x1b4        0x4
+  .text                9   0x1b8        0x4
+  .text                9   0x1bc        0x4
+  .text                8    0x68       0x44  stm32f7xx_hal_adc.o
+    HAL_ADC_DeInit
+  .text                8    0xac        0x2
+  .text                8    0xae        0x2
+  .text                8    0xb0       0xe8
+    HAL_ADC_Start
+  .text                8   0x198       0x3e
+    HAL_ADC_Stop
+  .text                8   0x1d6       0xaa
+    HAL_ADC_PollForConversion
+  .text                8   0x280       0x72
+    HAL_ADC_PollForEvent
+  .text                8   0x2f2       0xf8
+    HAL_ADC_Start_IT
+  .text                8   0x3ea       0x3e
+    HAL_ADC_Stop_IT
+  .text                8   0x428      0x19a
+    HAL_ADC_IRQHandler
+  .text                8   0x5c2      0x12c
+    HAL_ADC_Start_DMA
+  .text                8   0x6ee       0x64
+    HAL_ADC_Stop_DMA
+  .text                8   0x752        0x6
+    HAL_ADC_GetValue
+  .text                8   0x758        0x2
+    HAL_ADC_ConvCpltCallback
+  .text                8   0x75a        0x2
+    HAL_ADC_ConvHalfCpltCallback
+  .text                8   0x75c        0x2
+    HAL_ADC_LevelOutOfWindowCallback
+  .text                8   0x75e        0x2
+    HAL_ADC_ErrorCallback
+  .text                8   0x900       0x7c
+    HAL_ADC_AnalogWDGConfig
+  .text                8   0x97c        0x4
+    HAL_ADC_GetState
+  .text                8   0x980        0x4
+    HAL_ADC_GetError
+  .text                8   0xaf8        0x4
+  .text                8   0xb08        0x4
+  .text                8   0xb0c       0x70
+    ADC_DMAConvCplt
+  .text                8   0xb7c       0x10
+    ADC_DMAHalfConvCplt
+  .text                8   0xb8c       0x1a
+    ADC_DMAError
+  .text                8     0x0      0x10c  stm32f7xx_hal_adc_ex.o
+    HAL_ADCEx_InjectedStart
+  .text                8   0x10c      0x118
+    HAL_ADCEx_InjectedStart_IT
+  .text                8   0x224       0x5e
+    HAL_ADCEx_InjectedStop
+  .text                8   0x282       0x96
+    HAL_ADCEx_InjectedPollForConversion
+  .text                8   0x318       0x6c
+    HAL_ADCEx_InjectedStop_IT
+  .text                8   0x384       0x46
+    HAL_ADCEx_InjectedGetValue
+  .text                8   0x3ca      0x10e
+    HAL_ADCEx_MultiModeStart_DMA
+  .text                8   0x4d8       0x64
+    HAL_ADCEx_MultiModeStop_DMA
+  .text                8   0x53c        0x8
+    HAL_ADCEx_MultiModeGetValue
+  .text                8   0x544        0x2
+    HAL_ADCEx_InjectedConvCpltCallback
+  .text                8   0x546      0x220
+    HAL_ADCEx_InjectedConfigChannel
+  .text                8   0x766       0x66
+    HAL_ADCEx_MultiModeConfigChannel
+  .text                8   0x7cc        0x4
+  .text                8   0x7d0        0x4
+  .text                8   0x7d4        0x4
+  .text                8   0x7d8        0x4
+  .text                8   0x7dc        0x4
+  .text                8   0x7e0        0x4
+  .text                8   0x7e4        0x4
+  .text                8   0x7e8        0x4
+  .text                8   0x7ec        0x4
+  .text                8   0x7f0       0x70
+    ADC_MultiModeDMAConvCplt
+  .text                8   0x860       0x10
+    ADC_MultiModeDMAHalfConvCplt
+  .text                8   0x870       0x1a
+    ADC_MultiModeDMAError
+  .text                8   0x1c0      0x138  stm32f7xx_hal_can.o
+    HAL_CAN_ConfigFilter
+  .text                8   0x2f8       0x28
+    HAL_CAN_DeInit
+  .text                8   0x320        0x2
+  .text                8   0x322        0x2
+  .text                8   0x324      0x22c
+    HAL_CAN_Transmit
+  .text                8   0x550      0x1de
+    HAL_CAN_Transmit_IT
+  .text                8   0x72e      0x1bc
+    HAL_CAN_Receive
+  .text                8   0x8ea       0xac
+    HAL_CAN_Receive_IT
+  .text                8   0x996       0x80
+    HAL_CAN_Sleep
+  .text                8   0xa16       0x76
+    HAL_CAN_WakeUp
+  .text                8   0xcb0        0x4
+  .text                8   0xcb4        0x4
+  .text                8   0xcb8        0x4
+  .text                8   0xcbc        0x4
+  .text                8   0xcc0        0x4
+  .text                8   0xcc4        0x4
+  .text                8   0xcda        0x6
+    HAL_CAN_GetState
+  .text                8   0xce0        0x4
+    HAL_CAN_GetError
+  .text                8    0x50       0x16  stm32f7xx_hal_cortex.o
+    NVIC_GetPendingIRQ
+  .text                8    0x66       0x14
+    NVIC_SetPendingIRQ
+  .text                8    0x7a       0x14
+    NVIC_ClearPendingIRQ
+  .text                8    0x8e       0x16
+    NVIC_GetActive
+  .text                8    0xca       0x22
+    NVIC_GetPriority
+  .text                8   0x12a       0x46
+    NVIC_DecodePriority
+  .text                8   0x170       0x1c
+    NVIC_SystemReset
+  .text                8   0x20a        0x8
+    HAL_NVIC_SystemReset
+  .text                8   0x21e       0x58
+    HAL_MPU_ConfigRegion
+  .text                8   0x276        0x8
+    HAL_NVIC_GetPriorityGrouping
+  .text                8   0x27e       0x1e
+    HAL_NVIC_GetPriority
+  .text                8   0x29c        0xe
+    HAL_NVIC_SetPendingIRQ
+  .text                8   0x2aa        0xe
+    HAL_NVIC_GetPendingIRQ
+  .text                8   0x2b8        0xe
+    HAL_NVIC_ClearPendingIRQ
+  .text                8   0x2c6        0xe
+    HAL_NVIC_GetActive
+  .text                8   0x308        0x4
+  .text                8   0x30c        0x4
+  .text                8   0x310        0x4
+  .text                8   0x31c        0x4
+  .text                8   0x32c        0x4
+  .text                8   0x330        0x4
+  .text                8   0x334        0x4
+  .text                8    0x2c       0x26  stm32f7xx_hal_dac.o
+    HAL_DAC_DeInit
+  .text                8    0x52        0x2
+  .text                8    0x54        0x2
+  .text                8    0xe6       0x18
+    HAL_DAC_Stop
+  .text                8    0xfe      0x10e
+    HAL_DAC_Start_DMA
+  .text                8   0x20c        0x4
+  .text                8   0x210        0x4
+  .text                8   0x214        0x4
+  .text                8   0x218       0x52
+    HAL_DAC_Stop_DMA
+  .text                8   0x26a       0x10
+    HAL_DAC_GetValue
+  .text                8   0x27a       0x62
+    HAL_DAC_IRQHandler
+  .text                8   0x2dc        0x2
+    HAL_DAC_ConvCpltCallbackCh1
+  .text                8   0x2de        0x2
+    HAL_DAC_ConvHalfCpltCallbackCh1
+  .text                8   0x2e0        0x2
+    HAL_DAC_ErrorCallbackCh1
+  .text                8   0x2e2        0x2
+    HAL_DAC_DMAUnderrunCallbackCh1
+  .text                8   0x36a        0x4
+    HAL_DAC_GetState
+  .text                8   0x36e        0x6
+    HAL_DAC_GetError
+  .text                8   0x374       0x14
+    DAC_DMAConvCpltCh1
+  .text                8   0x388       0x10
+    DAC_DMAHalfConvCpltCh1
+  .text                8   0x398       0x1a
+    DAC_DMAErrorCh1
+  .text                8     0x0       0x14  stm32f7xx_hal_dac_ex.o
+    HAL_DACEx_DualGetValue
+  .text                8    0x14       0x3c
+    HAL_DACEx_TriangleWaveGenerate
+  .text                8    0x50       0x3c
+    HAL_DACEx_NoiseWaveGenerate
+  .text                8    0x8c       0x2c
+    HAL_DACEx_DualSetValue
+  .text                8    0xb8        0x2
+    HAL_DACEx_ConvCpltCallbackCh2
+  .text                8    0xba        0x2
+    HAL_DACEx_ConvHalfCpltCallbackCh2
+  .text                8    0xbc        0x2
+    HAL_DACEx_ErrorCallbackCh2
+  .text                8    0xbe        0x2
+    HAL_DACEx_DMAUnderrunCallbackCh2
+  .text                8    0xc0       0x12
+    DAC_DMAConvCpltCh2
+  .text                8    0xd2        0xe
+    DAC_DMAHalfConvCpltCh2
+  .text                8    0xe0       0x1a
+    DAC_DMAErrorCh2
+  .text                8     0x0       0x2e  stm32f7xx_hal_dma.o
+    DMA_SetConfig
+  .text                8    0xb4       0x6c
+    HAL_DMA_DeInit
+  .text                8   0x120       0x4a
+    HAL_DMA_Start
+  .text                8   0x16a       0x62
+    HAL_DMA_Start_IT
+  .text                8   0x1cc       0x54
+    HAL_DMA_Abort
+  .text                8   0x220      0x174
+    HAL_DMA_PollForTransfer
+  .text                8   0x57a        0x6
+    HAL_DMA_GetState
+  .text                8   0x580        0x4
+    HAL_DMA_GetError
+  .text                8    0x6c       0x26  stm32f7xx_hal_dma2d.o
+    HAL_DMA2D_DeInit
+  .text                8    0x92        0x2
+  .text                8    0x94        0x2
+  .text                8   0x16a       0x5e
+    HAL_DMA2D_BlendingStart
+  .text                8   0x1c8       0x82
+    HAL_DMA2D_BlendingStart_IT
+  .text                8   0x24a       0x54
+    HAL_DMA2D_Abort
+  .text                8   0x29e       0x48
+    HAL_DMA2D_Suspend
+  .text                8   0x2e6       0x1a
+    HAL_DMA2D_Resume
+  .text                8   0x5de       0x6e
+    HAL_DMA2D_ConfigCLUT
+  .text                8   0x64c       0x24
+    HAL_DMA2D_EnableCLUT
+  .text                8   0x670       0x28
+    HAL_DMA2D_DisableCLUT
+  .text                8   0x698       0x30
+    HAL_DMA2D_ProgramLineEvent
+  .text                8   0x6cc        0x4
+  .text                8   0x6d0        0x4
+  .text                8   0x6d4        0x6
+    HAL_DMA2D_GetState
+  .text                8   0x6da        0x4
+    HAL_DMA2D_GetError
+  .text                8     0x0       0x22  stm32f7xx_hal_dma_ex.o
+    DMA_MultiBufferSetConfig
+  .text                8    0x22       0x7a
+    HAL_DMAEx_MultiBufferStart
+  .text                8    0x9c       0xb6
+    HAL_DMAEx_MultiBufferStart_IT
+  .text                8   0x152       0x16
+    HAL_DMAEx_ChangeMemory
+  .bss                 8     0x0       0x1c  stm32f7xx_hal_flash.o
+    pFlash
+  .text                9     0x0       0xa2
+    HAL_FLASH_Program
+  .text                9    0xa2       0xa2
+    HAL_FLASH_Program_IT
+  .text                9   0x144      0x164
+    HAL_FLASH_IRQHandler
+  .text                9   0x2a8        0x2
+    HAL_FLASH_EndOfOperationCallback
+  .text                9   0x2aa        0x2
+    HAL_FLASH_OperationErrorCallback
+  .text                9   0x2ac       0x1c
+    HAL_FLASH_Unlock
+  .text                9   0x2c8       0x10
+    HAL_FLASH_Lock
+  .text                9   0x2d8       0x1c
+    HAL_FLASH_OB_Unlock
+  .text                9   0x2f4       0x10
+    HAL_FLASH_OB_Lock
+  .text                9   0x304       0x18
+    HAL_FLASH_OB_Launch
+  .text                9   0x31c        0x6
+    HAL_FLASH_GetError
+  .text                9   0x322       0x48
+    FLASH_WaitForLastOperation
+  .text                9   0x36a       0x32
+    FLASH_Program_DoubleWord
+  .text                9   0x39c       0x2c
+    FLASH_Program_Word
+  .text                9   0x3c8       0x2c
+    FLASH_Program_HalfWord
+  .text                9   0x3f4       0x28
+    FLASH_Program_Byte
+  .text                9   0x41c       0x68
+    FLASH_SetErrorCode
+  .text                9   0x484        0x4
+  .text                9   0x488        0x4
+  .text                9   0x48c        0x4
+  .text                9   0x490        0x4
+  .text                9   0x494        0x4
+  .text                9   0x498        0x4
+  .text                9   0x49c        0x4
+  .text                9   0x4a0        0x4
+  .text                9   0x4a4        0x4
+  .text                9   0x4a8        0x4
+  .text                8     0x0       0xc4  stm32f7xx_hal_flash_ex.o
+    HAL_FLASHEx_Erase
+  .text                8    0xc4       0x84
+    HAL_FLASHEx_Erase_IT
+  .text                8   0x148       0xb8
+    HAL_FLASHEx_OBProgram
+  .text                8   0x200       0x32
+    HAL_FLASHEx_OBGetConfig
+  .text                8   0x232       0x30
+    FLASH_MassErase
+  .text                8   0x262       0x84
+    FLASH_Erase_Sector
+  .text                8   0x2e6       0x26
+    FLASH_OB_EnableWRP
+  .text                8   0x30c       0x26
+    FLASH_OB_DisableWRP
+  .text                8   0x332       0x20
+    FLASH_OB_RDP_LevelConfig
+  .text                8   0x352       0x5c
+    FLASH_OB_UserConfig
+  .text                8   0x3ae       0x18
+    FLASH_OB_BOR_LevelConfig
+  .text                8   0x3c6       0x3e
+    FLASH_OB_BootAddressConfig
+  .text                8   0x404        0xa
+    FLASH_OB_GetUser
+  .text                8   0x40e        0xa
+    FLASH_OB_GetWRP
+  .text                8   0x418       0x2a
+    FLASH_OB_GetRDP
+  .text                8   0x442        0xa
+    FLASH_OB_GetBOR
+  .text                8   0x44c       0x1c
+    FLASH_OB_GetBootAddress
+  .text                8   0x468        0x4
+  .text                8   0x46c        0x4
+  .text                8   0x470        0x4
+  .text                8   0x474        0x4
+  .text                8   0x478        0x4
+  .text                8   0x47c        0x4
+  .text                8   0x480        0x4
+  .text                8   0x39e        0xa  stm32f7xx_hal_gpio.o
+    HAL_GPIO_TogglePin
+  .text                8   0x3a8       0x32
+    HAL_GPIO_LockPin
+  .text                8   0x43c        0x2
+  .text                8   0x160       0x28  stm32f7xx_hal_hcd.o
+    HAL_HCD_DeInit
+  .text                8   0x188        0x2
+  .text                8   0x18a        0x2
+  .text                8   0x590        0x2
+  .text                8   0x592        0x2
+  .text                8   0x594        0x2
+  .text                8   0x596        0x2
+  .text                8   0x5f8        0x6
+    HAL_HCD_GetState
+  .text                8   0x618        0xe
+    HAL_HCD_HC_GetState
+  .text                8    0xbc       0x38  stm32f7xx_hal_i2c.o
+    HAL_I2C_DeInit
+  .text                8    0xf4        0x2
+  .text                8    0xf6        0x2
+  .text                8   0x3b4      0x164
+    HAL_I2C_Slave_Transmit
+  .text                8   0x518      0x148
+    HAL_I2C_Slave_Receive
+  .text                8   0x660       0xb4
+    HAL_I2C_Master_Transmit_IT
+  .text                8   0x714       0xb4
+    HAL_I2C_Master_Receive_IT
+  .text                8   0x7c8       0x64
+    HAL_I2C_Slave_Transmit_IT
+  .text                8   0x82c       0x64
+    HAL_I2C_Slave_Receive_IT
+  .text                8   0x890      0x100
+    HAL_I2C_Master_Transmit_DMA
+  .text                8   0x990       0xf4
+    HAL_I2C_Master_Receive_DMA
+  .text                8   0xa84       0xfe
+    HAL_I2C_Slave_Transmit_DMA
+  .text                8   0xb82       0xd2
+    HAL_I2C_Slave_Receive_DMA
+  .text                8   0xf88       0xf2
+    HAL_I2C_Mem_Write_IT
+  .text                8  0x107a       0xf2
+    HAL_I2C_Mem_Read_IT
+  .text                8  0x116c      0x12c
+    HAL_I2C_Mem_Write_DMA
+  .text                8  0x1298      0x128
+    HAL_I2C_Mem_Read_DMA
+  .text                8  0x13c0        0x4
+  .text                8  0x13c4        0x4
+  .text                8  0x13c8        0x4
+  .text                8  0x13cc        0x4
+  .text                8  0x13d0      0x14e
+    HAL_I2C_IsDeviceReady
+  .text                8  0x16d2        0x6
+    HAL_I2C_GetState
+  .text                8  0x16d8        0x4
+    HAL_I2C_GetError
+  .text                8  0x187c        0x4
+  .text                8  0x1cb6      0x1ce
+    I2C_DMAMasterTransmitCplt
+  .text                8  0x1e84        0x4
+  .text                8  0x1e88        0x4
+  .text                8  0x1e8c       0x72
+    I2C_DMASlaveTransmitCplt
+  .text                8  0x1efe      0x1de
+    I2C_DMAMasterReceiveCplt
+  .text                8  0x20dc       0x82
+    I2C_DMASlaveReceiveCplt
+  .text                8  0x215e      0x1c6
+    I2C_DMAMemTransmitCplt
+  .text                8  0x2324      0x1d8
+    I2C_DMAMemReceiveCplt
+  .text                8  0x2500       0x2c
+    I2C_DMAError
+  .text                8    0x84       0x86  stm32f7xx_hal_i2c_ex.o
+    HAL_I2CEx_ConfigDigitalFilter
+  .text                8   0x13a       0x20  stm32f7xx_hal_ltdc.o
+    HAL_LTDC_DeInit
+  .text                8   0x15a        0x2
+  .text                8   0x15c        0x2
+  .text                8   0x24a       0x5c
+    HAL_LTDC_ConfigColorKeying
+  .text                8   0x2a6       0xb2
+    HAL_LTDC_ConfigCLUT
+  .text                8   0x358       0x50
+    HAL_LTDC_EnableColorKeying
+  .text                8   0x3a8       0x52
+    HAL_LTDC_DisableColorKeying
+  .text                8   0x3fa       0x50
+    HAL_LTDC_EnableCLUT
+  .text                8   0x44a       0x52
+    HAL_LTDC_DisableCLUT
+  .text                8   0x49c       0x3a
+    HAL_LTDC_EnableDither
+  .text                8   0x4d6       0x3a
+    HAL_LTDC_DisableDither
+  .text                8   0x510       0x7a
+    HAL_LTDC_SetWindowSize
+  .text                8   0x58a       0x6e
+    HAL_LTDC_SetWindowPosition
+  .text                8   0x5f8       0x4e
+    HAL_LTDC_SetPixelFormat
+  .text                8   0x646       0x4e
+    HAL_LTDC_SetAlpha
+  .text                8   0x6e2       0x3a
+    HAL_LTDC_ProgramLineEvent
+  .text                8   0x71c        0x6
+    HAL_LTDC_GetState
+  .text                8   0x722        0x6
+    HAL_LTDC_GetError
+  .text                8   0x9a4        0x4
+  .text                8   0x9a8        0x4
+  .text                8    0x56       0x22  stm32f7xx_hal_nand.o
+    HAL_NAND_DeInit
+  .text                8    0x78        0x2
+  .text                8    0x7a        0x2
+  .text                8   0x162       0x46
+    HAL_NAND_Reset
+  .text                8   0x1a8      0x110
+    HAL_NAND_Read_Page
+  .text                8   0x2b8      0x138
+    HAL_NAND_Write_Page
+  .text                8   0x3f0      0x110
+    HAL_NAND_Read_SpareArea
+  .text                8   0x500      0x13c
+    HAL_NAND_Write_SpareArea
+  .text                8   0x63c       0xd4
+    HAL_NAND_Erase_Block
+  .text                8   0x710       0x30
+    HAL_NAND_Read_Status
+  .text                8   0x740       0x4a
+    HAL_NAND_Address_Inc
+  .text                8   0x78a       0x28
+    HAL_NAND_ECC_Enable
+  .text                8   0x7b2       0x28
+    HAL_NAND_ECC_Disable
+  .text                8   0x7da       0x36
+    HAL_NAND_GetECC
+  .text                8   0x810        0x6
+    HAL_NAND_GetState
+  .text                8     0x0       0x1a  stm32f7xx_hal_pwr.o
+    HAL_PWR_DeInit
+  .text                8    0x1a        0xe
+    HAL_PWR_EnableBkUpAccess
+  .text                8    0x28        0xe
+    HAL_PWR_DisableBkUpAccess
+  .text                8    0x36       0x8c
+    HAL_PWR_ConfigPVD
+  .text                8    0xc2        0xe
+    HAL_PWR_EnablePVD
+  .text                8    0xd0       0x10
+    HAL_PWR_DisablePVD
+  .text                8    0xe0       0x22
+    HAL_PWR_EnableWakeUpPin
+  .text                8   0x102        0xc
+    HAL_PWR_DisableWakeUpPin
+  .text                8   0x10e       0x20
+    HAL_PWR_EnterSLEEPMode
+  .text                8   0x12e       0x42
+    HAL_PWR_EnterSTOPMode
+  .text                8   0x170       0x1c
+    HAL_PWR_EnterSTANDBYMode
+  .text                8   0x18c       0x18
+    HAL_PWR_PVD_IRQHandler
+  .text                8   0x1a4        0x2
+    HAL_PWR_PVDCallback
+  .text                8   0x1a6        0xe
+    HAL_PWR_EnableSleepOnExit
+  .text                8   0x1b4       0x10
+    HAL_PWR_DisableSleepOnExit
+  .text                8   0x1c4        0xe
+    HAL_PWR_EnableSEVOnPend
+  .text                8   0x1d2       0x12
+    HAL_PWR_DisableSEVOnPend
+  .text                8   0x1e4        0x4
+  .text                8   0x1e8        0x4
+  .text                8   0x1ec        0x4
+  .text                8   0x1f0        0x4
+  .text                8   0x1f4        0x4
+  .text                8   0x1f8        0x4
+  .text                8   0x1fc        0x4
+  .text                8   0x200        0x4
+  .text                8   0x204        0x4
+  .text                8   0x208        0x4
+  .text                8     0x0       0x32  stm32f7xx_hal_pwr_ex.o
+    HAL_PWREx_EnableBkUpReg
+  .text                8    0x32       0x32
+    HAL_PWREx_DisableBkUpReg
+  .text                8    0x64        0xe
+    HAL_PWREx_EnableFlashPowerDown
+  .text                8    0x72        0xe
+    HAL_PWREx_DisableFlashPowerDown
+  .text                8    0x80        0xe
+    HAL_PWREx_EnableMainRegulatorLowVoltage
+  .text                8    0x8e        0xe
+    HAL_PWREx_DisableMainRegulatorLowVoltage
+  .text                8    0x9c        0xe
+    HAL_PWREx_EnableLowRegulatorLowVoltage
+  .text                8    0xaa        0xe
+    HAL_PWREx_DisableLowRegulatorLowVoltage
+  .text                8   0x132       0x7a
+    HAL_PWREx_DisableOverDrive
+  .text                8   0x1ac       0x9c
+    HAL_PWREx_EnterUnderDriveSTOPMode
+  .text                8   0x248        0xa
+    HAL_PWREx_GetVoltageRange
+  .text                8   0x252       0xc2
+    HAL_PWREx_ControlVoltageScaling
+  .text                8   0x320        0x4
+  .text                8   0x324        0x4
+  .text                8   0x328        0x4
+  .text                8   0x32c        0x4
+  .text                9     0x0       0x7a  stm32f7xx_hal_rcc.o
+    HAL_RCC_DeInit
+  .text                9   0x7ee       0xaa
+    HAL_RCC_MCOConfig
+  .text                9   0x8a6        0xe
+    HAL_RCC_DisableCSS
+  .text                9   0x9c0       0xe8
+    HAL_RCC_GetOscConfig
+  .text                9   0xaa8       0x3a
+    HAL_RCC_GetClockConfig
+  .text                9   0xae2       0x16
+    HAL_RCC_NMI_IRQHandler
+  .text                9   0xb00        0x4
+  .text                9   0xb08        0x4
+  .text                9   0xb0c        0x4
+  .text                9   0xb10        0x4
+  .text                9   0xb2c        0x4
+  .text                9   0xb30        0x4
+  .text                9   0xb34        0x4
+  .text                9   0xb48        0x4
+  .text                9   0xb4c        0x2
+    HAL_RCC_CSSCallback
+  .text                8   0x7cc      0x1d8  stm32f7xx_hal_rcc_ex.o
+    HAL_RCCEx_GetPeriphCLKConfig
+  .text                8   0x9a4      0x1c4
+    HAL_RCCEx_GetPeriphCLKFreq
+  .text                8   0xb94        0x4
+  .text                8   0xb98        0x4
+  .text                8   0xb9c        0x4
+  .text                8   0xba0        0x4
+  .text                8   0xba4        0x4
+  .text                8    0xb6       0x14  stm32f7xx_hal_sd.o
+    HAL_SD_DeInit
+  .text                8    0xca        0x2
+  .text                8    0xcc        0x2
+  .text                8   0x54e      0x130
+    HAL_SD_ReadBlocks_DMA
+  .text                8   0x67e      0x140
+    HAL_SD_WriteBlocks_DMA
+  .text                8   0x7be       0x86
+    HAL_SD_CheckReadOperation
+  .text                8   0x844       0x90
+    HAL_SD_CheckWriteOperation
+  .text                8   0x8d4      0x178
+    HAL_SD_Erase
+  .text                8   0xa4c       0x9a
+    HAL_SD_IRQHandler
+  .text                8   0xae6        0x2
+    HAL_SD_XferCpltCallback
+  .text                8   0xae8        0x2
+    HAL_SD_XferErrorCallback
+  .text                8   0xaea        0x2
+    HAL_SD_DMA_RxCpltCallback
+  .text                8   0xaec        0x2
+    HAL_SD_DMA_RxErrorCallback
+  .text                8   0xaee        0x2
+    HAL_SD_DMA_TxCpltCallback
+  .text                8   0xaf0        0x2
+    HAL_SD_DMA_TxErrorCallback
+  .text                8   0xf1e      0x18e
+    HAL_SD_HighSpeed
+  .text                8  0x10ac      0x16c
+    HAL_SD_SendSDStatus
+  .text                8  0x123e       0xfa
+    HAL_SD_GetCardStatus
+  .text                8  0x1338       0x20
+    SD_DMA_RxCplt
+  .text                8  0x1358       0x10
+    SD_DMA_RxError
+  .text                8  0x1368       0x20
+    SD_DMA_TxCplt
+  .text                8  0x1388        0xe
+    SD_DMA_TxError
+  .text                8  0x169c        0x4
+  .text                8  0x16a0       0x12
+    SD_PowerOFF
+  .text                8  0x18e8        0x4
+  .text                8  0x18ec        0x4
+  .rodata             12     0x0       0x40
+  .rodata             13     0x0        0x8
+  .rodata             14     0x0        0x8
+  .rodata             15     0x0        0x8
+  .rodata             16     0x0        0x8
+  .text                8    0x44       0x22  stm32f7xx_hal_sdram.o
+    HAL_SDRAM_DeInit
+  .text                8    0x66        0x2
+  .text                8    0x68        0x2
+  .text                8    0x8c        0x2
+    HAL_SDRAM_DMA_XferCpltCallback
+  .text                8    0x8e        0x2
+    HAL_SDRAM_DMA_XferErrorCallback
+  .text                8    0x90       0x4c
+    HAL_SDRAM_Read_8b
+  .text                8    0xdc       0x50
+    HAL_SDRAM_Write_8b
+  .text                8   0x12c       0x4c
+    HAL_SDRAM_Read_16b
+  .text                8   0x178       0x50
+    HAL_SDRAM_Write_16b
+  .text                8   0x1c8       0x4c
+    HAL_SDRAM_Read_32b
+  .text                8   0x214       0x50
+    HAL_SDRAM_Write_32b
+  .text                8   0x264       0x60
+    HAL_SDRAM_Read_DMA
+  .text                8   0x2c4       0x68
+    HAL_SDRAM_Write_DMA
+  .text                8   0x32c        0x4
+  .text                8   0x330        0x4
+  .text                8   0x334       0x28
+    HAL_SDRAM_WriteProtection_Enable
+  .text                8   0x35c       0x28
+    HAL_SDRAM_WriteProtection_Disable
+  .text                8   0x3ea       0x2a
+    HAL_SDRAM_SetAutoRefreshNumber
+  .text                8   0x414        0xe
+    HAL_SDRAM_GetModeStatus
+  .text                8   0x422        0x6
+    HAL_SDRAM_GetState
+  .text                8    0xda       0x62  stm32f7xx_hal_spi.o
+    HAL_SPI_DeInit
+  .text                8   0x13c        0x2
+  .text                8   0x13e        0x2
+  .text                8   0x140      0x1bc
+    HAL_SPI_Transmit
+  .text                8   0x2fc      0x276
+    HAL_SPI_Receive
+  .text                8   0x572      0x30c
+    HAL_SPI_TransmitReceive
+  .text                8   0x87e       0xd0
+    HAL_SPI_Transmit_IT
+  .text                8   0x94e      0x134
+    HAL_SPI_Receive_IT
+  .text                8   0xa82      0x12e
+    HAL_SPI_TransmitReceive_IT
+  .text                8   0xbb0      0x12e
+    HAL_SPI_Transmit_DMA
+  .text                8   0xcde      0x14c
+    HAL_SPI_Receive_DMA
+  .text                8   0xe2a      0x212
+    HAL_SPI_TransmitReceive_DMA
+  .text                8  0x103c       0x2a
+    HAL_SPI_DMAPause
+  .text                8  0x1066       0x2a
+    HAL_SPI_DMAResume
+  .text                8  0x1090       0x32
+    HAL_SPI_DMAStop
+  .text                8  0x10c2       0xda
+    HAL_SPI_IRQHandler
+  .text                8  0x119c        0x2
+    HAL_SPI_TxCpltCallback
+  .text                8  0x119e        0x2
+    HAL_SPI_RxCpltCallback
+  .text                8  0x11a0        0x2
+    HAL_SPI_TxRxCpltCallback
+  .text                8  0x11a2        0x2
+    HAL_SPI_TxHalfCpltCallback
+  .text                8  0x11a4        0x2
+    HAL_SPI_RxHalfCpltCallback
+  .text                8  0x11a6        0x2
+    HAL_SPI_TxRxHalfCpltCallback
+  .text                8  0x11a8        0x2
+    HAL_SPI_ErrorCallback
+  .text                8  0x11aa        0x6
+    HAL_SPI_GetState
+  .text                8  0x11b0        0x4
+    HAL_SPI_GetError
+  .text                8  0x11b4       0x54
+    SPI_DMATransmitCplt
+  .text                8  0x1208       0xe8
+    SPI_DMAReceiveCplt
+  .text                8  0x12f0       0xd4
+    SPI_DMATransmitReceiveCplt
+  .text                8  0x13c4       0x10
+    SPI_DMAHalfTransmitCplt
+  .text                8  0x13d4       0x10
+    SPI_DMAHalfReceiveCplt
+  .text                8  0x13e4       0x10
+    SPI_DMAHalfTransmitReceiveCplt
+  .text                8  0x13f4       0x28
+    SPI_DMAError
+  .text                8  0x141c       0x90
+    SPI_2linesRxISR_8BIT
+  .text                8  0x14ac       0x3c
+    SPI_2linesRxISR_8BITCRC
+  .text                8  0x14e8       0x6c
+    SPI_2linesTxISR_8BIT
+  .text                8  0x1554       0x50
+    SPI_2linesRxISR_16BIT
+  .text                8  0x15a4       0x28
+    SPI_2linesRxISR_16BITCRC
+  .text                8  0x15cc       0x50
+    SPI_2linesTxISR_16BIT
+  .text                8  0x161c       0x28
+    SPI_RxISR_8BITCRC
+  .text                8  0x1644       0x54
+    SPI_RxISR_8BIT
+  .text                8  0x1698        0x4
+  .text                8  0x169c        0x4
+  .text                8  0x16a0       0x28
+    SPI_RxISR_16BITCRC
+  .text                8  0x16c8       0x58
+    SPI_RxISR_16BIT
+  .text                8  0x1720        0x4
+  .text                8  0x1724        0x4
+  .text                8  0x1728       0x38
+    SPI_TxISR_8BIT
+  .text                8  0x1760       0x3a
+    SPI_TxISR_16BIT
+  .text                8  0x179a       0x9e
+    SPI_WaitFlagStateUntilTimeout
+  .text                8  0x1838       0xb6
+    SPI_WaitFifoStateUntilTimeout
+  .text                8  0x18ee       0x6a
+    SPI_EndRxTransaction
+  .text                8  0x1958       0x62
+    SPI_EndRxTxTransaction
+  .text                8  0x19ba       0x70
+    SPI_CloseRxTx_ISR
+  .text                8  0x1a2a       0x56
+    SPI_CloseRx_ISR
+  .text                8  0x1a80       0x48
+    SPI_CloseTx_ISR
+  .text                8    0x32       0x44  stm32f7xx_hal_tim.o
+    HAL_TIM_Base_DeInit
+  .text                8    0x76        0x2
+  .text                8    0x78        0x2
+  .text                8    0x7a       0x1e
+    HAL_TIM_Base_Start
+  .text                8    0x98       0x36
+    HAL_TIM_Base_Stop
+  .text                8    0xce       0x1e
+    HAL_TIM_Base_Start_IT
+  .text                8    0xec       0x36
+    HAL_TIM_Base_Stop_IT
+  .text                8   0x122       0x6e
+    HAL_TIM_Base_Start_DMA
+  .text                8   0x190       0x3c
+    HAL_TIM_Base_Stop_DMA
+  .text                8   0x1cc       0x38
+    HAL_TIM_OC_Init
+  .text                8   0x204       0x44
+    HAL_TIM_OC_DeInit
+  .text                8   0x248        0x2
+    HAL_TIM_OC_MspInit
+  .text                8   0x24a        0x2
+    HAL_TIM_OC_MspDeInit
+  .text                8   0x24c       0x4c
+    HAL_TIM_OC_Start
+  .text                8   0x298       0x7c
+    HAL_TIM_OC_Stop
+  .text                8   0x314       0x98
+    HAL_TIM_OC_Start_IT
+  .text                8   0x3ac       0xd0
+    HAL_TIM_OC_Stop_IT
+  .text                8   0x47c      0x14c
+    HAL_TIM_OC_Start_DMA
+  .text                8   0x5c8       0xce
+    HAL_TIM_OC_Stop_DMA
+  .text                8   0x696       0x38
+    HAL_TIM_PWM_Init
+  .text                8   0x6ce       0x44
+    HAL_TIM_PWM_DeInit
+  .text                8   0x712        0x2
+    HAL_TIM_PWM_MspInit
+  .text                8   0x714        0x2
+    HAL_TIM_PWM_MspDeInit
+  .text                8   0x716       0x4c
+    HAL_TIM_PWM_Start
+  .text                8   0x762       0x82
+    HAL_TIM_PWM_Stop
+  .text                8   0x7e4       0x98
+    HAL_TIM_PWM_Start_IT
+  .text                8   0x87c       0xd0
+    HAL_TIM_PWM_Stop_IT
+  .text                8   0x94c      0x14c
+    HAL_TIM_PWM_Start_DMA
+  .text                8   0xa98       0xcc
+    HAL_TIM_PWM_Stop_DMA
+  .text                8   0xb64        0x4
+  .text                8   0xb68       0x38
+    HAL_TIM_IC_Init
+  .text                8   0xba0       0x44
+    HAL_TIM_IC_DeInit
+  .text                8   0xbe4        0x2
+    HAL_TIM_IC_MspInit
+  .text                8   0xbe6        0x2
+    HAL_TIM_IC_MspDeInit
+  .text                8   0xbe8       0x20
+    HAL_TIM_IC_Start
+  .text                8   0xc08       0x38
+    HAL_TIM_IC_Stop
+  .text                8   0xc40       0x6c
+    HAL_TIM_IC_Start_IT
+  .text                8   0xcac       0x8c
+    HAL_TIM_IC_Stop_IT
+  .text                8   0xd38      0x11c
+    HAL_TIM_IC_Start_DMA
+  .text                8   0xe54        0x4
+  .text                8   0xe58        0x4
+  .text                8   0xe5c        0x4
+  .text                8   0xe60       0x8a
+    HAL_TIM_IC_Stop_DMA
+  .text                8   0xeea       0x52
+    HAL_TIM_OnePulse_Init
+  .text                8   0xf3c       0x44
+    HAL_TIM_OnePulse_DeInit
+  .text                8   0xf80        0x2
+    HAL_TIM_OnePulse_MspInit
+  .text                8   0xf82        0x2
+    HAL_TIM_OnePulse_MspDeInit
+  .text                8   0xf84       0x4a
+    HAL_TIM_OnePulse_Start
+  .text                8   0xfce       0x86
+    HAL_TIM_OnePulse_Stop
+  .text                8  0x1054       0x62
+    HAL_TIM_OnePulse_Start_IT
+  .text                8  0x10b6       0xa2
+    HAL_TIM_OnePulse_Stop_IT
+  .text                8  0x1158        0x4
+  .text                8  0x115c        0x4
+  .text                8  0x1160       0xc6
+    HAL_TIM_Encoder_Init
+  .text                8  0x1226       0x44
+    HAL_TIM_Encoder_DeInit
+  .text                8  0x126a        0x2
+    HAL_TIM_Encoder_MspInit
+  .text                8  0x126c        0x2
+    HAL_TIM_Encoder_MspDeInit
+  .text                8  0x126e       0x4e
+    HAL_TIM_Encoder_Start
+  .text                8  0x12bc       0x66
+    HAL_TIM_Encoder_Stop
+  .text                8  0x1322       0x7e
+    HAL_TIM_Encoder_Start_IT
+  .text                8  0x13a0       0xa0
+    HAL_TIM_Encoder_Stop_IT
+  .text                8  0x1440      0x15a
+    HAL_TIM_Encoder_Start_DMA
+  .text                8  0x159a       0x98
+    HAL_TIM_Encoder_Stop_DMA
+  .text                8  0x17c6       0x6c
+  .text                8  0x1832       0xda
+    HAL_TIM_IC_ConfigChannel
+  .text                8  0x190c      0x104
+  .text                8  0x1a10      0x124
+    HAL_TIM_OnePulse_ConfigChannel
+  .text                8  0x1b34        0x4
+  .text                8  0x1b38      0x180
+    HAL_TIM_DMABurst_WriteStart
+  .text                8  0x1cb8        0x4
+  .text                8  0x1cbc        0x4
+  .text                8  0x1cc0       0x7a
+    HAL_TIM_DMABurst_WriteStop
+  .text                8  0x1d3a      0x17e
+    HAL_TIM_DMABurst_ReadStart
+  .text                8  0x1eb8        0x4
+  .text                8  0x1ebc        0x4
+  .text                8  0x1ec0        0x4
+  .text                8  0x1ec4        0x4
+  .text                8  0x1ec8       0x7a
+    HAL_TIM_DMABurst_ReadStop
+  .text                8  0x1f42       0x2e
+    HAL_TIM_GenerateEvent
+  .text                8  0x1f70       0xe2
+  .text                8  0x2052      0x126
+    HAL_TIM_ConfigClockSource
+  .text                8  0x2178        0x4
+  .text                8  0x217c       0x1a
+    HAL_TIM_ConfigTI1Input
+  .text                8  0x2196       0xd8
+    HAL_TIM_SlaveConfigSynchronization
+  .text                8  0x226e       0x4e
+    HAL_TIM_SlaveConfigSynchronization_IT
+  .text                8  0x22bc       0x54
+    HAL_TIM_ReadCapturedValue
+  .text                8  0x231a        0x2
+    HAL_TIM_ErrorCallback
+  .text                8  0x231c        0x6
+    HAL_TIM_Base_GetState
+  .text                8  0x2322        0x6
+    HAL_TIM_OC_GetState
+  .text                8  0x2328        0x6
+    HAL_TIM_PWM_GetState
+  .text                8  0x232e        0x6
+    HAL_TIM_IC_GetState
+  .text                8  0x2334        0x6
+    HAL_TIM_OnePulse_GetState
+  .text                8  0x233a        0x6
+    HAL_TIM_Encoder_GetState
+  .text                8  0x2340       0x14
+    TIM_DMAError
+  .text                8  0x2354       0x48
+    TIM_DMADelayPulseCplt
+  .text                8  0x239c       0x48
+    TIM_DMACaptureCplt
+  .text                8  0x23e4       0x14
+    TIM_DMAPeriodElapsedCplt
+  .text                8  0x23f8       0x14
+    TIM_DMATriggerCplt
+  .text                8  0x24f4       0x78
+    TIM_OC1_SetConfig
+  .text                8  0x256c       0x84
+    TIM_OC2_SetConfig
+  .text                8  0x25f0       0x7a
+    TIM_OC3_SetConfig
+  .text                8  0x266a       0x64
+    TIM_OC4_SetConfig
+  .text                8  0x26ce       0xb8
+    TIM_SlaveTimer_SetConfig
+  .text                8  0x2786       0x82
+    TIM_TI1_SetConfig
+  .text                8  0x2808        0x4
+  .text                8  0x280c        0x4
+  .text                8  0x2810        0x4
+  .text                8  0x2840        0x4
+  .text                8  0x2844        0x4
+  .text                8  0x2848       0x30
+    TIM_TI1_ConfigInputStage
+  .text                8  0x2878       0x42
+    TIM_TI2_SetConfig
+  .text                8  0x28ba       0x32
+    TIM_TI2_ConfigInputStage
+  .text                8  0x28ec       0x3e
+    TIM_TI3_SetConfig
+  .text                8  0x292a       0x3e
+    TIM_TI4_SetConfig
+  .text                8  0x2968       0x18
+    TIM_ITRx_SetConfig
+  .text                8  0x2980       0x1c
+    TIM_ETR_SetConfig
+  .text                8  0x299c       0x1e
+    TIM_CCxChannelCmd
+  .text                8     0x0       0xd4  stm32f7xx_hal_tim_ex.o
+    HAL_TIMEx_HallSensor_Init
+  .text                8    0xd4       0x44
+    HAL_TIMEx_HallSensor_DeInit
+  .text                8   0x118        0x2
+    HAL_TIMEx_HallSensor_MspInit
+  .text                8   0x11a        0x2
+    HAL_TIMEx_HallSensor_MspDeInit
+  .text                8   0x11c       0x1e
+    HAL_TIMEx_HallSensor_Start
+  .text                8   0x13a       0x36
+    HAL_TIMEx_HallSensor_Stop
+  .text                8   0x170       0x2a
+    HAL_TIMEx_HallSensor_Start_IT
+  .text                8   0x19a       0x44
+    HAL_TIMEx_HallSensor_Stop_IT
+  .text                8   0x1de       0x78
+    HAL_TIMEx_HallSensor_Start_DMA
+  .text                8   0x256       0x42
+    HAL_TIMEx_HallSensor_Stop_DMA
+  .text                8   0x298       0x2c
+    HAL_TIMEx_OCN_Start
+  .text                8   0x2c4       0x5c
+    HAL_TIMEx_OCN_Stop
+  .text                8   0x320       0x84
+    HAL_TIMEx_OCN_Start_IT
+  .text                8   0x3a4       0xce
+    HAL_TIMEx_OCN_Stop_IT
+  .text                8   0x472      0x12c
+    HAL_TIMEx_OCN_Start_DMA
+  .text                8   0x59e       0xae
+    HAL_TIMEx_OCN_Stop_DMA
+  .text                8   0x64c       0x2c
+    HAL_TIMEx_PWMN_Start
+  .text                8   0x678       0x5c
+    HAL_TIMEx_PWMN_Stop
+  .text                8   0x6d4       0x84
+    HAL_TIMEx_PWMN_Start_IT
+  .text                8   0x758       0xce
+    HAL_TIMEx_PWMN_Stop_IT
+  .text                8   0x826      0x12c
+    HAL_TIMEx_PWMN_Start_DMA
+  .text                8   0x952       0xae
+    HAL_TIMEx_PWMN_Stop_DMA
+  .text                8   0xa00       0x20
+    HAL_TIMEx_OnePulseN_Start
+  .text                8   0xa20       0x5c
+    HAL_TIMEx_OnePulseN_Stop
+  .text                8   0xa7c       0x38
+    HAL_TIMEx_OnePulseN_Start_IT
+  .text                8   0xab4       0x78
+    HAL_TIMEx_OnePulseN_Stop_IT
+  .text                8   0xb2c       0x6e
+    HAL_TIMEx_ConfigCommutationEvent
+  .text                8   0xb9a       0x7a
+    HAL_TIMEx_ConfigCommutationEvent_IT
+  .text                8   0xc14       0x88
+    HAL_TIMEx_ConfigCommutationEvent_DMA
+  .text                8   0xc9c        0x4
+  .text                8   0xca0        0x4
+  .text                8   0xca4        0x4
+  .text                8   0xca8       0x88
+    HAL_TIM_OC_ConfigChannel
+  .text                8   0xd30      0x16c
+    HAL_TIM_PWM_ConfigChannel
+  .text                8   0xe9c      0x15c
+    HAL_TIM_ConfigOCrefClear
+  .text                8  0x105a       0x5e
+    HAL_TIMEx_ConfigBreakDeadTime
+  .text                8  0x10b8       0x28
+    HAL_TIMEx_RemapConfig
+  .text                8  0x10e0       0x40
+    HAL_TIMEx_GroupChannel5
+  .text                8  0x1124        0x8
+    HAL_TIMEx_HallSensor_GetState
+  .text                8  0x112c       0x14
+    TIMEx_DMACommutationCplt
+  .text                8  0x1140       0x1e
+    TIM_CCxNChannelCmd
+  .text                8  0x115e       0x52
+    TIM_OC5_SetConfig
+  .text                8  0x11b0       0x54
+    TIM_OC6_SetConfig
+  .text                8  0x1204        0x4
+  .text                8  0x1210        0x4
+  .text                8  0x1214        0x4
+  .text                8    0x80       0x86  stm32f7xx_hal_uart.o
+    HAL_HalfDuplex_Init
+  .text                8   0x106       0x98
+    HAL_LIN_Init
+  .text                8   0x19e       0xa4
+    HAL_MultiProcessor_Init
+  .text                8   0x242       0x4a
+    HAL_UART_DeInit
+  .text                8   0x28c        0x2
+  .text                8   0x28e        0x2
+  .text                8   0x290       0xe8
+    HAL_UART_Transmit
+  .text                8   0x378      0x138
+    HAL_UART_Receive
+  .text                8   0x4b0       0x80
+    HAL_UART_Transmit_IT
+  .text                8   0x530       0xe4
+    HAL_UART_Receive_IT
+  .text                8   0x614       0xac
+    HAL_UART_Transmit_DMA
+  .text                8   0x6c0       0xa2
+    HAL_UART_Receive_DMA
+  .text                8   0x762       0x72
+    HAL_UART_DMAPause
+  .text                8   0x7d4       0x84
+    HAL_UART_DMAResume
+  .text                8   0x858       0x42
+    HAL_UART_DMAStop
+  .text                8   0xa70       0x38
+    UART_DMATransmitCplt
+  .text                8   0xaa8       0x10
+    UART_DMATxHalfCplt
+  .text                8   0xab8       0x40
+    UART_DMAReceiveCplt
+  .text                8   0xaf8       0x10
+    UART_DMARxHalfCplt
+  .text                8   0xb08       0x28
+    UART_DMAError
+  .text                8   0xb32        0x2
+    HAL_UART_TxHalfCpltCallback
+  .text                8   0xb36        0x2
+    HAL_UART_RxHalfCpltCallback
+  .text                8   0xcb6       0x36
+    HAL_MultiProcessor_EnableMuteMode
+  .text                8   0xcec       0x36
+    HAL_MultiProcessor_DisableMuteMode
+  .text                8   0xd22        0xe
+    HAL_MultiProcessor_EnterMuteMode
+  .text                8   0xd30        0x6
+    HAL_UART_GetState
+  .text                8   0xd36        0x4
+    HAL_UART_GetError
+  .text                8  0x11fa       0x44
+    HAL_HalfDuplex_EnableTransmitter
+  .text                8  0x123e       0x44
+    HAL_HalfDuplex_EnableReceiver
+  .text                8  0x1282       0x36
+    HAL_LIN_SendBreak
+  .text                8     0x0       0x8e  stm32f7xx_ll_fmc.o
+    FMC_NORSRAM_Init
+  .text                8    0x8e       0x3e
+    FMC_NORSRAM_DeInit
+  .text                8    0xcc       0x60
+    FMC_NORSRAM_Timing_Init
+  .text                8   0x12c       0x44
+    FMC_NORSRAM_Extended_Timing_Init
+  .text                8   0x170       0x12
+    FMC_NORSRAM_WriteOperation_Enable
+  .text                8   0x182       0x12
+    FMC_NORSRAM_WriteOperation_Disable
+  .text                8   0x1cc        0x4
+  .text                8   0x1d0        0x4
+  .text                8   0x230       0x24
+    FMC_NAND_DeInit
+  .text                8   0x254        0xe
+    FMC_NAND_ECC_Enable
+  .text                8   0x262       0x10
+    FMC_NAND_ECC_Disable
+  .text                8   0x272       0x40
+    FMC_NAND_GetECC
+  .text                8   0x3cc       0x24
+    FMC_SDRAM_DeInit
+  .text                8   0x3f0       0x12
+    FMC_SDRAM_WriteProtection_Enable
+  .text                8   0x402       0x12
+    FMC_SDRAM_WriteProtection_Disable
+  .text                8   0x472        0xe
+    FMC_SDRAM_SetAutoRefreshNumber
+  .text                8   0x480       0x1e
+    FMC_SDRAM_GetModeStatus
+  .text                8    0x50        0xa  stm32f7xx_ll_sdmmc.o
+    SDMMC_PowerState_OFF
+  .text                8    0xda        0x4
+    SDMMC_GetDataCounter
+  .text                8    0xde        0x6
+    SDMMC_GetFIFOCount
+  .text                8    0xe4       0x10
+    SDMMC_SetSDMMCReadWaitMode
+  .text                8    0xc0      0x1c0  stm32f7xx_ll_usb.o
+    USB_DevInit
+  .text                8   0x2c4       0x16
+    USB_SetDevSpeed
+  .text                8   0x2da       0x4e
+    USB_GetDevSpeed
+  .text                8   0x328       0xc4
+    USB_ActivateEndpoint
+  .text                8   0x3ec      0x12c
+    USB_ActivateDedicatedEndpoint
+  .text                8   0x518       0xaa
+    USB_DeactivateEndpoint
+  .text                8   0x5c2       0x7a
+    USB_DeactivateDedicatedEndpoint
+  .text                8   0x63c      0x344
+    USB_EPStartXfer
+  .text                8   0x984      0x1ec
+    USB_EP0StartXfer
+  .text                8   0xbe2       0x9e
+    USB_EPSetStall
+  .text                8   0xc80       0x96
+    USB_EPClearStall
+  .text                8   0xd16       0x5c
+    USB_StopDevice
+  .text                8   0xd72       0x2c
+    USB_SetDevAddress
+  .text                8   0xd9e       0x20
+    USB_DevConnect
+  .text                8   0xdbe       0x1e
+    USB_DevDisconnect
+  .text                8   0xdea       0x16
+    USB_ReadDevAllOutEpInterrupt
+  .text                8   0xe00       0x16
+    USB_ReadDevAllInEpInterrupt
+  .text                8   0xe16       0x1a
+    USB_ReadDevOutEPInterrupt
+  .text                8   0xe30       0x34
+    USB_ReadDevInEPInterrupt
+  .text                8   0xe64        0x8
+    USB_ClearInterrupts
+  .text                8   0xe74       0x44
+    USB_ActivateSetup
+  .text                8   0xeb8       0x58
+    USB_EP0_OutStart
+  .text                8  0x102c        0x4
+  .text                8  0x1030        0x4
+  .text                8  0x1038        0x4
+  .bss                 9     0x0        0x4
+    USB_ActivateDedicatedEndpoint::debug
+  .text                9   0x3e4       0x6e  stmpe811.o
+    P_Touch_IOAFConfig
+  .bss                11     0x0        0x1
+    temp2
+  .rodata              9     0x0       0x10  system_stm32f7xx.o
+    AHBPrescTable
+  .text               10    0x5a       0xae
+    SystemCoreClockUpdate
+  .text               10   0x318        0x4
+  .text               10   0x31c        0x4
+  .text               10   0x320        0x4
+  .text               10   0x324        0x4
+  .text               13   0x1e4       0x8c  tim.o
+    HAL_TIM_Base_MspDeInit
+  .text                9   0x14c       0x38  tw8819.o
+    CheckDecoderVDLOSS
+  .text                9   0x184       0x32
+    CheckDecoderSTD
+  .text                9   0x1b6       0xc2
+    CheckAndSetDecoderScaler
+  .text                9   0x278       0x44
+    SetYCbCrContrast
+  .text                9   0x2bc       0x2a
+    ReadYCbCrContrast
+  .text                9   0x2e6       0x72
+    SetYCbCrBright
+  .text                9   0x358       0x2a
+    ReadYCbCrBright
+  .text                9   0x382       0x7c
+    SetYCbCrSaturation
+  .text                9   0x3fe       0x2a
+    ReadYCbCrSaturation
+  .text                9   0x428       0xac
+    SetYCbCrHUE
+  .text                9   0x4d4       0x30
+    ReadYCbCrHUE
+  .text                9   0x504       0x6c
+    SetYCbCrSharp
+  .text                9   0x570       0x26
+    ReadYCbCrSharp
+  .text                9   0x596       0x3a
+    ChangeCVBS
+  .text                9   0x5e4        0x4
+  .text                9   0x5e8        0x4
+  .text                9   0x640       0x3a
+    BlueScreenOnOff
+  .data               12     0x0       0x10
+    Sharpness
+  .bss                13     0x0        0x4
+    valOut
+  .text               11   0x1b8       0x68  usart.o
+    HAL_UART_MspDeInit
+  .text                9    0x78       0x2c  usbh_conf.o
+    HAL_HCD_MspDeInit
+  .text                9   0x138       0x10
+    USBH_LL_DeInit
+  .text                8    0x3a       0x24  usbh_core.o
+    USBH_DeInit
+  .text                8   0x116        0x6
+    USBH_GetActiveClass
+  .text                8   0x186       0x48
+    USBH_FindInterfaceIndex
+  .text                8   0x1e4       0x26
+    USBH_Stop
+  .text                8   0x20a       0x20
+    USBH_ReEnumerate
+  .text                8   0x172       0x2e  usbh_ctlreq.o
+    USBH_SetInterface
+  .text                8   0x10e       0x32  usbh_ioreq.o
+    USBH_InterruptReceiveData
+  .text                8   0x140       0x32
+    USBH_InterruptSendData
+  .text                8   0x172       0x30
+    USBH_IsocReceiveData
+  .text                8   0x1a2       0x30
+    USBH_IsocSendData
+  .text                9   0x7a2       0x22  usbh_msc.o
+    USBH_MSC_IsReady
+  .text                9   0x7c4       0x20
+    USBH_MSC_GetMaxLUN
+  .text               12     0x0      0x154  video.o
+    _HW_DrawLine
+  .text               12   0x154        0x2
+    Fill_Background
+  .text               12   0x156       0x7e
+    _HW_Fill_Finite_Color
+  .text               12   0x280       0x6a
+    _HW_Fill_Region
+  .text               12   0x2ea       0x62
+    _HW_Fill_Image
+  .text               12   0x34c       0x60
+    _HW_Fill_ImageToRAM
+  .text               12   0x3ac       0x32
+    LCD_Layers_Init
+  .text               12   0x544        0xe
+    TwoDigitsToChars
+  .text               12   0x5e8        0x4
+  .text               12   0x5ec        0x4
+  .text               12   0x5f0        0x4
+  .text               12   0x5f4        0x4
+  .text                6     0x0        0x6  ABImemclr4.o
+    __aeabi_memclr4
+  .text                8    0x4e       0xc2  dlmalloc.o
+    internal_mallinfo
+  .text                8   0x110       0xa0
+    __iar_internal_malloc_stats
+  .text                8   0x8de       0x6a
+    sys_trim
+  .text                8   0x954      0x4a0
+    dispose_chunk
+  .text                8   0xdf4        0x6
+  .text                8  0x1b5e       0x3e
+    __iar_dlcalloc
+  .text                8  0x1b9c      0x308
+    try_realloc_chunk
+  .text                8  0x1ea8      0x128
+    internal_memalign
+  .text                8  0x1fd0      0x376
+    ialloc
+  .text                8  0x2346       0xd2
+    internal_bulk_free
+  .text                8  0x241c       0x88
+    internal_inspect_all
+  .text                8  0x24a4       0x7e
+    __iar_dlrealloc
+  .text                8  0x2522       0x42
+    __iar_dlrealloc_in_place
+  .text                8  0x2564       0x10
+    __iar_dlmemalign
+  .text                8  0x2574       0x26
+    __iar_dlvalloc
+  .text                8  0x259a        0x6
+  .text                8  0x25a0       0x2e
+    __iar_dlpvalloc
+  .text                8  0x25ce      0x33c
+    __iar_dlindependent_calloc
+  .text                8  0x290a       0x12
+    __iar_dlindependent_comalloc
+  .text                8  0x291c        0x8
+    __iar_dlbulk_free
+  .text                8  0x2924       0x24
+    __iar_dlmalloc_inspect_all
+  .text                8  0x2948       0x24
+    __iar_dlmalloc_trim
+  .text                8  0x296c        0x8
+    __iar_dlmalloc_footprint
+  .text                8  0x2974        0x8
+    __iar_dlmalloc_max_footprint
+  .text                8  0x297c        0xe
+    __iar_dlmalloc_footprint_limit
+  .text                8  0x298a       0x1e
+    __iar_dlmalloc_set_footprint_limit
+  .text                8  0x29a8        0x6
+    __iar_dlmallinfo
+  .text                8  0x29ae       0x66
+    __iar_dlmallopt
+  .text                8  0x2a14        0x4
+  .text                8  0x2a18        0x4
+  .text                8  0x2a1c        0x4
+  .text                8  0x2a20       0x26
+    __iar_dlmalloc_usable_size
+  .rodata             12     0x0       0x28
+  .text                6     0x0        0x8  ABImemset48.o
+    __aeabi_memset4
+    __aeabi_memset8
+  .text                6     0x8        0x4
+    __iar_Memset4_word
+    __iar_Memset8_word
+  .text                6     0xc       0x2e
+    Enter8
+  .text                6     0x0        0x6  ABImemclr.o
+    __aeabi_memclr
+  .text                7     0x0       0x44  I64DivMod.o
+    __aeabi_ldivmod
+  .text                6     0x2        0x4  cexit.o
+    __cexit_call_dtors
+  .text                6     0x6        0x4
+    __cexit_closeall
+  .text                6     0xa        0x4
+    __cexit_clearlocks
+
+Veneer stats:
+
+   635 definitions
+  1565 references
+       1470 R_ARM_THM_CALL
+         91 R_ARM_THM_JUMP24
+          4 R_ARM_THM_JUMP19
+     0 veneers               0 bytes
+     0 redirected references
