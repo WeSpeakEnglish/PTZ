@@ -19,7 +19,7 @@
 volatile DMA2D_Status PLC_DMA2D_Status = {1};
 volatile uint8_t LayerOfView = 0;
 const uint32_t ProjectionLayerAddress[2]={SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET}; // Were we fill out our objects?
-
+volatile uint8_t CAM_flag = 0;
 
 uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c)
 {

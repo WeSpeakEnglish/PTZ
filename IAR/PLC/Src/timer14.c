@@ -29,9 +29,8 @@ else
 
 void TIM14_IRQHandler(void){
 static uint32_t Counter = 0;
-TIM14->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
-TIM14->DIER &= ~TIM_DIER_UIE; //разрешаем прерывание от таймера
-
+TIM14->SR &= ~TIM_SR_UIF; //reset UIF
+TIM14->DIER &= ~TIM_DIER_UIE; //disable interrupt
 switch (DealNumber){
   case 0: break;
   case 1: 

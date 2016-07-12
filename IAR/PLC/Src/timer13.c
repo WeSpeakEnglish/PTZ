@@ -58,7 +58,8 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
    }
     else
       if(SOUND.CounterSound == SOUND.SoundPeriod){
-         if(DISP.ReleaseTask && (Touch_Data.status == TOUCH_RELEASED) && (!DISP.ReleaseFlag)) DISP.ReleaseFlag++;//ReleaseFunction();
+         if(DISP.ReleaseTask && (Touch_Data.status == TOUCH_RELEASED) && (!DISP.ReleaseFlag))
+           ReleaseFunction();
          
       }
     

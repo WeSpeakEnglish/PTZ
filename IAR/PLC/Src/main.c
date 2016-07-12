@@ -86,12 +86,12 @@ void MX_USB_HOST_Process(void);
 
  //if(UpdateScreen){
 
-  Tests();
-  Run_GUI();
-  Show_GUI();
- UpdateScreen = 0;
-  DISP.ReleaseFlag = 0;
- // }
+//  Tests();
+//  Run_GUI();
+//  Show_GUI();
+ //UpdateScreen = 0;
+ // DISP.ReleaseFlag = 0;
+ //}
     
   }
   /* USER CODE END 3 */

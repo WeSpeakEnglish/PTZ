@@ -44,9 +44,9 @@ static uint8_t StrTIME[] =                "0.0 ";
 static GUI_Object* Images[180]; 
 
 static GUI_Object* Text[80];
-static GUI_Object* Lines[20];
+//static GUI_Object* Lines[20];
 static GUI_Object* Polygons[10];
-static GUI_Object* Triangles[8];
+//static GUI_Object* Triangles[8];
 
 static uint8_t StrDate[11]="25.04.2016";
 static uint8_t StrTime[9]="20:00:00";
@@ -73,7 +73,7 @@ const Point TurnCenter3 = {710,123};
 const Point TurnCenter4 = {710,311};
 
 volatile uint8_t UpdateScreen = 0;
-volatile uint8_t CAM_flag = 0;
+
 
 uint8_t Temp8;
 uint8_t StartTestFlag = 0;
@@ -93,15 +93,15 @@ uint16_t Number;
 
 
   const Zone ZonesTS_0[]={
-   {{900,900},{900,900}},  //0  
-   {{900,900},{900,900}},   //1  
-   {{900,900},{900,900}},   //2  
-   {{900,900},{900,900}},   //3  
-   {{900,900},{900,900}},   //4  
-   {{900,900},{900,900}},  //5 
-   {{900,900},{900,900}},  //6  
-   {{900,900},{900,900}},   //7  
-   {{900,900},{900,900}},  //8  
+    {{13,405},{94,477}},  // BIG BOTTOM BTN#0  
+   {{112,405},{193,477}}, // BIG BOTTOM BTN#1  
+   {{211,405},{292,477}},  // BIG BOTTOM BTN#2 
+   {{310,405},{391,477}},  // BIG BOTTOM BTN#3  
+   {{409,405},{490,477}},  // BIG BOTTOM BTN#4 
+   {{508,405},{589,477}},  // BIG BOTTOM BTN#5 
+   {{607,405},{688,477}},  // BIG BOTTOM BTN#6  
+   {{706,405},{787,477}},  // BIG BOTTOM BTN#7 
+   {{900,900},{900,900}},  //  
    {{900,900},{900,900}},  //9  
    {{900,900},{900,900}},  //10  
    {{900,900},{900,900}},  //11  
@@ -126,7 +126,7 @@ uint16_t Number;
    
    {{900,900},{900,900}},    //26  
    {{900,900},{900,900}},   //27 
-   {{690,415},{784,498}},   //28  CAM
+   {{900,900},{900,900}},   //28  CAM
  };   
 
 void Load_GUI_0(void){ 
@@ -158,14 +158,14 @@ void Load_GUI_0(void){
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
 //  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
   
-  Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
-  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
-  Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
-  Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
-  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
-  Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
-  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
-  Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
+  Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
+  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
+  Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
+  Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
+  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
+  Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
+  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
+  Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
@@ -227,21 +227,43 @@ void Run_GUI(void){
   if(DISP.Event){ 
      switch(DISP.TS_ZoneNumber){
         case 0:  //toggle index of button
+          Images[0]->z_index = 1; //show frame on the BTN0
+           DISP.ReleaseTask = 1;
           break;
         case 1:  //toggle index of button
+          Images[1]->z_index = 1; //show frame on the BTN1
+           DISP.ReleaseTask = 1;
           break;  
         case 2:  //toggle index of button
+          Images[2]->z_index = 1; //show frame  on the BTN2
+           DISP.ReleaseTask = 1;
           break;  
         case 3:  //toggle index of button
+          Images[3]->z_index = 1; //show frame  on the BTN3
+           DISP.ReleaseTask = 1;
           break; 
         case 4:
+          Images[4]->z_index = 1; //show frame on the BTN4
+           DISP.ReleaseTask = 1;
           break;
         case 5:
+          Images[5]->z_index = 1; //show frame on the BTN5
+           DISP.ReleaseTask = 1;
           break;  
         case 6:
+          Images[6]->z_index = 1; //show frame on the BTN6
+          DISP.ReleaseTask = 1;
           break;   
         case 7:  //toggle index of button    
-          break;
+          if(!CAM_flag) {
+            CAM_flag = 1;
+            VideoCAMOnOff(4, 1); //number four on
+          }
+          else {
+            VideoCAMOnOff(4, 0); //number four off
+            CAM_flag = 0;
+          }
+         break;
         case 8:  //toggle index of button  
           break;
         case 9:  //toggle index of button
@@ -254,16 +276,7 @@ void Run_GUI(void){
           break;  
         case 15: //pressed blade side
           break; 
-        case 28: ///!!!-----------------------------------------------------------------------
-          if(!CAM_flag) {
-            CAM_flag = 1;
-            VideoCAMOnOff(4, 1); //number four on
-          }
-          else {
-            VideoCAMOnOff(4, 0); //number four off
-            CAM_flag = 0;
-          }
-         break;
+          
       }
   switch(DISP.Screen){
   case 0:
@@ -468,8 +481,11 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 
        }   
             if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
-              (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)) DISP.TS_ZoneNumber = Index;
-      if(Index != 28 && CAM_flag) DISP.TS_ZoneNumber = 100;
+               (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
+                 DISP.TS_ZoneNumber = Index;
+            if((DISP.TS_ZoneNumber != 7)&& CAM_flag) 
+                 DISP.TS_ZoneNumber = 100;
+               }
      } 
   SOUND.CounterSound= 0, SOUND.SoundPeriod = 50; 
   
@@ -512,7 +528,14 @@ void ViewScreen(void){
 void ReleaseFunction(void){
   switch(DISP.ReleaseTask){
    case 1 :
-
+     Images[0]->z_index = 0;
+     Images[1]->z_index = 0;
+     Images[2]->z_index = 0;
+     Images[3]->z_index = 0;
+     Images[4]->z_index = 0;
+     Images[5]->z_index = 0;
+     Images[6]->z_index = 0;
+     
          break;  
    case 2 :
 

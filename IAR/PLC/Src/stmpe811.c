@@ -88,7 +88,7 @@ void P_Touch_Reset(void)
 {
   temp = 0x02;
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
-  DelayOnFastQ(20);
+  DelayOnMediumQ(20);
   temp = 0x00;
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
 }
@@ -137,7 +137,7 @@ void P_Touch_Config(void)
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL1, I2C_MEMADD_SIZE_8BIT, &regArray[0], 1, 2);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[10], 1, 2);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_EN, I2C_MEMADD_SIZE_8BIT, &regArray[11], 1, 2);
-  DelayOnFastQ(20);
+  DelayOnMediumQ(20);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL2, I2C_MEMADD_SIZE_8BIT, &regArray[1], 1, 2);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_CFG, I2C_MEMADD_SIZE_8BIT, &regArray[2], 1, 2);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_TH, I2C_MEMADD_SIZE_8BIT, &regArray[3], 1, 2);
