@@ -64,6 +64,7 @@ void MX_USB_HOST_Process(void);
   MX_USART6_UART_Init();
   MX_FATFS_Init();
   MX_USB_HOST_Init();
+
   MX_TIM11_Init();
   MX_TIM13_Init();
   MX_TIM14_Init();
@@ -72,8 +73,7 @@ void MX_USB_HOST_Process(void);
   //MPU_Config(); 
   InitPeriph();
   Load_GUI_0();  
-  TIM11->ARR = 2000; // set timer faster
-  
+ 
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -89,8 +89,7 @@ void MX_USB_HOST_Process(void);
   Tests();
   Run_GUI();
   Show_GUI();
-
- // UpdateScreen = 0;
+ UpdateScreen = 0;
   DISP.ReleaseFlag = 0;
  // }
     

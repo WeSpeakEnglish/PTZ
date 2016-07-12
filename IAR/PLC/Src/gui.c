@@ -161,10 +161,11 @@ return 0;
 
 void Show_GUI(void){
   
-RCC->PLLSAICFGR =0x44003300; // PLL Adjust
-
+  
+  RCC->PLLSAICFGR =0x44003300; // PLL Adjust
+ // while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
   GUI_Release(); 
-  while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
+//  while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
  if(!LayerOfView){
      HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + LAYER_1_OFFSET, 0); // set the present layer address
     }
@@ -175,9 +176,11 @@ RCC->PLLSAICFGR =0x44003300; // PLL Adjust
  LayerOfView++;
  LayerOfView %= 2;
  //FillImageSoft(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView], 800, 480);  
- //HAL_SDRAM_Write_32b(&hsdram1,(uint32_t*)ProjectionLayerAddress[LayerOfView],(uint32_t*)(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET),800*480);
-//while(hltdc.Lock == HAL_LOCKED);
+// HAL_SDRAM_Write_32b(&hsdram1,(uint32_t*)ProjectionLayerAddress[LayerOfView],(uint32_t*)(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET),800*480);
+//HAL_SDRAM_Write_DMA(&hsdram1,(uint32_t*)ProjectionLayerAddress[LayerOfView],(uint32_t*)(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET),800*480);
+ //while(hltdc.Lock == HAL_LOCKED);
 // hltdc.Lock = HAL_LOCKED;
+// while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView]);
 //hltdc.Lock = HAL_UNLOCKED;        
 

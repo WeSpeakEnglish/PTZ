@@ -34,23 +34,23 @@ struct{
 //const uint8_t str3[] = "rpm";  //3
 //const uint8_t str4[] = "÷";  //3
 
-uint8_t StrTransmiss[] =           "0.0   ";
-uint8_t StrPneumosys[] =           "0.0   ";
-uint8_t StrPressEngineOil[] =      "0.0   ";
-uint8_t StrSpeed[] =               "0     ";
-uint8_t StrRPM[] =                 "0.0 ";
-uint8_t StrTIME[] =                "0.0 ";
+static uint8_t StrTransmiss[] =           "0.0   ";
+static uint8_t StrPneumosys[] =           "0.0   ";
+static uint8_t StrPressEngineOil[] =      "0.0   ";
+static uint8_t StrSpeed[] =               "0     ";
+static uint8_t StrRPM[] =                 "0.0 ";
+static uint8_t StrTIME[] =                "0.0 ";
 
-GUI_Object* Images[180]; 
+static GUI_Object* Images[180]; 
 
-GUI_Object* Text[80];
-GUI_Object* Lines[20];
-GUI_Object* Polygons[10];
-GUI_Object* Triangles[8];
+static GUI_Object* Text[80];
+static GUI_Object* Lines[20];
+static GUI_Object* Polygons[10];
+static GUI_Object* Triangles[8];
 
-uint8_t StrDate[11]="25.04.2016";
-uint8_t StrTime[9]="20:00:00";
-uint8_t StrDATA[8][16];
+static uint8_t StrDate[11]="25.04.2016";
+static uint8_t StrTime[9]="20:00:00";
+static uint8_t StrDATA[8][16];
 
 
 
@@ -158,14 +158,14 @@ void Load_GUI_0(void){
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
 //  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
   
-  Images[0] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[198], 4   , 394); //HOME+ 99*i
-  Images[1] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[190], 103 , 394); //tractor in the gear
-  Images[2] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[106], 202 , 394); //turn up/dowm
-  Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[107], 301 , 394); //hydrocilinder
-  Images[4] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[108], 400 , 394); //microchip
-  Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[196], 499 , 394); //piece of... with green
-  Images[6] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[109], 598 , 394); //tractor and wrench
-  Images[7] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[110], 697 , 394); // videocam
+  Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
+  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
+  Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
+  Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
+  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
+  Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
+  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
+  Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
@@ -346,7 +346,7 @@ void PreLoadImages(uint32_t BaseAddr){
   IMAGES.Number = 0;
   // just simply load images into the memory 
   address = BaseAddr + IMAGE_1_OFFSET;
-  address = FillStructIMG(address, 0,   286);
+  address = FillStructIMG(address, 0,   287);
   
    //image 006.bmp like base  
    FillImageSoft(IMAGES.ImgArray[161].address, BaseAddr + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 

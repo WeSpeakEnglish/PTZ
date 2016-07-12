@@ -10,11 +10,11 @@ LimitSize=0
 ByteLimit=50
 [StLinkDriver]
 CStepIntDis=_ 0
-stlinkserialNo=C8A6E4E3
+stlinkserialNo=48341187
 stlinkfoundProbes=
 LeaveTargetRunning=_ 1
 [DebugChecksum]
-Checksum=-498526000
+Checksum=-691326795
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -132,15 +132,11 @@ mode=1
 Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Src}.348.3" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Src}.376.1" 0 0 1 "" 0 "" 0
-Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_ltdc.c}.348.7" 0 0 1 "" 0 "" 0
-Count=4
+Count=3
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Aliases]
 A0=_ "E:\CODE\PLC\Drivers\CMSIS\Include\core_cm7.h" ""
 A1=_ "E:\CODE\PLC\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c" ""
@@ -157,3 +153,6 @@ Exclusions=
 Enabled=0
 [CallStackStripe]
 ShowTiming=1
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
