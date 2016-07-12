@@ -552,7 +552,7 @@ void Test2(void){
 
 
 
- Counter1++; 
+ Counter1+=2; 
  if(Counter1 == 1200) Counter1 = 0;
  }
 
@@ -581,6 +581,14 @@ if(StartTestFlag){
 
   Counter++;
  }
+}
+void Tests(void ){
+static uint32_t Counter = 0;
+
+if(Counter%8 == 0) Test1();
+Test2();
+ 
+Counter++; 
 }
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
 

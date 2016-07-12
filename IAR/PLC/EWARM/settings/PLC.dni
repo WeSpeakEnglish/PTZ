@@ -14,7 +14,7 @@ stlinkserialNo=C8A6E4E3
 stlinkfoundProbes=
 LeaveTargetRunning=_ 1
 [DebugChecksum]
-Checksum=1455524464
+Checksum=-498526000
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -138,6 +138,9 @@ Count=4
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 A0=_ "E:\CODE\PLC\Drivers\CMSIS\Include\core_cm7.h" ""
 A1=_ "E:\CODE\PLC\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c" ""
@@ -154,6 +157,3 @@ Exclusions=
 Enabled=0
 [CallStackStripe]
 ShowTiming=1
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
