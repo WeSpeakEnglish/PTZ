@@ -165,7 +165,7 @@ void Load_GUI_0(void){
  // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
  // Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
- // Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
+   Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
 //  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
  // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
@@ -238,7 +238,7 @@ ViewScreen();
         case 5:
         case 6:
         case 7:  //toggle index of button    
-         if(DISP.Screen == 0)actions(DISP.TS_ZoneNumber);
+         actions(DISP.TS_ZoneNumber);
          break;
         case 8:  //toggle index of button  
           break;
@@ -365,7 +365,7 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
   }
   
   switch(DISP.Screen){
-        case 1:
+        case 0:
           switch(code){
           case 0x31:
           case 0x32:
@@ -379,7 +379,7 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
            break;
           }
           break;
-        case 2:
+        case 1:
           switch(KB_Status.code){
                case 0x34:
 
@@ -395,7 +395,7 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
                  break;                   
           }
           break;
-          case 3: 
+          case 2: 
   switch(KB_Status.code){
                case 0x34:
 
@@ -504,29 +504,15 @@ void ViewScreen(void){
        Images[11]->params[0] = (uint32_t)&IMAGES.ImgArray[187]; // the pressure red sign
        Images[12]->params[0] = (uint32_t)&IMAGES.ImgArray[188]; // the valve red sign
        Images[13]->params[0] = (uint32_t)&IMAGES.ImgArray[189]; // the filter red sign
-       Images[15]-> z_index = 1; // the gypo and drop
-       Images[16]-> z_index = 1; // the gypo and integrals
-       Images[17]-> z_index = 1; // the Engine Oil
-       Images[18]-> z_index = 1; // the counterclockwise gear and cap
-       Images[19]-> z_index = 1; // the tractor with clockwise arrow
-       Images[20]-> z_index = 1; // the parking lights sign
-       Images[21]-> z_index = 1; // the near light sign
-       Images[22]-> z_index = 1; // the far light sign
-       Images[23]-> z_index = 1; // the FIRST big letter
-       Images[24]-> z_index = 1; // the SECOND big letter
-       Images[25]-> z_index = 1; // the T letter in the ring letter
-       Images[26]-> z_index = 1; // the Oil mark 
-       Images[27]-> z_index = 1; // the breaker
-       Images[28]-> z_index = 1;            // the accumulator
-       Images[29]-> z_index = 1;            // the coil
-       Images[30]-> z_index = 1;            // the ((P)) sign
        Images[31]-> z_index = 1;            // the fuel sign
-       Polygons[0]-> z_index = 1; // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
-       Polygons[1]-> z_index = 1; //the middle arrow at 53.5 degrees
+       Polygons[0]-> z_index = 1; // BIG ARROW with speed 
+       Polygons[1]-> z_index = 1; //the middle arrow 
        Polygons[2]-> z_index = 1; //the small arrow 
        Polygons[3]-> z_index = 1; //the second small arrow 
+       StartTestFlag = 1;
              break; 
     case 1:
+      StartTestFlag = 0;
             break;  
     case 2:
             break;
@@ -567,18 +553,33 @@ void KBD_Repeat_Handle(void){
    return;
 }
 
-void actions(uint8_t deal){
 
+
+void actions(uint8_t deal){
+static  struct {
+    uint8_t WriteGo : 1; 
+  
+}Flags={0};
+
+  
+  
   switch(deal) {
     case 0:
-    case 1:
+    case 1: 
     case 2:
     case 3:
-    case 4:
-    case 5: 
-    case 6:
-     Images[deal]->z_index = 1; //show frame on the BTN6
-     DISP.ReleaseTask = 1;
+    case 4: DISP.Screen = deal;
+           break;
+    case 5:
+      if(DISP.Screen == 0){
+           Flags.WriteGo = !Flags.WriteGo;
+           Images[5] ->z_index = Flags.WriteGo;
+      }
+           break;
+    case 6: 
+          DISP.Screen = deal;
+//     Images[deal]->z_index = 1; //show frame on the BTN6
+//     DISP.ReleaseTask = 1;
       break;
     case 7:
      if(!CAM_flag) {
