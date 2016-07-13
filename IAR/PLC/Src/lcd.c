@@ -13,6 +13,7 @@
 #define ABS(X)  ((X) > 0 ? (X) : -(X))      
     
 /* Default LCD configuration with LCD Layer 1 */
+uint8_t RotatedF = 0; 
 static uint32_t            ActiveLayer = 0;
 static _FourBytesU dataIMG;
 static LCD_DrawPropTypeDef DrawProp[MAX_LAYER_NUMBER];

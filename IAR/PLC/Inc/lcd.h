@@ -131,6 +131,7 @@ typedef enum
 /** @addtogroup STM32746G_DISCOVERY_LCD_Exported_Functions
   * @{
   */
+extern uint8_t RotatedF;
 uint8_t  LCD_Init(void);
 uint8_t  LCD_DeInit(void);
 uint32_t LCD_GetXSize(void);

@@ -43,7 +43,7 @@ typedef union {
         } SinData;
 
 static Point StoreArrayOfPoly[MAX_POLY_POINTS];
-static uint8_t RotatedF = 0;
+
 
 int32_t FastSin(uint16_t x ){
   SinData xData;  
@@ -72,17 +72,17 @@ int32_t FastCos(uint16_t x){
 }
 
 Point RotatePoint(Point Coord, Point Coord0, float32_t angle){ //angle max is 2pi rad 
-static float32_t cosV;
-static float32_t sinV;
-static float32_t Xo;
-static float32_t Yo;
-static float32_t X;
-static float32_t Y;
+float32_t cosV;
+float32_t sinV;
+float32_t Xo;
+float32_t Yo;
+float32_t X;
+float32_t Y;
 
 
  // angle*= 0.017453292f;
-  cosV = arm_cos_f32(angle);
-  sinV = arm_sin_f32(angle);
+  cosV = ((float)(FastCos((uint16_t) angle)))*1.52587890625e-5;// arm_cos_f32(angle);
+  sinV = ((float)(FastSin((uint16_t) angle)))*1.52587890625e-5;// arm_sin_f32(angle);
   
   X = (float32_t)Coord.X;
   Y = (float32_t)Coord.Y;
@@ -98,7 +98,7 @@ return Coord;
 void RotatePoly(Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg){
   int i;
 
-  float32_t angle = 1.7453292e-5 * (float32_t)angle_deg;  
+  float32_t angle = 2.8444443592513164e-3 * (float32_t)angle_deg;  
   for(i = 0; i < NumbOfPoints; i++){
    pToPoints[i] = RotatePoint(pToPoints[i], *Origin, angle);
    ///!! Magic?!
@@ -113,7 +113,9 @@ void StorePoly(const Point* pToPoints, uint8_t NumbOfPoints) //we can store our 
   if(NumbOfPoints < MAX_POLY_POINTS){
   if(!RotatedF){  
     for(i = 0; i < NumbOfPoints; i++) StoreArrayOfPoly[i] = pToPoints[i];
-  //  RotatedF = 1;
+  
+
+    RotatedF = 1;
    }
   }
 }
