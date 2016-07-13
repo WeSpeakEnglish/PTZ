@@ -160,14 +160,14 @@ void Load_GUI_0(void){
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
 //  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
   
-  Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
-  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
-  Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
-  Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
-  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
-  Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
-  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
-  Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
+  Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
+ // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
+ // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
+ // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
+ // Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
+ // Images[5] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 498 , 394); //piece of... with green
+//  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
+ // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
@@ -215,6 +215,7 @@ void Load_GUI_0(void){
 
 void Run_GUI(void){
 
+ViewScreen();
 
  if(TimeIsReady){
     while (RESmutex_1) ;
@@ -236,17 +237,8 @@ void Run_GUI(void){
         case 4:
         case 5:
         case 6:
-         actions(DISP.TS_ZoneNumber);
-          break;   
         case 7:  //toggle index of button    
-          if(!CAM_flag) {
-            CAM_flag = 1;
-            VideoCAMOnOff(4, 1); //number four on
-          }
-          else {
-            VideoCAMOnOff(4, 0); //number four off
-            CAM_flag = 0;
-          }
+         if(DISP.Screen == 0)actions(DISP.TS_ZoneNumber);
          break;
         case 8:  //toggle index of button  
           break;
@@ -331,10 +323,15 @@ void Run_GUI(void){
   DISP.TS_ZoneNumber = -1; 
   DISP.Event = 0;
   }
+ 
+ if(KB_Status.ENTER)KBD_Handle(KB_Status.code);
+ 
     if(DISP.ReleaseFlag){
-     if((Touch_Data.status != TOUCH_PRESSED) && (!KB_Status.PRESSED))ReleaseFunction();
+     if((Touch_Data.status != TOUCH_PRESSED) && (!KB_Status.PRESSED))
+       ReleaseFunction();
      DISP.ReleaseFlag = 0;
    }
+   
 }
 
 void PreLoadImages(uint32_t BaseAddr){
@@ -354,7 +351,7 @@ void PreLoadImages(uint32_t BaseAddr){
 }
 
 void KBD_Handle(uint8_t code){ //the handle of KBD
-  
+  KB_Status.ENTER = 0;
   //up flags
   if(KB_Status.PRESSED){
   DISP.Event = 1;
@@ -369,19 +366,17 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
   
   switch(DISP.Screen){
         case 1:
-          switch(KB_Status.code){
-               case 0x34:
-
-                 break;
-               case 0x35:  
-
-                 break; 
-               case 0x36:
-
-                 break;
-               case 0x37:  
-
-                 break;   
+          switch(code){
+          case 0x31:
+          case 0x32:
+          case 0x33:
+          case 0x34:
+          case 0x35:
+          case 0x36:
+          case 0x37:
+          case 0x38:
+           actions(code - 0x31);
+           break;
           }
           break;
         case 2:
@@ -422,7 +417,7 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
   }
   else
   {
-  //  DISP.Event = 1;
+    DISP.Event = 1;
       switch(DISP.Screen){
         case 1:
           DISP.ReleaseTask = 1;
@@ -489,7 +484,9 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 
 void ViewScreen(void){
  uint16_t i;
+ static uint8_t OldScreen = 0;
  
+ if(OldScreen != DISP.Screen){
   for(i = 6; i < sizeof(Images)/4; i++ )  {
   
   }
@@ -498,7 +495,37 @@ void ViewScreen(void){
   }
   switch(DISP.Screen){
     case 0:
-            break; 
+       Text[4]->z_index = 1;
+       Text[6]->z_index = 1;
+       Text[8]->z_index = 1;
+       Text[10]->z_index = 1;
+       Text[12]->z_index = 1;
+       Text[14]->z_index = 1;
+       Images[11]->params[0] = (uint32_t)&IMAGES.ImgArray[187]; // the pressure red sign
+       Images[12]->params[0] = (uint32_t)&IMAGES.ImgArray[188]; // the valve red sign
+       Images[13]->params[0] = (uint32_t)&IMAGES.ImgArray[189]; // the filter red sign
+       Images[15]-> z_index = 1; // the gypo and drop
+       Images[16]-> z_index = 1; // the gypo and integrals
+       Images[17]-> z_index = 1; // the Engine Oil
+       Images[18]-> z_index = 1; // the counterclockwise gear and cap
+       Images[19]-> z_index = 1; // the tractor with clockwise arrow
+       Images[20]-> z_index = 1; // the parking lights sign
+       Images[21]-> z_index = 1; // the near light sign
+       Images[22]-> z_index = 1; // the far light sign
+       Images[23]-> z_index = 1; // the FIRST big letter
+       Images[24]-> z_index = 1; // the SECOND big letter
+       Images[25]-> z_index = 1; // the T letter in the ring letter
+       Images[26]-> z_index = 1; // the Oil mark 
+       Images[27]-> z_index = 1; // the breaker
+       Images[28]-> z_index = 1;            // the accumulator
+       Images[29]-> z_index = 1;            // the coil
+       Images[30]-> z_index = 1;            // the ((P)) sign
+       Images[31]-> z_index = 1;            // the fuel sign
+       Polygons[0]-> z_index = 1; // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
+       Polygons[1]-> z_index = 1; //the middle arrow at 53.5 degrees
+       Polygons[2]-> z_index = 1; //the small arrow 
+       Polygons[3]-> z_index = 1; //the second small arrow 
+             break; 
     case 1:
             break;  
     case 2:
@@ -506,19 +533,20 @@ void ViewScreen(void){
     case 3:
             break;          
   }
-
+  OldScreen = DISP.Screen;
+ }
 }
 
 void ReleaseFunction(void){
   switch(DISP.ReleaseTask){
    case 1 :
-     Images[0]->z_index = 0;
-     Images[1]->z_index = 0;
-     Images[2]->z_index = 0;
-     Images[3]->z_index = 0;
-     Images[4]->z_index = 0;
-     Images[5]->z_index = 0;
-     Images[6]->z_index = 0;
+//     Images[0]->z_index = 0;
+ //    Images[1]->z_index = 0;
+ //    Images[2]->z_index = 0;
+ //    Images[3]->z_index = 0;
+ //    Images[4]->z_index = 0;
+ //    Images[5]->z_index = 0;
+ //   Images[6]->z_index = 0;
      
          break;  
    case 2 :
@@ -553,6 +581,14 @@ void actions(uint8_t deal){
      DISP.ReleaseTask = 1;
       break;
     case 7:
+     if(!CAM_flag) {
+        CAM_flag = 1;
+        VideoCAMOnOff(4, 1); //number four on
+      }
+       else {
+        VideoCAMOnOff(4, 0); //number four off
+        CAM_flag = 0;
+          }
       break;
     case 8:
       break;
@@ -617,11 +653,12 @@ if(StartTestFlag){
 }
 void Tests(void ){
 static uint32_t Counter = 0;
+if(StartTestFlag){
+ if(Counter%8 == 0) Test1();
+  Test2();
+  Counter++; 
+}
 
-if(Counter%8 == 0) Test1();
-Test2();
- 
-Counter++; 
 }
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
 

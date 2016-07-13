@@ -54,7 +54,8 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
       
       CounterUPD = 0;
       
-      KBD_Handle(KB_Status.code);
+     // KBD_Handle(KB_Status.code);
+      KB_Status.ENTER = 1;
    }
     else
       if(SOUND.CounterSound == SOUND.SoundPeriod){
@@ -66,7 +67,8 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
     if((KB_Status.EVENT && KB_Status.PRESSED) &&((CounterUPD % 20) == 18))
     { 
       //RESmutex_2 = 1;
-    KBD_Handle(KB_Status.code);
+   // KBD_Handle(KB_Status.code);
+    KB_Status.ENTER = 1;  
     FlagKBD_Repeat =1;
     CounterUPD = 0;
     }
@@ -74,7 +76,11 @@ TIM13->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
       CounterUPD = 0;
     }
     if(KB_Status.EVENT && !KB_Status.PRESSED && FlagKBD_Repeat)
-      {KBD_Handle(KB_Status.code); FlagKBD_Repeat =0;}
+      {
+      //KBD_Handle(KB_Status.code);
+        KB_Status.ENTER = 1;
+      FlagKBD_Repeat =0;
+      }
     if((CounterUPD % 20) == 18){
     
      CounterUPD = 0; 

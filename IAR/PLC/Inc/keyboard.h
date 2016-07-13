@@ -7,6 +7,7 @@ typedef struct {
  // unsigned RELEASED : 1;
   unsigned PRESSED :  1;
   unsigned EVENT :    1;
+  unsigned ENTER :    1; // means enter to handle delayed (pending)
   unsigned code :     6;
 } KB_status;
 
