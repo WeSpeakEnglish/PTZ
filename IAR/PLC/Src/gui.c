@@ -181,8 +181,13 @@ void Show_GUI(void){
 //  HAL_SDRAM_Write_32b(&hsdram1,(uint32_t*)ProjectionLayerAddress[LayerOfView],(uint32_t*)(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET),800*480);
 //HAL_SDRAM_Write_DMA(&hsdram1,(uint32_t*)ProjectionLayerAddress[LayerOfView],(uint32_t*)(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET),800*480);
 
+
+
+ 
  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView]);
     
+
+
   }          
 }  
 

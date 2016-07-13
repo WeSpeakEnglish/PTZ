@@ -128,6 +128,8 @@ uint16_t Number;
    {{900,900},{900,900}},   //27 
    {{900,900},{900,900}},   //28  CAM
  };   
+ 
+static void actions(uint8_t deal);
 
 void Load_GUI_0(void){ 
 //
@@ -208,6 +210,7 @@ void Load_GUI_0(void){
 //  Triangles[0] =  GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly5_points,&TurnCenter4,20000); //the second small arrow
   
   StartTestFlag = 1;
+  DISP.Screen = 1;
 }
 
 void Run_GUI(void){
@@ -227,32 +230,13 @@ void Run_GUI(void){
   if(DISP.Event){ 
      switch(DISP.TS_ZoneNumber){
         case 0:  //toggle index of button
-          Images[0]->z_index = 1; //show frame on the BTN0
-           DISP.ReleaseTask = 1;
-          break;
         case 1:  //toggle index of button
-          Images[1]->z_index = 1; //show frame on the BTN1
-           DISP.ReleaseTask = 1;
-          break;  
         case 2:  //toggle index of button
-          Images[2]->z_index = 1; //show frame  on the BTN2
-           DISP.ReleaseTask = 1;
-          break;  
         case 3:  //toggle index of button
-          Images[3]->z_index = 1; //show frame  on the BTN3
-           DISP.ReleaseTask = 1;
-          break; 
         case 4:
-          Images[4]->z_index = 1; //show frame on the BTN4
-           DISP.ReleaseTask = 1;
-          break;
         case 5:
-          Images[5]->z_index = 1; //show frame on the BTN5
-           DISP.ReleaseTask = 1;
-          break;  
         case 6:
-          Images[6]->z_index = 1; //show frame on the BTN6
-          DISP.ReleaseTask = 1;
+         actions(DISP.TS_ZoneNumber);
           break;   
         case 7:  //toggle index of button    
           if(!CAM_flag) {
@@ -555,6 +539,32 @@ void KBD_Repeat_Handle(void){
    return;
 }
 
+void actions(uint8_t deal){
+
+  switch(deal) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5: 
+    case 6:
+     Images[deal]->z_index = 1; //show frame on the BTN6
+     DISP.ReleaseTask = 1;
+      break;
+    case 7:
+      break;
+    case 8:
+      break;
+    case 9:
+      break;
+    case 10:
+      break;
+    case 11: 
+      break;
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // hanlders for test controls and others
 void Test2(void){  
  static uint16_t Counter1; 
