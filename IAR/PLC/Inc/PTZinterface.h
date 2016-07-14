@@ -35,7 +35,7 @@ void ChangeCircle1(uint8_t Consistance);
 void Run_GUI(void);
 void KBD_Handle(uint8_t code);
 void TouchScreen_Handle(void);
-void PreLoadImages(uint32_t BaseAddr);
+void PreLoadImages(void);
 void ViewScreen(void);
 void ReleaseFunction(void);
 uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  const uint16_t Y);

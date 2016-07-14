@@ -118,9 +118,13 @@ typedef enum
 #define LAYERS_SIZE             0x00177000
 #define LAYER_1_OFFSET          0x00000000
 #define LAYER_2_OFFSET          LAYER_1_OFFSET + LAYERS_SIZE            // 800x480x4 layer 1536000 offset
-#define LAYER_3_OFFSET          LAYER_2_OFFSET + LAYERS_SIZE            // 800x480x4 layer 1536000 offset
-#define LAYER_BACK_OFFSET       LAYER_3_OFFSET + LAYERS_SIZE            // BACKGROUND
-#define IMAGE_1_OFFSET          LAYER_BACK_OFFSET + LAYERS_SIZE         // big image 1   
+#define LAYER_BACK0_OFFSET      LAYER_2_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define LAYER_BACK1_OFFSET      LAYER_BACK0_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define LAYER_BACK2_OFFSET      LAYER_BACK1_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define LAYER_BACK3_OFFSET      LAYER_BACK2_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define LAYER_BACK4_OFFSET      LAYER_BACK3_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define LAYER_BACK5_OFFSET      LAYER_BACK4_OFFSET + LAYERS_SIZE            // BACKGROUND
+#define IMAGE_1_OFFSET          LAYER_BACK5_OFFSET + LAYERS_SIZE         // big image 1   
 #define IMAGE_2_OFFSET          IMAGE_1_OFFSET + LAYERS_SIZE            //big image 2
 #define DisplayHEIGHT           480 // pixels
 #define DisplayWIDTH            800 // pixels

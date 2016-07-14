@@ -20,7 +20,7 @@ volatile DMA2D_Status PLC_DMA2D_Status = {1};
 volatile uint8_t LayerOfView = 0;
 const uint32_t ProjectionLayerAddress[2]={SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET}; // Were we fill out our objects?
 volatile uint8_t CAM_flag = 0;
-
+uint32_t bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
 uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c)
 {
 
@@ -207,10 +207,10 @@ void LCD_Layers_Init(void){
  // _HW_Fill_Finite_Color(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 0xFFFFFFFF);
  // while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
   //fill the first layer  
-  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
+  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
   while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
   //fill the second layer
-   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
+   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
    while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
 }
 

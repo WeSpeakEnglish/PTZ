@@ -34,12 +34,13 @@ struct{
 //const uint8_t str3[] = "rpm";  //3
 //const uint8_t str4[] = "÷";  //3
 
-static uint8_t StrTransmiss[] =           "0.0   ";
-static uint8_t StrPneumosys[] =           "0.0   ";
-static uint8_t StrPressEngineOil[] =      "0.0   ";
-static uint8_t StrSpeed[] =               "0     ";
-static uint8_t StrRPM[] =                 "0.0 ";
-static uint8_t StrTIME[] =                "0.0 ";
+static uint8_t StrTransmiss[] =           "    0.0";
+static uint8_t StrPneumosys[] =           "    0.0";
+static uint8_t StrPressEngineOil[] =      "    0.0";
+static uint8_t StrSpeed[] =               "      0";
+static uint8_t StrRPM[] =                 "    0.0";
+static uint8_t StrTIME[] =                "    0.0";
+static uint8_t StrSquare[] =              "    0.0";
 
 static GUI_Object* Images[180]; 
 
@@ -76,7 +77,7 @@ volatile uint8_t UpdateScreen = 0;
 
 
 uint8_t Temp8;
-uint8_t StartTestFlag = 0;
+uint8_t StartTestFlag = 1;
 
 uint8_t RateChange = 0;
 
@@ -142,13 +143,13 @@ void Load_GUI_0(void){
   Itoa(StrDATA[0],0);
   Text[1] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 400, 240, (uint32_t)StrDATA[0], LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
  
-  PreLoadImages(SDRAM_BANK_ADDR);
+  PreLoadImages();
  
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
   Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
-//  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, str1, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 130, 100, StrSquare, RIGHT_MODE, 1, &RIAD_16pt,0); //square
   Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
 //  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, str1, LEFT_MODE, 1, &RIAD_16pt,0);
   Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
@@ -164,8 +165,8 @@ void Load_GUI_0(void){
  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
  // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
- // Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
-   Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
+//  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
+ // Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
 //  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
  // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
@@ -200,7 +201,8 @@ void Load_GUI_0(void){
   Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
   Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
   
-  Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[186], 696 , 135);            // the fuel sign
+  Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[186], 696 , 135);            // the red fuel sign
+  Images[32] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[185], 696 , 323);            // the red temp sign
 
   Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points,4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
   Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points,4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
@@ -209,8 +211,8 @@ void Load_GUI_0(void){
   
 //  Triangles[0] =  GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly5_points,&TurnCenter4,20000); //the second small arrow
   
-  StartTestFlag = 1;
-  DISP.Screen = 1;
+  
+
 }
 
 void Run_GUI(void){
@@ -334,18 +336,16 @@ ViewScreen();
    
 }
 
-void PreLoadImages(uint32_t BaseAddr){
-  uint32_t address;
+void PreLoadImages(void){
+
 
   IMAGES.Number = 0;
   // just simply load images into the memory 
-  address = BaseAddr + IMAGE_1_OFFSET;
-  address = FillStructIMG(address, 0,   287);
+  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   287);
   
    //image 006.bmp like base  
-   FillImageSoft(IMAGES.ImgArray[161].address, BaseAddr + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
-   FillImageSoft(IMAGES.ImgArray[161].address, BaseAddr + LAYER_1_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize);
-   FillImageSoft(IMAGES.ImgArray[161].address, BaseAddr + LAYER_2_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize);
+   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
+   FillImageSoft(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET, IMAGES.ImgArray[164].xsize, IMAGES.ImgArray[164].ysize);
 
  return;
 }
@@ -485,34 +485,50 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 void ViewScreen(void){
  uint16_t i;
  static uint8_t OldScreen = 0;
- 
+// for(i = 0; i < 40 ; i++){
+//  Text[i]->z_index = 0;
+// }
  if(OldScreen != DISP.Screen){
-  for(i = 6; i < sizeof(Images)/4; i++ )  {
   
-  }
-  for(i = 4; i < sizeof(Text)/4; i++ )  {
-
-  }
   switch(DISP.Screen){
     case 0:
-       Text[4]->z_index = 1;
-       Text[6]->z_index = 1;
-       Text[8]->z_index = 1;
-       Text[10]->z_index = 1;
-       Text[12]->z_index = 1;
-       Text[14]->z_index = 1;
-       Images[11]->params[0] = (uint32_t)&IMAGES.ImgArray[187]; // the pressure red sign
-       Images[12]->params[0] = (uint32_t)&IMAGES.ImgArray[188]; // the valve red sign
-       Images[13]->params[0] = (uint32_t)&IMAGES.ImgArray[189]; // the filter red sign
-       Images[31]-> z_index = 1;            // the fuel sign
+       Text[4]->z_index = 3; // StrTransmiss
+       Text[6]->z_index = 3; // StrPneumosys
+       Text[8]->z_index = 3; // StrPressEngineOil
+       Text[10]->z_index = 3; // StrTIME
+       Text[12]->z_index = 3; // StrSpeed
+       Text[14]->z_index = 3; // StrRPM
+     //  Images[11]->params[0] = (uint32_t)&IMAGES.ImgArray[187]; // the pressure red sign
+    //   Images[12]->params[0] = (uint32_t)&IMAGES.ImgArray[188]; // the valve red sign
+    //   Images[13]->params[0] = (uint32_t)&IMAGES.ImgArray[189]; // the filter red sign
+   //    Images[31]-> z_index = 1;            // the fuel sign
        Polygons[0]-> z_index = 1; // BIG ARROW with speed 
        Polygons[1]-> z_index = 1; //the middle arrow 
        Polygons[2]-> z_index = 1; //the small arrow 
        Polygons[3]-> z_index = 1; //the second small arrow 
        StartTestFlag = 1;
+       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
+       Images[0]->params[1] = 3;
+
              break; 
     case 1:
-      StartTestFlag = 0;
+       Text[4]->z_index = 3; // StrTransmiss
+       Text[5]->z_index = 3; //Square
+       Text[6]->z_index = 3; // StrPneumosys
+       Text[8]->z_index = 3; // StrPressEngineOil
+       
+       Text[10]->z_index = 0; // StrTIME
+       Text[12]->z_index = 0; // StrSpeed
+       Text[14]->z_index = 0; // StrRPM
+       Images[31]-> z_index = 0;            // the fuel sign
+       Images[32]-> z_index = 0;            // the temp sign
+       Polygons[0]-> z_index = 0; // BIG ARROW with speed 
+       Polygons[1]-> z_index = 0; //the middle arrow 
+       Polygons[2]-> z_index = 0; //the small arrow 
+       Polygons[3]-> z_index = 0; //the second small arrow 
+       StartTestFlag = 0;
+       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET;
+       Images[0]->params[1] = 102;
             break;  
     case 2:
             break;
@@ -606,7 +622,7 @@ static  struct {
 void Test2(void){  
  static uint16_t Counter1; 
 
- if(StartTestFlag){
+
    if(Counter1 > 600){
      BIG_Arrow(1200 - Counter1);
      RPM_Arrow( (Counter1-600)*2/3);
@@ -624,7 +640,7 @@ void Test2(void){
 
  Counter1+=2; 
  if(Counter1 == 1200) Counter1 = 0;
- }
+
 
 
 }
@@ -634,7 +650,7 @@ void Test1(void){
 static uint8_t Toggle1;
 static uint8_t Counter;
 
-if(StartTestFlag){
+
  if(Toggle1){
   Toggle1 = 0;
   }
@@ -650,7 +666,7 @@ if(StartTestFlag){
   Images[14]->z_index = Toggle1;
 
   Counter++;
- }
+
 }
 void Tests(void ){
 static uint32_t Counter = 0;
@@ -666,25 +682,33 @@ if(StartTestFlag){
 ///!-- here is the our controls
 void BIG_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
-  Polygons[0]->params[3] = 4000 + SetValue * 296;
+ if(DISP.Screen == 0) Polygons[0]->params[3] = 4000 + SetValue * 296;
  return;
 }
 
 void RPM_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
-  Polygons[1]->params[3] = 53500 + SetValue * 386;
+ if(DISP.Screen == 0) Polygons[1]->params[3] = 53500 + SetValue * 386;
  return;
 }
 
-void FUEL_Arrow(uint16_t SetValue) // in the parts of 0.01 kmph
+void FUEL_Arrow(uint16_t SetValue) // in the parts of 0.01 of tank
 {
+  if(DISP.Screen == 0){
   Polygons[2]->params[2] = SetValue * 1800;
+  if(SetValue < 17) Images[31]->z_index = 1;
+  else Images[31]->z_index = 0;
+  }
  return;
 }
 
 void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 {
+  if(DISP.Screen == 0){
   Polygons[3]->params[2] = (SetValue - 40) * 2250;
+  if(SetValue > 99) Images[32]->z_index = 1;
+  else Images[32]->z_index = 0;
+  }
  return;
 }
 ////-----------------------------------------------------------------------------------------------------
