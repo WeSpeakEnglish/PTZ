@@ -1271,6 +1271,9 @@
         <name>$PROJ_DIR$\..\Src\RIAD_16pt.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\RIAD_20pt.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\RIAD_30pt.c</name>
       </file>
       <file>
@@ -1373,6 +1376,9 @@
         <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_dma_ex.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_dsi.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash.c</name>
       </file>
       <file>
@@ -1392,6 +1398,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_ltdc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_ltdc_ex.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_nand.c</name>

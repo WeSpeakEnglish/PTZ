@@ -37,9 +37,9 @@ void MX_USB_HOST_Process(void);
   /* USER CODE BEGIN 1 */
   /* USER CODE END 1 */
   /* Enable I-Cache-------------------------------------------------------------*/
-  SCB_EnableICache();
+  SCB_DisableICache();
   /* Enable D-Cache-------------------------------------------------------------*/
-  SCB_EnableDCache();
+  SCB_DisableDCache();
   /* MCU Configuration----------------------------------------------------------*/
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();

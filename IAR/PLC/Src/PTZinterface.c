@@ -34,17 +34,21 @@ struct{
 //const uint8_t str3[] = "rpm";  //3
 //const uint8_t str4[] = "÷";  //3
 
-static uint8_t StrTransmiss[] =           "    0.0";
-static uint8_t StrPneumosys[] =           "    0.0";
-static uint8_t StrPressEngineOil[] =      "    0.0";
-static uint8_t StrSpeed[] =               "      0";
-static uint8_t StrRPM[] =                 "    0.0";
-static uint8_t StrTIME[] =                "    0.0";
-static uint8_t StrSquare[] =              "    0.0";
+static uint8_t StrTransmiss[] =           "     0.0";
+static uint8_t StrPneumosys[] =           "     0.0";
+static uint8_t StrPressEngineOil[] =      "     0.0";
+static uint8_t StrSpeed[] =               "       0";
+static uint8_t StrRPM[] =                 "     0.0";
+static uint8_t StrTIME[] =                "     0.0";
+static uint8_t StrSquare[] =              "     0.0";
+static uint8_t StrPasses[] =              "       0";
+static uint8_t StrSquarePerHour[] =       "     0.0";
+static uint8_t PetrolPerHour[] =          "     0.0";
+static uint8_t PetrolPerSquare[] =        "     0.0";
 
-static GUI_Object* Images[180]; 
+static GUI_Object* Images[90]; 
 
-static GUI_Object* Text[80];
+static GUI_Object* Text[40];
 //static GUI_Object* Lines[20];
 static GUI_Object* Polygons[10];
 //static GUI_Object* Triangles[8];
@@ -148,18 +152,18 @@ void Load_GUI_0(void){
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
-  Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
-  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 130, 100, StrSquare, RIGHT_MODE, 1, &RIAD_16pt,0); //square
-  Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
-//  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 155, str1, LEFT_MODE, 1, &RIAD_16pt,0);
-  Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
-//  Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 130, 210, str1, LEFT_MODE, 1, &RIAD_16pt,0);
-  Text[10] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, StrTIME, RIGHT_MODE, 1, &RIAD_16pt,0);
-//  Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 750, 210, str4, LEFT_MODE, 1, &RIAD_16pt,0);
-  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 415, 232, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
-//  Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 411, 240, str2, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
+  Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 205, StrSquare, RIGHT_MODE, 1, &RIAD_20pt,0); //square
+  Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 240, StrTIME, RIGHT_MODE, 1, &RIAD_20pt,0); // time
+  Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 275, StrPasses, RIGHT_MODE, 1, &RIAD_20pt,0);
+  Text[10] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 755, 210, StrTIME, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 205, StrSquarePerHour, RIGHT_MODE, 1, &RIAD_20pt,0);
+  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 405, 232, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 240, PetrolPerHour, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
-//  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 552, 183, str3, LEFT_MODE, 1, &RIAD_16pt,0);
+  Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 275, PetrolPerSquare, RIGHT_MODE, 1, &RIAD_20pt,0);
   
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
@@ -485,11 +489,14 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 void ViewScreen(void){
  uint16_t i;
  static uint8_t OldScreen = 0;
-// for(i = 0; i < 40 ; i++){
-//  Text[i]->z_index = 0;
-// }
+
  if(OldScreen != DISP.Screen){
-  
+  for(i = 4; i < sizeof(Text)/4 ; i++){
+   Text[i]->z_index = 0;
+ } 
+   for(i = 4; i < sizeof(Images)/4 ; i++){
+   Images[i]->z_index = 0;
+ } 
   switch(DISP.Screen){
     case 0:
        Text[4]->z_index = 3; // StrTransmiss
@@ -509,19 +516,19 @@ void ViewScreen(void){
        StartTestFlag = 1;
        bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
        Images[0]->params[1] = 3;
+       Images[0]->z_index = 1;
 
              break; 
     case 1:
        Text[4]->z_index = 3; // StrTransmiss
        Text[5]->z_index = 3; //Square
        Text[6]->z_index = 3; // StrPneumosys
+       Text[7]->z_index = 3; // Time
        Text[8]->z_index = 3; // StrPressEngineOil
-       
-       Text[10]->z_index = 0; // StrTIME
-       Text[12]->z_index = 0; // StrSpeed
-       Text[14]->z_index = 0; // StrRPM
-       Images[31]-> z_index = 0;            // the fuel sign
-       Images[32]-> z_index = 0;            // the temp sign
+       Text[9]->z_index = 3; // Passes
+       Text[11]->z_index = 3; //square per hour 
+       Text[13]->z_index = 3; //petrol per hour
+       Text[15]->z_index = 3; //petrol per square
        Polygons[0]-> z_index = 0; // BIG ARROW with speed 
        Polygons[1]-> z_index = 0; //the middle arrow 
        Polygons[2]-> z_index = 0; //the small arrow 
@@ -529,6 +536,7 @@ void ViewScreen(void){
        StartTestFlag = 0;
        bgPointer = SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET;
        Images[0]->params[1] = 102;
+       Images[0]->z_index = 1;
             break;  
     case 2:
             break;
