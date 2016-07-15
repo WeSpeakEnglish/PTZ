@@ -734,11 +734,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\generic_cortex.icf</state>
+          <state>$PROJ_DIR$/stm32f746xx_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -798,7 +798,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>

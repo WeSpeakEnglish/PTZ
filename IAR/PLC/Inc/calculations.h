@@ -3,12 +3,13 @@
 #include <stdint.h>
 #include <arm_math.h>
 #include "lcd.h"
+#include "gui.h"
 
-#define MAX_POLY_POINTS 24
+
 
 int32_t FastSin(uint16_t); // 2^10 = 360 degrees 
 int32_t FastCos(uint16_t); // 2^10 = 360 degrees 
-extern Point StoreArrayOfPoly[MAX_POLY_POINTS];
+
 
 Point RotatePoint(Point Coord, Point Coord0, uint16_t angle); //angle in degrees
 void RotatePoly(Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg);

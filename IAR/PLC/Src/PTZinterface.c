@@ -170,7 +170,7 @@ void Load_GUI_0(void){
  // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
 //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
- // Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
+   Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
 //  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
  // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
@@ -348,8 +348,8 @@ void PreLoadImages(void){
   FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   287);
   
    //image 006.bmp like base  
-   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
-   FillImageSoft(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET, IMAGES.ImgArray[164].xsize, IMAGES.ImgArray[164].ysize);
+   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
+ //  FillImageSoft(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET, IMAGES.ImgArray[164].xsize, IMAGES.ImgArray[164].ysize);
 
  return;
 }
@@ -514,10 +514,10 @@ void ViewScreen(void){
        Polygons[2]-> z_index = 1; //the small arrow 
        Polygons[3]-> z_index = 1; //the second small arrow 
        StartTestFlag = 1;
-       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
+//       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
        Images[0]->params[1] = 3;
        Images[0]->z_index = 1;
-
+       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
              break; 
     case 1:
        Text[4]->z_index = 3; // StrTransmiss
@@ -534,9 +534,10 @@ void ViewScreen(void){
        Polygons[2]-> z_index = 0; //the small arrow 
        Polygons[3]-> z_index = 0; //the second small arrow 
        StartTestFlag = 0;
-       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET;
+  //     bgPointer = SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET;
        Images[0]->params[1] = 102;
        Images[0]->z_index = 1;
+       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
             break;  
     case 2:
             break;

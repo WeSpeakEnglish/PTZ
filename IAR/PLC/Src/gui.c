@@ -1,5 +1,4 @@
 #include "gui.h"
-#include "lcd.h"
 #include "video.h"
 #include <stdarg.h>
 #include "core.h"
@@ -7,9 +6,8 @@
 #include "calculations.h"
 #include "initial.h"
 
-
-static GUI_Object GUI_Objects[MAX_OBJECTS_Q];
-
+static GUI_Object GUI_Objects[MAX_OBJECTS_Q]@(DATA_IN_SDRAM+SDRAM_BANK_ADDR);
+Point StoreArrayOfPoly[MAX_POLY_POINTS]@(DATA_IN_SDRAM+SDRAM_BANK_ADDR)+sizeof(GUI_Objects);
 
 void GUI_Free(void){
 int i, j;
@@ -123,7 +121,7 @@ void GUI_Release(){  // create GUI
              LCD_FillPolygon((pPoint)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1],0); 
              RestorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1]));
               break;
-          case ROTATING_FILLED_POLY_TYPE_FAST:
+          case ROTATING_FILLED_POLY_TYPE_FAST: 
              StorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1])); 
              RotatePoly((pPoint)(GUI_Objects[i].params[0]),  (uint16_t)(GUI_Objects[i].params[1]),(pPoint)GUI_Objects[i].params[2], GUI_Objects[i].params[3]);
              LCD_FillPolygon((pPoint)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1],1); 
@@ -161,13 +159,12 @@ return 0;
 }
 
 void Show_GUI(void){
-//  NVIC_Enable_IRQ(TIM1_TRG_COM_TIM11_IRQn);
   
   if(!CAM_flag){ 
   RCC->PLLSAICFGR =0x44003300; // PLL Adjust
  // while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
   GUI_Release(); 
-
+  HAL_Delay(10);
  
   while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
  if(!LayerOfView){
@@ -186,11 +183,11 @@ void Show_GUI(void){
 
 
  
- _HW_Fill_Display_From_Mem(bgPointer, ProjectionLayerAddress[LayerOfView]);
+ _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, ProjectionLayerAddress[LayerOfView]);
     
 
 
-  }  
+  }          
 }  
 
 

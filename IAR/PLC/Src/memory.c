@@ -20,8 +20,10 @@ return res;
 
 void SDRAM_free(void){
  uint32_t i;
+ volatile uint16_t * pErase = (volatile uint16_t*)SDRAM_BANK_ADDR;
    for(i = 0;i < IS42int16_t160G_SIZE/2; i++){
-     my_array_in_SDRAM[i] = 0x0000;
+     pErase[i] = 0x0000;
+ //  my_array_in_SDRAM[i] = 0x0000;
 //     while(my_array_in_SDRAM[i] != 0x0000)my_array_in_SDRAM[i] = 0x0000;
    }
    

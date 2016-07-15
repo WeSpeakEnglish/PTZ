@@ -1,5 +1,4 @@
 #include "calculations.h"
-#include "lcd.h"
 #include <math.h>
 
 const uint16_t SineTable[256] = {
@@ -42,7 +41,7 @@ typedef union {
         uint16_t Word;
         } SinData;
 
-Point StoreArrayOfPoly[MAX_POLY_POINTS];
+
 
 
 int32_t FastSin(uint16_t x ){
@@ -126,10 +125,8 @@ void RestorePoly(Point* pToPoints, uint8_t NumbOfPoints) //and restore it after 
   uint8_t i;
    if(NumbOfPoints < MAX_POLY_POINTS){
      if(RotatedF){
-       for(i = 0; i < NumbOfPoints; i++){ pToPoints[i] = StoreArrayOfPoly[i];
+       for(i = 0; i < NumbOfPoints; i++) pToPoints[i] = StoreArrayOfPoly[i];
        RotatedF = 0;
-
-       }
      }
   }
 }

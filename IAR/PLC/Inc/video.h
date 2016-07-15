@@ -21,7 +21,6 @@ extern volatile DMA2D_Status PLC_DMA2D_Status;
 extern volatile uint8_t LayerOfView;
 extern const uint32_t ProjectionLayerAddress[2]; // Were we fill out our objects?
 extern volatile uint8_t CAM_flag;
-extern uint32_t bgPointer;
 
  void Transfer_DMA2D_Completed(DMA2D_HandleTypeDef *hdma2d);  
  uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c );  
@@ -35,6 +34,7 @@ extern uint32_t bgPointer;
  ImgSize LoadBitmapFromSD(uint8_t *NameOfFile, uint32_t AddressOfImage);
  void TwoDigitsToChars(uint8_t * Src);
  void VideoCAMOnOff(uint8_t NumbCam, uint8_t On);
+ void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress);
 #ifdef __cplusplus
  }
 #endif

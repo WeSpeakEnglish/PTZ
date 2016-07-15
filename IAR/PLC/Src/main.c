@@ -37,9 +37,9 @@ void MX_USB_HOST_Process(void);
   /* USER CODE BEGIN 1 */
   /* USER CODE END 1 */
   /* Enable I-Cache-------------------------------------------------------------*/
-  SCB_DisableICache();
+  SCB_EnableICache();
   /* Enable D-Cache-------------------------------------------------------------*/
-  SCB_DisableDCache();
+  SCB_EnableDCache();
   /* MCU Configuration----------------------------------------------------------*/
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -84,14 +84,14 @@ void MX_USB_HOST_Process(void);
   /* USER CODE BEGIN 3 */
    RoutineFast(); // get and run deals from medium queue 
 
- //if(UpdateScreen){
+  //if(UpdateScreen){
 
-//  Tests();
-//  Run_GUI();
-//  Show_GUI();
+ //  Tests();
+//   Run_GUI();
+ //  Show_GUI();
  //UpdateScreen = 0;
  // DISP.ReleaseFlag = 0;
- //}
+ // }
     
   }
   /* USER CODE END 3 */

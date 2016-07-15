@@ -20,7 +20,7 @@ volatile DMA2D_Status PLC_DMA2D_Status = {1};
 volatile uint8_t LayerOfView = 0;
 const uint32_t ProjectionLayerAddress[2]={SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET}; // Were we fill out our objects?
 volatile uint8_t CAM_flag = 0;
-uint32_t bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
+
 uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c)
 {
 
@@ -141,6 +141,38 @@ void _HW_Fill_Display_From_Mem(uint32_t SourceAddress, uint32_t DstAddress){
    }
   }
 }
+void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
+  
+ hdma2d.Init.Mode               = DMA2D_M2M_PFC;
+ hdma2d.Init.ColorMode          = DMA2D_ARGB8888;
+ hdma2d.Init.OutputOffset       = 0;
+ hdma2d.XferCpltCallback = Transfer_DMA2D_Completed;
+ 
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0xFF;
+  hdma2d.LayerCfg[1].InputColorMode = CM_RGB888;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  hdma2d.Instance          = DMA2D;
+  
+  if(HAL_DMA2D_Init(&hdma2d) == HAL_OK){  
+   if(PLC_DMA2D_Status.Ready != 0){
+   PLC_DMA2D_Status.Ready = 0;
+   if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK)
+    {
+   if(HAL_DMA2D_Start_IT(&hdma2d, 
+                        SourceAddress, /* Color value in Register to Memory DMA2D mode */
+                        DstAddress,  /* DMA2D output buffer */
+                        DisplayWIDTH, /* width of buffer in pixels */
+                        DisplayHEIGHT) /* height of buffer in lines */ 
+     == HAL_OK)
+    {
+     while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    //  HAL_DMA2D_PollForTransfer(&hdma2d, 10); 
+     }  
+    }
+   }
+  }
+}
 
 void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t color) 
 {
@@ -207,10 +239,10 @@ void LCD_Layers_Init(void){
  // _HW_Fill_Finite_Color(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 0xFFFFFFFF);
  // while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
   //fill the first layer  
-  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
+  _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
   while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
   //fill the second layer
-   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
+   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
    while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
 }
 

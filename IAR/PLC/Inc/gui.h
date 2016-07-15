@@ -29,7 +29,7 @@
 ////////////////////////
 
 #include "variables.h"
-
+#include "lcd.h"
 
 typedef struct{
 
@@ -40,8 +40,8 @@ typedef struct{
 
   uint32_t params[MAX_PARAMS_Q];     //
 }GUI_Object;
-
-
+#define MAX_POLY_POINTS 24
+extern Point StoreArrayOfPoly[MAX_POLY_POINTS];
 
 void GUI_Free(void);
 GUI_Object* GUI_SetObject(uint32_t typeObj, uint32_t colorObj, uint32_t z_Index, uint32_t NumbOfParms,...);
