@@ -164,6 +164,7 @@ void Show_GUI(void){
   RCC->PLLSAICFGR =0x44003300; // PLL Adjust
  // while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 
   GUI_Release(); 
+  UserControlsShow();
   HAL_Delay(10);
  
   while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) {} 

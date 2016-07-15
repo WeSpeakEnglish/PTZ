@@ -23,9 +23,15 @@ struct{
  float Square;
  float TimeOfRun;
  uint16_t Passes;
- float SquarePerHour;
- float PetrolPerHour;
- float PetrolPerSquare;
+ float SquarePerHour;   // (100m)^2 per hour
+ float PetrolPerHour;   // litres per hour
+ float PetrolPerSquare; // litres per (100m)^2
+ uint8_t Slip; // slipping
+ struct{
+   uint8_t A;
+   uint8_t B;
+   float Time;
+ }Hidroexits[5];
  
 }PTZ;
 /// CONST STRs
@@ -38,17 +44,18 @@ static uint8_t StrTransmiss[] =           "     0.0";
 static uint8_t StrPneumosys[] =           "     0.0";
 static uint8_t StrPressEngineOil[] =      "     0.0";
 static uint8_t StrSpeed[] =               "       0";
-static uint8_t StrRPM[] =                 "     0.0";
+static uint8_t StrRPM[] =                 "       0";
 static uint8_t StrTIME[] =                "     0.0";
 static uint8_t StrSquare[] =              "     0.0";
 static uint8_t StrPasses[] =              "       0";
 static uint8_t StrSquarePerHour[] =       "     0.0";
 static uint8_t PetrolPerHour[] =          "     0.0";
 static uint8_t PetrolPerSquare[] =        "     0.0";
+static uint8_t StrSleep[]        =        "      0%";
 
 static GUI_Object* Images[90]; 
 
-static GUI_Object* Text[40];
+static GUI_Object* Text[80];
 //static GUI_Object* Lines[20];
 static GUI_Object* Polygons[10];
 //static GUI_Object* Triangles[8];
@@ -164,6 +171,9 @@ void Load_GUI_0(void){
   Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 240, PetrolPerHour, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 275, PetrolPerSquare, RIGHT_MODE, 1, &RIAD_20pt,0);
+  Text[16] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 312, 141, StrSpeed, RIGHT_MODE, 1, &RIAD_30pt,0);
+  Text[17] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 456, 141, StrRPM, RIGHT_MODE, 1, &RIAD_30pt,0);
+  Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_30pt,0);
   
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
@@ -505,18 +515,16 @@ void ViewScreen(void){
        Text[10]->z_index = 3; // StrTIME
        Text[12]->z_index = 3; // StrSpeed
        Text[14]->z_index = 3; // StrRPM
-     //  Images[11]->params[0] = (uint32_t)&IMAGES.ImgArray[187]; // the pressure red sign
-    //   Images[12]->params[0] = (uint32_t)&IMAGES.ImgArray[188]; // the valve red sign
-    //   Images[13]->params[0] = (uint32_t)&IMAGES.ImgArray[189]; // the filter red sign
-   //    Images[31]-> z_index = 1;            // the fuel sign
        Polygons[0]-> z_index = 1; // BIG ARROW with speed 
        Polygons[1]-> z_index = 1; //the middle arrow 
        Polygons[2]-> z_index = 1; //the small arrow 
        Polygons[3]-> z_index = 1; //the second small arrow 
        StartTestFlag = 1;
-//       bgPointer = SDRAM_BANK_ADDR + LAYER_BACK0_OFFSET;
+
        Images[0]->params[1] = 3;
        Images[0]->z_index = 1;
+       Images[23] -> z_index = 1;
+       Images[24] -> z_index = 1;
        _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
              break; 
     case 1:
@@ -529,14 +537,18 @@ void ViewScreen(void){
        Text[11]->z_index = 3; //square per hour 
        Text[13]->z_index = 3; //petrol per hour
        Text[15]->z_index = 3; //petrol per square
+       Text[16]->z_index = 3; // SPEED
+       Text[17]->z_index = 3; //RPM
+       Text[18]->z_index = 3; //Sleep
        Polygons[0]-> z_index = 0; // BIG ARROW with speed 
        Polygons[1]-> z_index = 0; //the middle arrow 
        Polygons[2]-> z_index = 0; //the small arrow 
        Polygons[3]-> z_index = 0; //the second small arrow 
        StartTestFlag = 0;
-  //     bgPointer = SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET;
-       Images[0]->params[1] = 102;
+       Images[0]->params[1] = 102; // coord of frame
        Images[0]->z_index = 1;
+       Images[23] -> z_index = 1;
+       Images[24] -> z_index = 1;
        _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
             break;  
     case 2:
@@ -719,6 +731,49 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
   else Images[32]->z_index = 0;
   }
  return;
+}
+
+
+#define pos_x_controlHE 601
+#define pos_y_controlHE 117
+#define x_stepHE 35
+#define x_step_secondHE 16
+
+void LittleHidroExitsShow(){
+uint16_t i,j;
+uint32_t OldColor;
+      PTZ.Hidroexits[0].A = 75;
+       PTZ.Hidroexits[2].B = 34;
+    for(i = 0; i < 10; i++ ){ 
+      for(j = 0; j < 5; j++){
+       if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
+        LCD_SetColorPixel(0xFF3366FF);
+        }
+       else{
+        LCD_SetColorPixel(0xFF999999);
+           }
+        LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + 12 + j * x_stepHE, pos_y_controlHE + 7 + i*10);
+  
+       if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
+        LCD_SetColorPixel(0xFFFF3333);
+        }
+       else{
+        LCD_SetColorPixel(0xFF999999);
+           }
+        LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + 7 + j * x_stepHE + x_step_secondHE, pos_y_controlHE + 7 + i*10);
+      
+      }
+    }
+return;
+}
+
+void UserControlsShow(void){
+    switch(DISP.Screen == 1){
+    case 1:
+       LittleHidroExitsShow();
+    break;
+  }
+return;
 }
 ////-----------------------------------------------------------------------------------------------------
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex){
