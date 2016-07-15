@@ -608,7 +608,7 @@ static  struct {
     case 4: DISP.Screen = deal;
            break;
     case 5:
-      if(DISP.Screen == 0){
+      if(DISP.Screen == 0 || DISP.Screen == 1){
            Flags.WriteGo = !Flags.WriteGo;
            Images[5] ->z_index = Flags.WriteGo;
       }
