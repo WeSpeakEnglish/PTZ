@@ -964,6 +964,61 @@ static void LL_FillBuffer(uint32_t LayerIndex, void *pDst, uint32_t xSize, uint3
   } 
 }
 
+void _HW_LCD_V_Line(uint32_t x, uint32_t y, uint32_t heigh) 
+{
+    hdma2d.Init.Mode         = DMA2D_R2M;
+  hdma2d.Init.ColorMode      = DMA2D_ARGB8888;
+  hdma2d.Init.OutputOffset = DisplayWIDTH-1;     
+  
+  /* Foreground Configuration */
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0xFF;
+  hdma2d.LayerCfg[1].InputColorMode = CM_ARGB8888;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  
+  hdma2d.Instance = DMA2D; 
+  
+  /* DMA2D Initialization */
+  if(HAL_DMA2D_Init(&hdma2d) == HAL_OK) 
+  {
+    if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK) 
+    {
+      if (HAL_DMA2D_Start(&hdma2d, DrawProp[LayerIndex].TextColor, ProjectionLayerAddress[LayerOfView] + 4 * x + 4 * y * DisplayWIDTH, 1, heigh) == HAL_OK)
+      {
+        /* Polling For DMA transfer */  
+        HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+      }
+    }
+  } 
+}
+
+void _HW_LCD_H_Line(uint32_t x, uint32_t y, uint32_t width) 
+{
+    hdma2d.Init.Mode         = DMA2D_R2M;
+  hdma2d.Init.ColorMode      = DMA2D_ARGB8888;
+  hdma2d.Init.OutputOffset = 0;     
+  
+  /* Foreground Configuration */
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0xFF;
+  hdma2d.LayerCfg[1].InputColorMode = CM_ARGB8888;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  
+  hdma2d.Instance = DMA2D; 
+  
+  /* DMA2D Initialization */
+  if(HAL_DMA2D_Init(&hdma2d) == HAL_OK) 
+  {
+    if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK) 
+    {
+      if (HAL_DMA2D_Start(&hdma2d, DrawProp[LayerIndex].TextColor, ProjectionLayerAddress[LayerOfView] + 4 * x + 4 * y * DisplayWIDTH, width, 1) == HAL_OK)
+      {
+        /* Polling For DMA transfer */  
+        HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+      }
+    }
+  } 
+}
 /**
   * @brief  Converts a line to an ARGB8888 pixel format.
   * @param  pSrc: Pointer to source buffer
@@ -1007,10 +1062,6 @@ void LL_ConvertLineToRGB888(void *pSrc, void *pDst, uint32_t xSize, uint32_t Col
   hdma2d.Init.Mode         = DMA2D_M2M;
   hdma2d.Init.ColorMode    = DMA2D_RGB888;
   hdma2d.Init.OutputOffset = 0;     
-  
-  /* Foreground Configuration */
-//  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
-//  hdma2d.LayerCfg[1].InputAlpha = 0xFF;
   hdma2d.LayerCfg[1].InputColorMode = ColorMode;
   hdma2d.LayerCfg[1].InputOffset = 0;
   
@@ -1256,64 +1307,7 @@ void sorttreug (uint16_t Ax,uint16_t Ay, uint16_t Bx, uint16_t By, uint16_t Cx, 
 // Very FAST redaction but not SO exact like triangle mode, sutable for objets without small angles
 void LCD_FillTriangleFAST(pPoint Points){
  sorttreug (Points[0].X, Points[0].Y, Points[1].X, Points[1].Y, Points[2].X, Points[2].Y);
-/*
-Point A, B, C;
-static uint8_t i, indexA, indexB, indexC;
-static uint16_t sy, tmp, x1, x2;
 
-indexA = 1; //let A is first point
-if((Points[1].Y < Points[0].Y) && (Points[1].Y < Points[2].Y)) indexA = 2;
-if((Points[2].Y < Points[1].Y) && (Points[2].Y <  Points[0].Y)) indexA = 3;
-
-switch (indexA){
-	case 1: A.Y = Points[0].Y; A.X = Points[0].X;
-			break;
-	case 2: A.Y = Points[1].Y; A.X = Points[1].X;
-			break;
-	case 3: A.Y = Points[2].Y; A.X = Points[2].X;
-			break;
-}
-
-indexC = 1; //let C is first point
-if((Points[1].Y  > Points[0].Y) && (Points[1].Y  > Points[2].Y)) indexC = 2;
-if((Points[2].Y > Points[1].Y) && (Points[2].Y > Points[0].Y)) indexC = 3;
-
-switch (indexC){
-	case 1: C.Y = Points[0].Y; C.X = Points[0].X;
-			break;
-	case 2: C.Y = Points[1].Y; C.X = Points[1].X;
-			break;
-	case 3: C.Y = Points[2].Y; C.X = Points[2].X;
-			break;
-}
-
-for (i = 1; i < 4; i++)	
-	if((i != indexA) && (i != indexC)) indexB = i;
-
-switch (indexB){
-	case 1: B.Y = Points[0].Y; B.X = Points[0].X;
-			break;
-	case 2: B.Y = Points[1].Y; B.X = Points[1].X;
-			break;
-	case 3: B.Y = Points[2].Y; B.X = Points[2].X;
-			break;
-}
-
-for (sy = A.Y; sy <= C.Y; sy++) {
-  x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
-  if (sy < B.Y)
-    x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
-  else {
-    if (C.Y == B.Y)
-      x2 = B.X;
-    else
-      x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
-  }
-  if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
-   DrawFastLineHorizontal(sy, x1, x2);
-}
-
-  */
   
 }
 //

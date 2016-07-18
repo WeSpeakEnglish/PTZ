@@ -168,6 +168,8 @@ void     LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii);
 
 void     LCD_DrawHLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length);
 void     LCD_DrawVLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length);
+void     _HW_LCD_V_Line(uint32_t x, uint32_t y, uint32_t heigh); 
+void     _HW_LCD_H_Line(uint32_t x, uint32_t y, uint32_t width);
 void     LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 void     LCD_DrawRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 void     LCD_DrawCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);

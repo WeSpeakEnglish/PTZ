@@ -15,18 +15,20 @@
 
 
 struct{
- uint8_t PressTransmiss;
- uint8_t PressPneumosys;
- uint8_t PressEngineOil;
- uint8_t Speed;
- uint8_t RateEngine;
- float Square;
- float TimeOfRun;
- uint16_t Passes;
+ uint8_t PressTransmiss; // pressure in the transmission
+ uint8_t PressPneumosys; // pressuse in the pneumo system
+ uint8_t PressEngineOil; // the pressure of oil
+ uint8_t Speed;       //  the speed
+ uint8_t RateEngine; // the RPM
+ float Square;     // the square, which have been prepared
+ float TimeOfRun;  // the total time of pass
+ uint16_t Passes;  // number of passes
  float SquarePerHour;   // (100m)^2 per hour
  float PetrolPerHour;   // litres per hour
  float PetrolPerSquare; // litres per (100m)^2
  uint8_t Slip; // slipping
+ int8_t Rising; // rasing/penetration(-)
+ int8_t Calibration; //in centimeters
  struct{
    uint8_t A;
    uint8_t B;
@@ -34,11 +36,6 @@ struct{
  }Hidroexits[5];
  
 }PTZ;
-/// CONST STRs
-//const uint8_t str1[] = "אעל"; //1
-//const uint8_t str2[] = "ךל";  //2
-//const uint8_t str3[] = "rpm";  //3
-//const uint8_t str4[] = "ק";  //3
 
 static uint8_t StrTransmiss[] =           "     0.0";
 static uint8_t StrPneumosys[] =           "     0.0";
@@ -52,12 +49,16 @@ static uint8_t StrSquarePerHour[] =       "     0.0";
 static uint8_t PetrolPerHour[] =          "     0.0";
 static uint8_t PetrolPerSquare[] =        "     0.0";
 static uint8_t StrSleep[]        =        "      0%";
+static uint8_t StrRising[]       =        "      0";
+static uint8_t StrCalibration[]  =        "0      "; //in the LEFT mode
+
+
 
 static GUI_Object* Images[90]; 
 
 static GUI_Object* Text[80];
 //static GUI_Object* Lines[20];
-static GUI_Object* Polygons[10];
+static GUI_Object* Polygons[6];
 //static GUI_Object* Triangles[8];
 
 static uint8_t StrDate[11]="25.04.2016";
@@ -142,6 +143,7 @@ uint16_t Number;
  };   
  
 static void actions(uint8_t deal);
+void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
 
 void Load_GUI_0(void){ 
 //
@@ -173,7 +175,9 @@ void Load_GUI_0(void){
   Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 275, PetrolPerSquare, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[16] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 312, 141, StrSpeed, RIGHT_MODE, 1, &RIAD_30pt,0);
   Text[17] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 456, 141, StrRPM, RIGHT_MODE, 1, &RIAD_30pt,0);
-  Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_30pt,0);
+  Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_20pt,0);
+  Text[19] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 100, 322, StrRising, RIGHT_MODE, 1, &RIAD_20pt,0);
+  Text[20] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
   
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
@@ -181,7 +185,7 @@ void Load_GUI_0(void){
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
 //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
    Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
-//  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 597 , 394); //tractor and wrench
+   Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[22], 597 , 394); //the red arm
  // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
@@ -507,6 +511,9 @@ void ViewScreen(void){
    for(i = 4; i < sizeof(Images)/4 ; i++){
    Images[i]->z_index = 0;
  } 
+    for(i = 0; i < sizeof(Polygons)/4 ; i++){
+   Polygons[i]->z_index = 0;
+ } 
   switch(DISP.Screen){
     case 0:
        Text[4]->z_index = 3; // StrTransmiss
@@ -540,18 +547,19 @@ void ViewScreen(void){
        Text[16]->z_index = 3; // SPEED
        Text[17]->z_index = 3; //RPM
        Text[18]->z_index = 3; //Sleep
-       Polygons[0]-> z_index = 0; // BIG ARROW with speed 
-       Polygons[1]-> z_index = 0; //the middle arrow 
-       Polygons[2]-> z_index = 0; //the small arrow 
-       Polygons[3]-> z_index = 0; //the second small arrow 
        StartTestFlag = 0;
        Images[0]->params[1] = 102; // coord of frame
        Images[0]->z_index = 1;
        Images[23] -> z_index = 1;
        Images[24] -> z_index = 1;
-       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
+       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
             break;  
     case 2:
+      Text[19]->z_index = 3;
+      Text[20]->z_index = 3;
+      Images[0]->z_index = 0;
+      Images[6]->z_index = 1;
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
             break;
     case 3:
             break;          
@@ -601,12 +609,26 @@ static  struct {
   
   
   switch(deal) {
-    case 0:
+    case 0: 
+      DISP.Screen = 0;
+      break;
     case 1: 
-    case 2:
+      if(DISP.Screen == 0) DISP.Screen = 1;
+      break;
+    case 2:  
+      
+      if(DISP.Screen == 2){
+         PenetrationRising(1, 1);
+      }
+      if(DISP.Screen < 2) DISP.Screen = deal;
+
+      break;
     case 3:
-    case 4: DISP.Screen = deal;
-           break;
+     // if(DISP.Screen == 2) DISP.Screen = deal;
+      break;
+    case 4:
+      break;  
+     
     case 5:
       if(DISP.Screen == 0 || DISP.Screen == 1){
            Flags.WriteGo = !Flags.WriteGo;
@@ -739,9 +761,8 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 #define x_stepHE 35
 #define x_step_secondHE 16
 
-void LittleHidroExitsShow(){
+void LittleHidroExitsShow(void){
 uint16_t i,j;
-uint32_t OldColor;
       PTZ.Hidroexits[0].A = 75;
        PTZ.Hidroexits[2].B = 34;
     for(i = 0; i < 10; i++ ){ 
@@ -767,11 +788,53 @@ uint32_t OldColor;
 return;
 }
 
+void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
+  static uint16_t BlinkCounter = 0;
+  static struct{
+    uint8_t penetration :       1;
+    uint8_t stop        :       1;
+    uint8_t arm         :       1;//the right arm sign;
+    
+  }Condition={0,0,0};
+  
+  switch(Parm){ // we just setting the parameter
+      case 0: // Run
+        if(Condition.penetration){
+          if((BlinkCounter%8)<4) {
+            LCD_SetColorPixel(0xFFFF0000);
+            LCD_DrawLine(251, 253, 304, 200);
+            _HW_LCD_V_Line(251, 253, 145);
+            _HW_LCD_H_Line(251, 253, 145);
+          }
+          if(BlinkCounter == 80) Condition.penetration = 0;
+          BlinkCounter++;
+          
+        }
+        break;
+      case 1:
+        Condition.penetration = (set) ? 1 : 0;
+        BlinkCounter = 0;
+        break;
+      case 2:
+        Condition.stop = (set) ? 1 : 0;
+        BlinkCounter = 0;
+        break;
+      case 3:
+        Condition.arm = (set) ? 1 : 0;
+        BlinkCounter = 0;
+        break;
+  }
+  
+}
+
 void UserControlsShow(void){
-    switch(DISP.Screen == 1){
+    switch(DISP.Screen){
     case 1:
        LittleHidroExitsShow();
-    break;
+       break;
+    case 2:
+       PenetrationRising(0, 0);
+       break;
   }
 return;
 }

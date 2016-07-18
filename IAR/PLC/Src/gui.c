@@ -74,9 +74,11 @@ void GUI_Release(){  // create GUI
              LCD_DrawLine(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2], GUI_Objects[i].params[3]);
                    break;
           case VERTICAL_LINE_TYPE:
+             _HW_LCD_V_Line(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);
                    break;    
           case HORIZONTAL_LINE_TYPE:
-             DrawFastLineHorizontal(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);   
+            // DrawFastLineHorizontal(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);   
+            _HW_LCD_H_Line(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);
                    break;  
           case POLYGON_TYPE:
                    break;
