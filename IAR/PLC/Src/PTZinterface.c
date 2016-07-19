@@ -788,6 +788,9 @@ uint16_t i,j;
 return;
 }
 
+#define BLINKPERIOD     8
+#define BLINKDUTY       4
+#define BLINKTIME       48
 void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
   static uint16_t BlinkCounter = 0;
   static struct{
@@ -800,16 +803,34 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
   switch(Parm){ // we just setting the parameter
       case 0: // Run
         if(Condition.penetration){
-          if((BlinkCounter%8)<4) {
+          if((BlinkCounter % BLINKPERIOD) < BLINKDUTY) {
             LCD_SetColorPixel(0xFFFF0000);
             LCD_DrawLine(251, 253, 304, 200);
+            LCD_DrawLine(252, 253, 305, 200);
             _HW_LCD_V_Line(251, 253, 145);
-            _HW_LCD_H_Line(251, 253, 145);
+            _HW_LCD_V_Line(252, 253, 145);
+            LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
+            
+            }
+          LCD_Fill_Image(&IMAGES.ImgArray[167], 395, 145);
+          LCD_Fill_Image(&IMAGES.ImgArray[165], 361, 102);
+          LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
+          if(BlinkCounter++ == 48) Condition.penetration = 0;
+         }
+        else 
+          if(Condition.stop){
+          if((BlinkCounter % BLINKPERIOD) < BLINKDUTY) {
+            LCD_SetColorPixel(0xFFFF0000);
+            _HW_LCD_V_Line(448, 345, 53);
+            }
+            if(BlinkCounter++ == 48) Condition.stop = 0;
           }
-          if(BlinkCounter == 80) Condition.penetration = 0;
-          BlinkCounter++;
+        else
+            if(Condition.arm){
+               if(BlinkCounter++ == 48) Condition.arm = 0;
+        
+          }
           
-        }
         break;
       case 1:
         Condition.penetration = (set) ? 1 : 0;
