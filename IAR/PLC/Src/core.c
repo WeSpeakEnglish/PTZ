@@ -1,7 +1,7 @@
 #include "core.h"
 #include "fmc.h"
 #include "stm32f7xx_hal.h"
-
+#include "delays.h"
 
 volatile int8_t Semaphore = 0; // that semaphore for queues and routines control if you need :)
 volatile uint32_t TicksGlobalUS = 0; //US ticking timer // in the timer interrupt handle needs just ++ operation
@@ -109,7 +109,11 @@ void pFastQueueIni(void){
 /// ADD ELEMENTs TO THE QUEUES
 int8_t S_push(void (*pointerQ)(void) ){
  if ((S_last+1)%Q_SIZE_SLOW == S_first)	return 1;
-   while(mutexS != 0);
+ 
+   WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexS != 0){
+   if(!WaitWhileCORE(0))return 1;
+  }
     mutexS = 1;  // enter to critical section
     pSlowQueue[S_last++] = pointerQ;
     S_last%=Q_SIZE_SLOW;
@@ -121,7 +125,10 @@ int8_t M_push(void (*pointerQ)(void) ){
 
  if ((M_last+1)%Q_SIZE_MEDIUM == M_first) return 1;
  
- while(mutexM != 0);
+   WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexM != 0){
+   if(!WaitWhileCORE(0))return 1;
+  }
     mutexM = 1;  // enter to critical section
     pMediumQueue[M_last++] = pointerQ;
     M_last%=Q_SIZE_MEDIUM;
@@ -131,7 +138,10 @@ int8_t M_push(void (*pointerQ)(void) ){
 
 int8_t F_push(void (*pointerQ)(void) ){
   if ((F_last+1)%Q_SIZE_FAST == F_first)return 1;
-while(mutexF != 0);
+   WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexF != 0){
+   if(!WaitWhileCORE(0))return 1;
+  }
 
     mutexF = 1;  // enter to critical section
     pFastQueue[F_last++] = pointerQ;
@@ -142,7 +152,10 @@ while(mutexF != 0);
 
 int8_t F_push2(void (*pointerQ_1)(void),void (*pointerQ_2)(void)){
   if ((F_last + 2)%Q_SIZE_FAST == F_first)return 1;
-while(mutexF != 0);
+   WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexF != 0){
+   if(!WaitWhileCORE(0))return 1;
+  }
 
     mutexF = 1;  // enter to critical section
     pFastQueue[F_last++] = pointerQ_1;
@@ -156,7 +169,10 @@ void (*S_pull(void))(void){
  void (*pullVarS)(void);
 
  if (S_last == S_first)return emptyS;
-while(mutexS != 0);
+   WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexS != 0){
+   if(!WaitWhileCORE(0))return pullVarS;
+  }
     mutexS = 1;  // enter to critical section
     pullVarS = pSlowQueue[S_first++];
     S_first%=Q_SIZE_SLOW;
@@ -167,7 +183,10 @@ return pullVarS;
 void (*M_pull(void))(void){
  void (*pullVar)(void);
  if (M_last == M_first)return emptyM;
-   while(mutexM != 0);
+     WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexM != 0){
+   if(!WaitWhileCORE(0))return pullVar;
+  }
     mutexM = 1;  // enter to critical section
     pullVar = pMediumQueue[M_first++];
     M_first%=Q_SIZE_MEDIUM;
@@ -178,7 +197,10 @@ return pullVar;
 void (*F_pull(void))(void){
  void (*pullVar)(void);
  if (F_last == F_first)return emptyF;
-   while(mutexF != 0);
+  WaitWhileCORE(MAXDELAY_CORE);
+   while(mutexF != 0){
+   if(!WaitWhileCORE(0))return pullVar;
+  }
     mutexF = 1;  // enter to critical section
     pullVar = pFastQueue[F_first++];
     F_first%=Q_SIZE_FAST;
@@ -188,6 +210,7 @@ return pullVar;
 
 // wait some condition but no more that, for exapmle: while (var1!=0 && WaitOnFastQ())
 void DelayOnFastQ(uint8_t WaitQFast){// set this variable and stay waiting on the fast queue
+  
   while(WaitQFast){
          F_pull()(); 
          WaitQFast--; 

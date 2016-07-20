@@ -14,6 +14,7 @@
 #include "OSDinitTable.h"
 #include "DispInfo.h"
 #include "sdmmc.h"
+#include "delays.h"
 
 
 volatile DMA2D_Status PLC_DMA2D_Status = {1};
@@ -41,7 +42,11 @@ uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c
                         1) /* height of buffer in lines */ 
      == HAL_OK)
     {
-    while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return 1;
+    }
      }  
     }
    }
@@ -63,7 +68,11 @@ uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c
                         y2-y1+1) /* height of buffer in lines */ 
      == HAL_OK)
    {
-    while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return 1;
+    }
    } 
    }
   }
@@ -103,7 +112,11 @@ void _HW_Fill_Finite_Color(uint32_t StartAddress, uint32_t color){
                         DisplayHEIGHT) /* height of buffer in lines */ 
      == HAL_OK)
     {
-      while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+      WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
      }  
   }
   }
@@ -134,7 +147,11 @@ void _HW_Fill_Display_From_Mem(uint32_t SourceAddress, uint32_t DstAddress){
                         DisplayHEIGHT) /* height of buffer in lines */ 
      == HAL_OK)
     {
-     while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
     //  HAL_DMA2D_PollForTransfer(&hdma2d, 10); 
      }  
     }
@@ -166,7 +183,11 @@ void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
                         DisplayHEIGHT) /* height of buffer in lines */ 
      == HAL_OK)
     {
-     while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+     WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
     //  HAL_DMA2D_PollForTransfer(&hdma2d, 10); 
      }  
     }
@@ -190,7 +211,11 @@ void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32
       if (HAL_DMA2D_Start_IT(&hdma2d, color, DstAddress, xSize, ySize) == HAL_OK)
       {
     
-    while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
        
    }
   }
@@ -213,7 +238,11 @@ void _HW_Fill_Image(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSize, ui
   PLC_DMA2D_Status.Ready = 0;
       if (HAL_DMA2D_Start_IT(&hdma2d, SrcAddress, DstAddress, xSize, ySize) == HAL_OK)
       {
-    while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+    WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
    }
   }
 }
@@ -229,7 +258,11 @@ void _HW_Fill_ImageToRAM(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSiz
   PLC_DMA2D_Status.Ready = 0;
       if (HAL_DMA2D_Start_IT(&hdma2d, SrcAddress, DstAddress, xSize, ySize) == HAL_OK)
       {
-   while(PLC_DMA2D_Status.Ready == 0){ M_pull()();}
+   WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
    }
   }
 
@@ -240,10 +273,18 @@ void LCD_Layers_Init(void){
  // while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
   //fill the first layer  
   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
-  while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
+  WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    }
   //fill the second layer
    _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
-   while(!PLC_DMA2D_Status.Ready)RoutineMedium(); 
+  WaitWhileDMA2D(MAXDELAY_DMA2D);
+    while(PLC_DMA2D_Status.Ready == 0){ 
+      M_pull()();
+      if(!WaitWhileDMA2D(0)) return;
+    } 
 }
 
   

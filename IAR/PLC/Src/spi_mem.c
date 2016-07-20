@@ -1,7 +1,7 @@
 #include "stm32f7xx_hal.h"
 #include "spi_mem.h"
 #include "spi.h"
-
+#include "delays.h"
 #define sEE_SPI SPI2
 #define SPI_handle hspi2;
 
@@ -200,7 +200,10 @@ uint8_t sEE_SendByte(uint8_t byte)
   uint8_t buff;
   SPI_transmitted = SPI_received = 0;
   HAL_SPI_TransmitReceive_DMA(&hspi2,&byte,&buff,1);
-   while((!SPI_transmitted )||(!SPI_received));
+  WaitWhileSPI(MAXDELAY_SPI); //set the period
+  while((!SPI_transmitted )||(!SPI_received)){
+  if(!WaitWhileSPI(0)) return 0xFF;
+  }
 
 return buff;
 

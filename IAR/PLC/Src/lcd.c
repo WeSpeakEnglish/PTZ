@@ -1086,7 +1086,7 @@ void LL_ConvertImageToARGB8888(void *pSrc, void *pDst, uint32_t xSize, uint32_t 
   /* Configure the DMA2D Mode, Color Mode and output offset */
   hdma2d.Init.Mode         = DMA2D_M2M_PFC;
   hdma2d.Init.ColorMode    = DMA2D_ARGB8888;
-  hdma2d.Init.OutputOffset = 0;     
+  hdma2d.Init.OutputOffset = DisplayWIDTH - xSize;     
   
   /* Foreground Configuration */
   hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
@@ -1207,8 +1207,8 @@ void LCD_Fill_Image(ImageInfo * Image, uint32_t x, uint32_t y){
  static uint32_t address;
   
  address = ProjectionLayerAddress[LayerOfView] + 4 * y * DisplayWIDTH + 4 * x;
- FillImageSoft(Image->address, address, Image->xsize, Image->ysize);
-//LL_ConvertImageToARGB8888((void *)Image->address, (void *)address, Image->xsize, Image->ysize, CM_RGB888);
+ //FillImageSoft(Image->address, address, Image->xsize, Image->ysize);
+ LL_ConvertImageToARGB8888((void *)Image->address, (void *)address, Image->xsize, Image->ysize, CM_RGB888);
 }
 
 

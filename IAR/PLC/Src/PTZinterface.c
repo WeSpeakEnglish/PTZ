@@ -185,7 +185,7 @@ void Load_GUI_0(void){
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
 //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
    Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
-   Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[22], 597 , 394); //the red arm
+ //  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[22], 597 , 394); //the red arm
  // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
@@ -616,10 +616,10 @@ static  struct {
       if(DISP.Screen == 0) DISP.Screen = 1;
       break;
     case 2:  
-      
-      if(DISP.Screen == 2){
+       if(DISP.Screen == 2){
          PenetrationRising(1, 1);
       }
+
       if(DISP.Screen < 2) DISP.Screen = deal;
 
       break;
@@ -627,6 +627,9 @@ static  struct {
      // if(DISP.Screen == 2) DISP.Screen = deal;
       break;
     case 4:
+      if(DISP.Screen == 2){
+         PenetrationRising(2, 1);
+      }
       break;  
      
     case 5:
@@ -635,8 +638,13 @@ static  struct {
            Images[5] ->z_index = Flags.WriteGo;
       }
            break;
-    case 6: 
-          DISP.Screen = deal;
+    case 6:      
+      if(DISP.Screen == 2){
+         PenetrationRising(3, 1);
+      }
+    else{
+      DISP.Screen = deal;
+    }
 //     Images[deal]->z_index = 1; //show frame on the BTN6
 //     DISP.ReleaseTask = 1;
       break;
@@ -749,8 +757,8 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 {
   if(DISP.Screen == 0){
   Polygons[3]->params[2] = (SetValue - 40) * 2250;
-  if(SetValue > 99) Images[32]->z_index = 1;
-  else Images[32]->z_index = 0;
+  if(SetValue > 99)     Images[32]->z_index = 1;
+  else                  Images[32]->z_index = 0;
   }
  return;
 }
@@ -794,54 +802,130 @@ return;
 void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
   static uint16_t BlinkCounter = 0;
   static struct{
-    uint8_t penetration :       1;
-    uint8_t stop        :       1;
-    uint8_t arm         :       1;//the right arm sign;
+    uint8_t label;  //which label to show
+    uint8_t bigImage;
+    uint8_t penetration         : 1;
+    uint8_t set_penetration     : 1;
+    uint8_t stop                : 1;
+    uint8_t set_stop            : 1;
+    uint8_t rising              : 1;
+    uint8_t set_rising          : 1;
+
+  }Condition={5,1,0,0,0,1,0,0};
+  //the images, what need to be chosen
+  const ImageInfo* ImagesLabel[] = {
+         &IMAGES.ImgArray[166],    // 0 // penetration label gray
+         &IMAGES.ImgArray[165],    // 1 // penetration label red
+         &IMAGES.ImgArray[231],    // 2 // rise and snubber label gray
+         &IMAGES.ImgArray[230],    // 3 // rise and snubber label red
+         &IMAGES.ImgArray[223],    // 4 // stop label gray
+         &IMAGES.ImgArray[225]     // 5 // stop label red
+  };
+   const ImageInfo* ImagesBig[] = {
+         &IMAGES.ImgArray[167],    // 0 // penetration BIG RED IMAGE
+         &IMAGES.ImgArray[224],    // 1 // stop RED IMAGE
+         &IMAGES.ImgArray[232]     // 2 // rise and snubber BIG RED IMAGE
+  } ;  
     
-  }Condition={0,0,0};
-  
   switch(Parm){ // we just setting the parameter
       case 0: // Run
-        if(Condition.penetration){
-          if((BlinkCounter % BLINKPERIOD) < BLINKDUTY) {
+        if(Condition.penetration || Condition.set_penetration){
+         if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_penetration) {
             LCD_SetColorPixel(0xFFFF0000);
             LCD_DrawLine(251, 253, 304, 200);
             LCD_DrawLine(252, 253, 305, 200);
-            _HW_LCD_V_Line(251, 253, 145);
-            _HW_LCD_V_Line(252, 253, 145);
+            _HW_LCD_V_Line(251, 253, 130);
+            _HW_LCD_V_Line(252, 253, 130);
             LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
-            
-            }
-          LCD_Fill_Image(&IMAGES.ImgArray[167], 395, 145);
-          LCD_Fill_Image(&IMAGES.ImgArray[165], 361, 102);
-          LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
-          if(BlinkCounter++ == 48) Condition.penetration = 0;
-         }
-        else 
-          if(Condition.stop){
-          if((BlinkCounter % BLINKPERIOD) < BLINKDUTY) {
-            LCD_SetColorPixel(0xFFFF0000);
-            _HW_LCD_V_Line(448, 345, 53);
-            }
-            if(BlinkCounter++ == 48) Condition.stop = 0;
+            LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
+           }
           }
-        else
-            if(Condition.arm){
-               if(BlinkCounter++ == 48) Condition.arm = 0;
         
+          if(Condition.stop || Condition.set_stop){
+           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
+            LCD_SetColorPixel(0xFFFF0000);
+            _HW_LCD_V_Line(448, 345, 37);
+            _HW_LCD_V_Line(449, 345, 37);
+            LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
+            LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273); 
+            }
+           }
+          if(Condition.rising || Condition.set_rising){
+           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
+            LCD_SetColorPixel(0xFFFF0000); 
+            LCD_DrawLine(598, 200, 651, 253);
+            LCD_DrawLine(599, 200, 652, 253);
+            _HW_LCD_V_Line(651, 253, 130);
+            _HW_LCD_V_Line(652, 253, 130);
+              LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162);
+              LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
+           }
           }
           
+        if(BlinkCounter++ == 48){
+          Condition.penetration = 0;
+          Condition.stop = 0;
+          Condition.rising = 0;
+          if (Condition.set_penetration)Condition.label = 1;
+          if (Condition.set_rising)Condition.label = 3;
+          if (Condition.set_stop)Condition.label = 5;
+        }
+          
+
+          LCD_Fill_Image((ImageInfo *)ImagesLabel[Condition.label], 361, 102); // the label SHOW
+
+          LCD_Fill_Image((ImageInfo *)ImagesBig[Condition.bigImage], 395, 145); 
+        
         break;
       case 1:
-        Condition.penetration = (set) ? 1 : 0;
+        if(Condition.penetration){ 
+          Condition.bigImage = 0;
+          Condition.set_penetration = 1;
+          Condition.label = 1; //set the  label 
+          Condition.set_rising = 0;
+          Condition.set_stop = 0;
+          Condition.penetration = 0;
+          Condition.rising = 0;
+          Condition.stop = 0;
+        }
+        else{
+          Condition.penetration = (set) ? 1 : 0;
+          Condition.label = 0;
+        }
         BlinkCounter = 0;
         break;
       case 2:
-        Condition.stop = (set) ? 1 : 0;
+        if(Condition.stop){ 
+          Condition.bigImage = 1;
+          Condition.set_stop = 1;
+          Condition.label = 5; //set the  label 
+          Condition.set_rising = 0;
+          Condition.set_penetration = 0;
+          Condition.penetration = 0;
+          Condition.rising = 0;
+          Condition.stop = 0;
+        }
+        else{
+          Condition.stop = (set) ? 1 : 0;
+          Condition.label = 4;
+        }
         BlinkCounter = 0;
         break;
       case 3:
-        Condition.arm = (set) ? 1 : 0;
+        if(Condition.rising){ 
+          Condition.bigImage = 2;
+          Condition.set_rising = 1;
+          Condition.label = 3; //set the  label 
+          Condition.set_stop = 0;
+          Condition.set_penetration = 0;
+          Condition.penetration = 0;
+          Condition.rising = 0;
+          Condition.stop = 0;
+        }
+        else{
+          Condition.rising = (set) ? 1 : 0;
+          Condition.label = 2;
+        }
         BlinkCounter = 0;
         break;
   }
