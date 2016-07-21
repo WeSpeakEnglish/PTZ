@@ -177,7 +177,7 @@ void Load_GUI_0(void){
   Text[17] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 456, 141, StrRPM, RIGHT_MODE, 1, &RIAD_30pt,0);
   Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[19] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 100, 322, StrRising, RIGHT_MODE, 1, &RIAD_20pt,0);
-  Text[20] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
+  Text[20] = GUI_SetObject(TEXT_STRING ,0xFF000000, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
   
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
@@ -185,8 +185,8 @@ void Load_GUI_0(void){
  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
 //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
    Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
- //  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[22], 597 , 394); //the red arm
- // Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 696 , 394); // videocam
+   Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[288], 41, 185);   //the triangle nice pointer green
+   Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[289], 126, 185); // the triangle nice pointer red
   
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
@@ -359,7 +359,7 @@ void PreLoadImages(void){
 
   IMAGES.Number = 0;
   // just simply load images into the memory 
-  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   287);
+  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   290);
   
    //image 006.bmp like base  
    FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
@@ -559,6 +559,7 @@ void ViewScreen(void){
       Text[20]->z_index = 3;
       Images[0]->z_index = 0;
       Images[6]->z_index = 1;
+      Images[7]->z_index = 1;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
             break;
     case 3:
@@ -614,17 +615,24 @@ static  struct {
       break;
     case 1: 
       if(DISP.Screen == 0) DISP.Screen = 1;
+      if(DISP.Screen == 2){
+         PenetrationRising(4, 1); //set activity to the control
+      }
       break;
     case 2:  
        if(DISP.Screen == 2){
          PenetrationRising(1, 1);
       }
 
-      if(DISP.Screen < 2) DISP.Screen = deal;
+      if(DISP.Screen < 2){
+        DISP.Screen = deal;
+        PenetrationRising(4, 0);
+      }
 
       break;
     case 3:
      // if(DISP.Screen == 2) DISP.Screen = deal;
+      
       break;
     case 4:
       if(DISP.Screen == 2){
@@ -649,6 +657,8 @@ static  struct {
 //     DISP.ReleaseTask = 1;
       break;
     case 7:
+      if(DISP.Screen == 2)PenetrationRising(4, 0);
+      
      if(!CAM_flag) {
         CAM_flag = 1;
         VideoCAMOnOff(4, 1); //number four on
@@ -801,6 +811,7 @@ return;
 #define BLINKTIME       48
 void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
   static uint16_t BlinkCounter = 0;
+ 
   static struct{
     uint8_t label;  //which label to show
     uint8_t bigImage;
@@ -810,8 +821,11 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
     uint8_t set_stop            : 1;
     uint8_t rising              : 1;
     uint8_t set_rising          : 1;
-
+    uint8_t activity            : 3; // to show the bottom and the right side buttons
   }Condition={5,1,0,0,0,1,0,0};
+  
+  uint32_t LineColours[3]={0xffffffff,0xffffffff,0xffffffff};
+  
   //the images, what need to be chosen
   const ImageInfo* ImagesLabel[] = {
          &IMAGES.ImgArray[166],    // 0 // penetration label gray
@@ -830,37 +844,52 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
   switch(Parm){ // we just setting the parameter
       case 0: // Run
         if(Condition.penetration || Condition.set_penetration){
-         if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_penetration) {
-            LCD_SetColorPixel(0xFFFF0000);
+         if(!Condition.activity ) {
+          if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
+            LineColours[0] = 0xFFFF0000;
+            LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
+                   } 
+            LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
+           }
+          }
+
+          if(Condition.stop || Condition.set_stop){
+           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
+            if(!Condition.activity ) { 
+             LineColours[1] = 0xFFFF0000;
+            LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
+            
+            }
+           
+            LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273);
+           }
+          }
+          if(Condition.rising || Condition.set_rising){
+           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
+             if(!Condition.activity ) {  
+              LineColours[2] = 0xFFFF0000;
+              LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
+               }
+             LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162); 
+              
+           }
+          }
+        if(!Condition.activity ) {   
+         LCD_SetColorPixel(LineColours[0]);
             LCD_DrawLine(251, 253, 304, 200);
             LCD_DrawLine(252, 253, 305, 200);
             _HW_LCD_V_Line(251, 253, 130);
-            _HW_LCD_V_Line(252, 253, 130);
-            LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
-            LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
-           }
-          }
-        
-          if(Condition.stop || Condition.set_stop){
-           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
-            LCD_SetColorPixel(0xFFFF0000);
+            _HW_LCD_V_Line(252, 253, 130);  
+         LCD_SetColorPixel(LineColours[1]);   
             _HW_LCD_V_Line(448, 345, 37);
             _HW_LCD_V_Line(449, 345, 37);
-            LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
-            LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273); 
-            }
-           }
-          if(Condition.rising || Condition.set_rising){
-           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
-            LCD_SetColorPixel(0xFFFF0000); 
+         LCD_SetColorPixel(LineColours[2]);     
             LCD_DrawLine(598, 200, 651, 253);
             LCD_DrawLine(599, 200, 652, 253);
             _HW_LCD_V_Line(651, 253, 130);
             _HW_LCD_V_Line(652, 253, 130);
-              LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162);
-              LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
-           }
-          }
+        }   
+
           
         if(BlinkCounter++ == 48){
           Condition.penetration = 0;
@@ -878,25 +907,28 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
         
         break;
       case 1:
-        if(Condition.penetration){ 
-          Condition.bigImage = 0;
-          Condition.set_penetration = 1;
-          Condition.label = 1; //set the  label 
-          Condition.set_rising = 0;
-          Condition.set_stop = 0;
-          Condition.penetration = 0;
-          Condition.rising = 0;
-          Condition.stop = 0;
+        if(Condition.activity == 0){
+         if(Condition.penetration){ 
+           Condition.bigImage = 0;
+           Condition.set_penetration = 1;
+           Condition.label = 1; //set the  label 
+           Condition.set_rising = 0;
+           Condition.set_stop = 0;
+           Condition.penetration = 0;
+           Condition.rising = 0;
+           Condition.stop = 0;
+          }
+         else{
+           Condition.penetration = (set) ? 1 : 0;
+           Condition.label = 0;
+           Condition.rising = 0;
+           Condition.stop = 0;
+          }
+         BlinkCounter = 0;
         }
-        else{
-          Condition.penetration = (set) ? 1 : 0;
-          Condition.label = 0;
-          Condition.rising = 0;
-          Condition.stop = 0;
-        }
-        BlinkCounter = 0;
         break;
       case 2:
+       if(Condition.activity == 0){
         if(Condition.stop){ 
           Condition.bigImage = 1;
           Condition.set_stop = 1;
@@ -914,8 +946,11 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           Condition.rising = 0;
         }
         BlinkCounter = 0;
+       }
+       
         break;
       case 3:
+       if(Condition.activity == 0){
         if(Condition.rising){ 
           Condition.bigImage = 2;
           Condition.set_rising = 1;
@@ -933,7 +968,13 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           Condition.stop = 0;
         }
         BlinkCounter = 0;
-        break;
+       }
+       break;
+     case 4:
+          Condition.activity = (set) ? 1 : 0;
+
+       
+       break;
   }
   
 }
