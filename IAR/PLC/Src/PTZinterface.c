@@ -891,6 +891,8 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
         else{
           Condition.penetration = (set) ? 1 : 0;
           Condition.label = 0;
+          Condition.rising = 0;
+          Condition.stop = 0;
         }
         BlinkCounter = 0;
         break;
@@ -908,6 +910,8 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
         else{
           Condition.stop = (set) ? 1 : 0;
           Condition.label = 4;
+          Condition.penetration = 0;
+          Condition.rising = 0;
         }
         BlinkCounter = 0;
         break;
@@ -925,6 +929,8 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
         else{
           Condition.rising = (set) ? 1 : 0;
           Condition.label = 2;
+          Condition.penetration = 0;
+          Condition.stop = 0;
         }
         BlinkCounter = 0;
         break;
