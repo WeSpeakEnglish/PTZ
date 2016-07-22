@@ -106,17 +106,17 @@ uint16_t Number;
 
 
   const Zone ZonesTS_0[]={
-    {{13,405},{94,477}},  // BIG BOTTOM BTN#0  
-   {{112,405},{193,477}}, // BIG BOTTOM BTN#1  
-   {{211,405},{292,477}},  // BIG BOTTOM BTN#2 
-   {{310,405},{391,477}},  // BIG BOTTOM BTN#3  
-   {{409,405},{490,477}},  // BIG BOTTOM BTN#4 
-   {{508,405},{589,477}},  // BIG BOTTOM BTN#5 
-   {{607,405},{688,477}},  // BIG BOTTOM BTN#6  
-   {{706,405},{787,477}},  // BIG BOTTOM BTN#7 
-   {{900,900},{900,900}},  //  
-   {{900,900},{900,900}},  //9  
-   {{900,900},{900,900}},  //10  
+    {{13,405},{94,477}},  //0 BIG BOTTOM BTN#0  
+   {{112,405},{193,477}}, //1 BIG BOTTOM BTN#1  
+   {{211,405},{292,477}},  //2 BIG BOTTOM BTN#2 
+   {{310,405},{391,477}},  //3 BIG BOTTOM BTN#3  
+   {{409,405},{490,477}},  //4 BIG BOTTOM BTN#4 
+   {{508,405},{589,477}},  //5 BIG BOTTOM BTN#5 
+   {{607,405},{688,477}},  //6 BIG BOTTOM BTN#6  
+   {{706,405},{787,477}},  //7 BIG BOTTOM BTN#7 
+   {{688,141},{756,202}},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+   {{688,218},{756,280}},  //9    |
+   {{688,296},{756,358}},  //10---| 
    {{900,900},{900,900}},  //11  
    {{900,900},{900,900}},   //12  
    {{900,900},{900,900}},  //13  
@@ -141,6 +141,21 @@ uint16_t Number;
    {{900,900},{900,900}},   //27 
    {{900,900},{900,900}},   //28  CAM
  };   
+ 
+static struct{ // this is a (penetration/rising) condition
+    uint8_t label;  //which label to show
+    uint8_t bigImage;
+    uint8_t BlinkCounter; 
+    uint8_t penetration         : 1;
+    uint8_t set_penetration     : 1;
+    uint8_t stop                : 1;
+    uint8_t set_stop            : 1;
+    uint8_t rising              : 1;
+    uint8_t set_rising          : 1;
+    uint8_t activity            : 1; // to show the bottom and the right side buttons
+    uint8_t butt_selected       : 2;
+    uint8_t blink_button        : 2;
+  }Condition={5,1,0,0,0,1,0,0,0,0}; 
  
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
@@ -480,10 +495,7 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
       if(DISP.Screen == 0) {
 
        }
-      if(DISP.Screen == 1 || DISP.Screen == 2)
-      {
 
-      }
          
       
     if(DISP.Screen == 3) {
@@ -496,6 +508,14 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
                  DISP.TS_ZoneNumber = 100;
                }
      } 
+         if( DISP.Screen == 2)
+      {
+        if (Condition.activity){
+         if(DISP.TS_ZoneNumber == 8)DISP.TS_ZoneNumber =0;
+         if(DISP.TS_ZoneNumber == 9)DISP.TS_ZoneNumber =1;
+         if(DISP.TS_ZoneNumber == 10)DISP.TS_ZoneNumber =2;
+        }
+      }
   SOUND.CounterSound= 0, SOUND.SoundPeriod = 50; 
   
  }
@@ -623,17 +643,21 @@ static  struct {
   
   switch(deal) {
     case 0: 
-      DISP.Screen = 0;
+      if(!((DISP.Screen == 2)&&(Condition.activity)))DISP.Screen = 0;
+      if(DISP.Screen == 2 && Condition.activity)Condition.butt_selected = 1;
       break;
     case 1: 
       if(DISP.Screen == 0) DISP.Screen = 1;
       if(DISP.Screen == 2){
-         PenetrationRising(4, 1); //set activity to the control
+         if(Condition.activity)Condition.butt_selected = 2;
+         else PenetrationRising(4, 1); //set activity to the control      
       }
       break;
     case 2:  
        if(DISP.Screen == 2){
-         PenetrationRising(1, 1);
+         
+         if(Condition.activity)Condition.butt_selected = 3;
+         else PenetrationRising(1, 1);
       }
 
       if(DISP.Screen < 2){
@@ -648,8 +672,14 @@ static  struct {
       break;
     case 4:
       if(DISP.Screen == 2){
-         PenetrationRising(2, 1);
-      }
+        if(Condition.activity){
+           Condition.blink_button = Condition.butt_selected;
+           Condition.BlinkCounter = 0;
+          }
+        else PenetrationRising(2, 1);
+        }
+         
+      
       break;  
      
     case 5:
@@ -670,7 +700,8 @@ static  struct {
       break;
     case 7:
       if(DISP.Screen == 2){
-        PenetrationRising(4, 2);
+        if(Condition.activity != 0)PenetrationRising(4,0);
+        else CAM_ON_OFF();
       }
       else{
         CAM_ON_OFF();
@@ -817,20 +848,12 @@ return;
 #define BLINKPERIOD     8
 #define BLINKDUTY       4
 #define BLINKTIME       48
+
+
+
+
+
 void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
-  static uint16_t BlinkCounter = 0;
- 
-  static struct{
-    uint8_t label;  //which label to show
-    uint8_t bigImage;
-    uint8_t penetration         : 1;
-    uint8_t set_penetration     : 1;
-    uint8_t stop                : 1;
-    uint8_t set_stop            : 1;
-    uint8_t rising              : 1;
-    uint8_t set_rising          : 1;
-    uint8_t activity            : 3; // to show the bottom and the right side buttons
-  }Condition={5,1,0,0,0,1,0,0};
   
   uint32_t LineColours[3]={0xffffffff,0xffffffff,0xffffffff};
   
@@ -847,13 +870,23 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
          &IMAGES.ImgArray[167],    // 0 // penetration BIG RED IMAGE
          &IMAGES.ImgArray[224],    // 1 // stop RED IMAGE
          &IMAGES.ImgArray[232]     // 2 // rise and snubber BIG RED IMAGE
-  } ;  
+  };  
+ 
+ const  struct{
+    ImageInfo* Address[3];
+    Point Coords[3];
+ }ButtonImages = {{&IMAGES.ImgArray[211],&IMAGES.ImgArray[212],&IMAGES.ImgArray[213]},{{6,395},{104,394},{203,395}}};
+  const struct{ 
+    ImageInfo* Address[3];  //3 //
+     Point Coords[3];
+    } ButtonBlinksImages={{&IMAGES.ImgArray[2],&IMAGES.ImgArray[31],&IMAGES.ImgArray[39]},{{683,136},{683,213},{683,292}}};
     
   switch(Parm){ // we just setting the parameter
       case 0: // Run
         if(Condition.penetration || Condition.set_penetration){
-         if(!Condition.activity ) {
-          if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
+         
+          if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
+            if(!Condition.activity ) {
             LineColours[0] = 0xFFFF0000;
             LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
                    } 
@@ -862,7 +895,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           }
 
           if(Condition.stop || Condition.set_stop){
-           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
+           if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
             if(!Condition.activity ) { 
              LineColours[1] = 0xFFFF0000;
             LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
@@ -873,11 +906,12 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
            }
           }
           if(Condition.rising || Condition.set_rising){
-           if(((BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
+           if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
              if(!Condition.activity ) {  
               LineColours[2] = 0xFFFF0000;
               LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
                }
+            
              LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162); 
               
            }
@@ -896,17 +930,10 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
             LCD_DrawLine(599, 200, 652, 253);
             _HW_LCD_V_Line(651, 253, 130);
             _HW_LCD_V_Line(652, 253, 130);
-        }   
+        } 
 
           
-        if(BlinkCounter++ == 48){
-          Condition.penetration = 0;
-          Condition.stop = 0;
-          Condition.rising = 0;
-          if (Condition.set_penetration)Condition.label = 1;
-          if (Condition.set_rising)Condition.label = 3;
-          if (Condition.set_stop)Condition.label = 5;
-        }
+
           
 
           LCD_Fill_Image((ImageInfo *)ImagesLabel[Condition.label], 361, 102); // the label SHOW
@@ -915,7 +942,27 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           /// condition activity gets a new picture
           if(Condition.activity ) {
           LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
-          }
+
+        if(Condition.butt_selected)
+         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], \
+                        ButtonImages.Coords[Condition.butt_selected-1].X, \
+                        ButtonImages.Coords[Condition.butt_selected-1].Y);
+        if(Condition.blink_button)
+          if((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)
+               LCD_Fill_Image(ButtonBlinksImages.Address[Condition.blink_button-1], \
+                              ButtonBlinksImages.Coords[Condition.blink_button-1].X, \
+                          ButtonBlinksImages.Coords[Condition.blink_button-1].Y);      
+        }
+               
+        if(Condition.BlinkCounter++ == 48){
+          Condition.penetration = 0;
+          Condition.stop = 0;
+          Condition.rising = 0;
+          Condition.blink_button = 0;
+          if (Condition.set_penetration)Condition.label = 1;
+          if (Condition.set_rising)Condition.label = 3;
+          if (Condition.set_stop)Condition.label = 5;
+        }
         
         break;
       case 1:
@@ -936,7 +983,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
            Condition.rising = 0;
            Condition.stop = 0;
           }
-         BlinkCounter = 0;
+         Condition.BlinkCounter = 0;
         }
         break;
       case 2:
@@ -957,7 +1004,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           Condition.penetration = 0;
           Condition.rising = 0;
         }
-        BlinkCounter = 0;
+        Condition.BlinkCounter = 0;
        }
        
         break;
@@ -979,15 +1026,14 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           Condition.penetration = 0;
           Condition.stop = 0;
         }
-        BlinkCounter = 0;
+        Condition.BlinkCounter = 0;
        }
        break;
      case 4:
-       if(set==2){
-         if(Condition.activity == 1)Condition.activity = 0;
-         else CAM_ON_OFF();
+       if(set==1){
+         Condition.activity = 1;
+         Condition.butt_selected = 0;
        }
-          if(set==1)Condition.activity = 1;
           if(set==0)Condition.activity = 0;
       break;
   }
