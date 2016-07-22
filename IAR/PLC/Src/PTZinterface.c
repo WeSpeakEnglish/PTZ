@@ -145,6 +145,18 @@ uint16_t Number;
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
 
+void CAM_ON_OFF(){
+ if(!CAM_flag) {
+            CAM_flag = 1;
+            VideoCAMOnOff(4, 1); //number four on
+            }
+       else {
+            VideoCAMOnOff(4, 0); //number four off
+            CAM_flag = 0;
+          }
+return;
+}
+
 void Load_GUI_0(void){ 
 //
  
@@ -657,16 +669,12 @@ static  struct {
 //     DISP.ReleaseTask = 1;
       break;
     case 7:
-      if(DISP.Screen == 2)PenetrationRising(4, 0);
-      
-     if(!CAM_flag) {
-        CAM_flag = 1;
-        VideoCAMOnOff(4, 1); //number four on
+      if(DISP.Screen == 2){
+        PenetrationRising(4, 2);
       }
-       else {
-        VideoCAMOnOff(4, 0); //number four off
-        CAM_flag = 0;
-          }
+      else{
+        CAM_ON_OFF();
+      }
       break;
     case 8:
       break;
@@ -904,6 +912,10 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
           LCD_Fill_Image((ImageInfo *)ImagesLabel[Condition.label], 361, 102); // the label SHOW
 
           LCD_Fill_Image((ImageInfo *)ImagesBig[Condition.bigImage], 395, 145); 
+          /// condition activity gets a new picture
+          if(Condition.activity ) {
+          LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
+          }
         
         break;
       case 1:
@@ -971,10 +983,13 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
        }
        break;
      case 4:
-          Condition.activity = (set) ? 1 : 0;
-
-       
-       break;
+       if(set==2){
+         if(Condition.activity == 1)Condition.activity = 0;
+         else CAM_ON_OFF();
+       }
+          if(set==1)Condition.activity = 1;
+          if(set==0)Condition.activity = 0;
+      break;
   }
   
 }

@@ -14,7 +14,7 @@ stlinkserialNo=48341187
 stlinkfoundProbes=
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=1051089125
+Checksum=-1088209124
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -128,8 +128,7 @@ SumSortOrder=0
 mode=1
 [Breakpoints2]
 Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Inc\delays.h}.16.7" 0 0 1 "" 0 "" 0
-Count=2
+Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

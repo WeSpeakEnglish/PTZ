@@ -1,7 +1,7 @@
 #ifndef _DELAYS_H
 #define _DELAYS_H
 
-#define MAXDELAY_DMA2D  300000 // runs of delay function to prevent hang on the procedures 
+#define MAXDELAY_DMA2D  400000 // runs of delay function to prevent hang on the procedures 
 
 #define MAXDELAY_CORE   200000 // runs of delay function to prevent hang on the procedures 
 #define MAXDELAY_SPI    100000 // runs of delay function to prevent hang on the procedures 

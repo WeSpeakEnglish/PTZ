@@ -48,8 +48,8 @@ DRESULT SD_read (BYTE, BYTE*, DWORD, UINT);
 #if _USE_IOCTL == 1
   DRESULT SD_ioctl (BYTE, BYTE, void*);
 #endif  /* _USE_IOCTL == 1 */
-  
-const Diskio_drvTypeDef  SD_Driver =
+
+  Diskio_drvTypeDef  SD_Driver =
 {
   SD_initialize,
   SD_status,

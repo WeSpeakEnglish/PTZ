@@ -49,7 +49,7 @@ DRESULT SDRAMDISK_read (BYTE, BYTE*, DWORD, UINT);
   DRESULT SDRAMDISK_ioctl (BYTE, BYTE, void*);
 #endif /* _USE_IOCTL == 1 */
   
-const Diskio_drvTypeDef  SDRAMDISK_Driver =
+Diskio_drvTypeDef  SDRAMDISK_Driver =
 {
   SDRAMDISK_initialize,
   SDRAMDISK_status,
