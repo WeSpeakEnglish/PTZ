@@ -4,21 +4,21 @@
 
 typedef struct
 {
-uint8_t seconds;    // 0 to 59
-uint8_t minutes;    // 0 to 59
-uint8_t hours;      // 0 to 23  (24-hour time)
-uint8_t day;        // 1 to 31
-uint8_t weekday;    // 0 = Sunday, 1 = Monday, etc.
-uint8_t month;      // 1 to 12
-uint8_t year;       // 00 to 99
+ uint8_t seconds;    // 0 to 59
+ uint8_t minutes;    // 0 to 59
+ uint8_t hours;      // 0 to 23  (24-hour time)
+ uint8_t day;        // 1 to 31
+ uint8_t weekday;    // 0 = Sunday, 1 = Monday, etc.
+ uint8_t month;      // 1 to 12
+ uint8_t year;       // 00 to 99
 }date_time_t;
 
 typedef struct
 {
-uint8_t minutes;    // 0 to 59
-uint8_t hours;      // 0 to 23  (24-hour time)
-uint8_t day;        // 1 to 31
-uint8_t weekday;    // 0 = Sunday, 1 = Monday, etc.
+ uint8_t minutes;    // 0 to 59
+ uint8_t hours;      // 0 to 23  (24-hour time)
+ uint8_t day;        // 1 to 31
+ uint8_t weekday;    // 0 = Sunday, 1 = Monday, etc.
 }PCF8563_Alarm;
 
 extern volatile uint8_t TimeIsReady;

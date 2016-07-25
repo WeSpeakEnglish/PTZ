@@ -1133,11 +1133,8 @@
 	#define REG3FE	0xFE
 //#define REG3FF	0xFF
 
-//#define	ReadTW88(a, b)		I2C_BufferRead( TW8819_ADDRESS, a, b, 1, 0)
-//#define	WriteTW88(a, b)		I2C_BufferWrite(TW8819_ADDRESS, a, b, 1, 0) // I2C_BufferWrite(uint8_t dev,uint16_t addr, uint8_t *buf, uint16_t len,uint8_t mode16)
-//#define WriteTW88Page(a)	HAL_I2C_Master_Transmit(&hi2c2, TW8819_ADDRESS, a, 2, 1000);//I2C_BufferWrite(TW8819_ADDRESS, 0xff, a, 1, 0) uint8_t I2C_BufferWrite(uint8_t dev,uint16_t addr, uint8_t *buf, uint16_t len,uint8_t mode16)
-#define PAGE0_GENERAL		0x00
-#define PAGE0_OUTPUT		0x00	//0x007::0x00F & 0x01F
+#define PAGE0_GENERAL		        0x00
+#define PAGE0_OUTPUT		        0x00	//0x007::0x00F & 0x01F
 #define PAGE0_INPUT			0x00	//0x040::0x046
 #define PAGE0_BT656			0x00	//0x047::0x04A
 #define PAGE0_DTV			0x00	//0x050::0x05F
@@ -1149,15 +1146,15 @@
 #define PAGE0_DCDC			0x00	//0x0E8::0x0EC
 #define PAGE0_VCOM			0x00	//0x0ED::0x0EE
 #define PAGE0_SSPLL			0x00	//0x0F6::0x0FD
-#define PAGE1_DECODER		0x01	//0x101::0x142
+#define PAGE1_DECODER		        0x01	//0x101::0x142
 #define PAGE1_VADC			0x01	//0x1C0::0x1E7	include LLPLL
-#define PAGE2_SCALER		0x02	//0x201::0x21E
+#define PAGE2_SCALER		        0x02	//0x201::0x21E
 #define PAGE2_TCON			0x02	//0x240::0x24E
 #define PAGE2_IMAGE			0x02	//0x280::0x2BF
 #define PAGE2_GAMMA			0x02	//0x2E0::0x2E3 include LCDC
-#define PAGE2_DITHER		0x02	//0x2E4::0x2E4
-#define PAGE2_RGBLEVEL		0x02	//0x2F0::0x2F5
-#define PAGE2_8BITPANEL		0x02	//0x2F8::0x2F9
+#define PAGE2_DITHER		        0x02	//0x2E4::0x2E4
+#define PAGE2_RGBLEVEL		        0x02	//0x2F0::0x2F5
+#define PAGE2_8BITPANEL		        0x02	//0x2F8::0x2F9
 #define PAGE3_FOSD			0x03	//0x300::0x354
 #define PAGE4_SOSD			0x04	//0x400::0x3BE
 #define PAGE3_SPI			0x04	//0x4C0::0x4DA include MCU
@@ -1191,13 +1188,13 @@
 #define SHARPNESS		0x12	// Sharpness Control
 #define SAT_U			0x13	// Chroma(U) Gain
 #define SAT_V			0x14	// Chroma(V) Gain
-#define HUE				0x15	// Hue Conrol
+#define HUE			0x15	// Hue Conrol
 #define V_PEAKING		0x17	// Vertical Peaking
 #define CORING			0x18	// Coring Control Register
 
 #define CC_STATUS		0x1a	// CC/EDS Status
 #define CC_DATA			0x1b	// CC/EDS Data
-#define SDT				0x1c	// Standard Selection
+#define SDT			0x1c	// Standard Selection
 #define SDTR			0x1d	// Standard Recognition
 #define CVFMT			0x1e	// Component Video Format
 
@@ -1235,8 +1232,8 @@
 #define SCONTRAST_G		0x82	// Green Contrast
 #define SCONTRAST_B		0x83	// Blue Contrast
 #define SCONTRAST_Y		0x84	// Y Contrast
-#define SCONTRAST_Cb	0x85	// Cb Contrast
-#define SCONTRAST_Cr	0x86	// Cr Contrast
+#define SCONTRAST_Cb	        0x85	// Cb Contrast
+#define SCONTRAST_Cr	        0x86	// Cr Contrast
 #define SBRIGHT_R		0x87	// Red Brightness
 #define SBRIGHT_G		0x88	// Green Brightness
 #define SBRIGHT_B		0x89	// Blue Brightness
@@ -1246,7 +1243,7 @@
 #define RGBMISC			0x39
 #define FBCONTRL		0x3F
 */
-#define PNLSHARPNESS	0x8B	// Sharpness Control
+#define PNLSHARPNESS	        0x8B	// Sharpness Control
 #define FWVER			0x003		// rev 0.03
 
 #define DEVICE_ID_TW8819	0x8a
@@ -1265,21 +1262,21 @@
 
 //color type
 #define	RED		0
-#define	GREEN	1
-#define	BLUE	2
-#define WHITE	3
+#define	GREEN	        1
+#define	BLUE	        2
+#define WHITE	        3
 
-#define NIL			0xff
+#define NIL		0xff
 
-#define UNKNOWN	0xfe
+#define UNKNOWN	        0xfe
 //VInputStd
-#define NTSC	1			
+#define NTSC	        1			
 #define PAL		2
-#define SECAM	3
-#define NTSC4	4
-#define PALM	5
-#define PALN	6
-#define PAL60	7
+#define SECAM	        3
+#define NTSC4	        4
+#define PALM	        5
+#define PALN	        6
+#define PAL60	        7
 extern uint8_t Sharpness[];
 extern uint8_t InitCVBSAll[];
 
