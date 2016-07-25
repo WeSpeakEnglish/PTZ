@@ -326,9 +326,7 @@ uint16_t SetRGBBright(uint16_t val)
 void ResetRGBSharp( void )
 {
 	WriteTW88Page( PAGE2_IMAGE );
-
 	WriteTW88( Sharpness, (ReadTW88( Sharpness ) & 0xf0) );
-
 	WriteTW88( 0x8B, 0x00 );
 }
 

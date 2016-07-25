@@ -24,5 +24,5 @@ float GetTempLM75(void){
  
  RetRes = (float)(Result.Word)* LM75_TEMP_CORR;
 
-return RetRes; 
+ return RetRes; 
 }

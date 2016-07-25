@@ -2811,7 +2811,7 @@ void HAL_TIM_IRQHandler(TIM_HandleTypeDef *htim)
     if(__HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) !=RESET)
     {
       {
-        __HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);
+        __HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);  
         htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;
         
         /* Input capture event */

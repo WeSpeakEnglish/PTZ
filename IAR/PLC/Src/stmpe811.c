@@ -14,42 +14,31 @@ static uint16_t P_Touch_Read_X(void);
 static uint16_t P_Touch_Read_Y(void);
 uint16_t P_Touch_Read_16b(uint32_t RegisterAddr);
 
-
-ErrorStatus UB_Touch_Init(void)
-{
+ErrorStatus UB_Touch_Init(void){
   uint16_t stmpe_id=0;
-
   stmpe_id=P_Touch_ReadID();
   if(stmpe_id!=STMPE811_ID) {
     return(ERROR);
   }
-
   P_Touch_Reset();
-
   P_Touch_FnctCmd(IOE_ADC_FCT, ENABLE);
   P_Touch_Config();
-
   return(SUCCESS);
 }
 
 uint8_t temp, temp2; 
 
 void MX_Touch_Read(void){
-   UB_Touch_Read();
+  UB_Touch_Read();
 }
 
-ErrorStatus UB_Touch_Read(void)
-{
+ErrorStatus UB_Touch_Read(void){
   uint32_t xDiff, yDiff , x , y;
   static uint32_t _x = 0, _y = 0;
   int16_t i2c_wert;
-  
   HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_TP_CTRL,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
-
   i2c_wert = (int16_t) temp;
-  
   if(i2c_wert<0) return(ERROR);
-  
   if((i2c_wert&0x80)==0) {
     Touch_Data.status = TOUCH_RELEASED;
   }
@@ -61,31 +50,22 @@ ErrorStatus UB_Touch_Read(void)
     y = P_Touch_Read_Y();
     xDiff = x > _x? (x - _x): (_x - x);
     yDiff = y > _y? (y - _y): (_y - y);
-    if (xDiff + yDiff > 5)
-    {
-      _x = x;
-      _y = y;
-    }
-  
-  Touch_Data.xp = _x;
-  Touch_Data.yp = _y;
+    if (xDiff + yDiff > 5)    {
+        _x = x;
+        _y = y;
+      }
+
+    Touch_Data.xp = _x;
+    Touch_Data.yp = _y;
   }
-  
   temp = 0x01; 
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
   temp = 0x00; 
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
-  
-  
   return(SUCCESS);
 }
 
-
-//--------------------------------------------------------------
-// interne Funktion
-//--------------------------------------------------------------
-void P_Touch_Reset(void)
-{
+void P_Touch_Reset(void){
   temp = 0x02;
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
   DelayOnMediumQ(20);
@@ -93,46 +73,31 @@ void P_Touch_Reset(void)
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
 }
 
-
-//--------------------------------------------------------------
-// return : 0 = ok, >0 = error
-//--------------------------------------------------------------
-uint8_t P_Touch_FnctCmd(uint8_t Fct, FunctionalState NewState)
-{
-//  uint8_t tmp = 0;
+uint8_t P_Touch_FnctCmd(uint8_t Fct, FunctionalState NewState){
   int16_t i2c_wert;
-
   HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_SYS_CTRL2,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
   i2c_wert = (int16_t)temp;
- 
   if(i2c_wert<0) return(1);
-
   temp = (uint8_t)(i2c_wert);
-
   if (NewState != DISABLE) {
     temp &= ~(uint8_t)Fct;
   }
   else {
     temp |= (uint8_t)Fct;
   }
-  
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL2, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
-  
   return(0);
 }
 
 
-//--------------------------------------------------------------
-// interne Funktion
-//--------------------------------------------------------------
 void P_Touch_FreeIRQ(void){
   const uint8_t RegValue = 0x01; 
-   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, (uint8_t*)&RegValue, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, (uint8_t*)&RegValue, 1, 2);
 }
 
-void P_Touch_Config(void)
-{
- static uint8_t regArray[12]={0x50,0x9A,0x9A,0x01,0x01,0x00,0x01,0x01,0x03,0xFF,1,1};
+void P_Touch_Config(void){
+  static uint8_t regArray[12]={
+    0x50,0x9A,0x9A,0x01,0x01,0x00,0x01,0x01,0x03,0xFF,1,1  };
   P_Touch_FnctCmd(IOE_TP_FCT, ENABLE);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL1, I2C_MEMADD_SIZE_8BIT, &regArray[0], 1, 2);
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[10], 1, 2);
@@ -152,13 +117,7 @@ void P_Touch_Config(void)
   Touch_Data.yp = 0;
 }
 
-
-//--------------------------------------------------------------
-// interne Funktion
-// ID auslesen
-//--------------------------------------------------------------
-uint16_t P_Touch_ReadID(void)
-{
+uint16_t P_Touch_ReadID(void){
   uint16_t tmp = 0;
   int16_t i2c_wert1, i2c_wert2;
 
@@ -166,7 +125,7 @@ uint16_t P_Touch_ReadID(void)
   i2c_wert1 = (int16_t)temp;
   HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,0x01,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
   i2c_wert2 = (int16_t)temp;
-  
+
   if(i2c_wert1<0) return 0;
   if(i2c_wert2<0) return 0;
 
@@ -178,15 +137,11 @@ uint16_t P_Touch_ReadID(void)
 }
 
 
-//--------------------------------------------------------------
-// return : 0=ok, >0 = error
-//--------------------------------------------------------------
-uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState)
-{
+uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState){
   int16_t i2c_wert;
   HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_GPIO_AF,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
   i2c_wert = (int16_t) temp;
-  
+
   if(i2c_wert<0) return(1);
 
   temp = i2c_wert;
@@ -198,8 +153,8 @@ uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState)
     temp &= ~(uint8_t)IO_Pin;
   }
 
-   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_GPIO_AF, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
-   return(0);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_GPIO_AF, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  return(0);
 }
 #define DISPLAY_8IN             1U 
 //#define DISPLAY_9IN           1U 
@@ -221,13 +176,9 @@ uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState)
 
 #define ORIENTATION_DEFAULT     1U 
 
-//--------------------------------------------------------------
-// interne Funktion
-//--------------------------------------------------------------
-static uint16_t P_Touch_Read_X(void)
-{
+static uint16_t P_Touch_Read_X(void){
   int32_t x;
-  
+
 
 #ifdef DISPLAY_9IN 
   x = P_Touch_Read_16b(IOE_REG_TP_DATA_Y);
@@ -239,47 +190,38 @@ static uint16_t P_Touch_Read_X(void)
   x -=X_SUB;
   x *=  X_MAGNIFIER;
   x /= 4096;
- #ifdef DISPLAY_8IN
+#ifdef DISPLAY_8IN
   if(ORIENTATION_DEFAULT) x = DisplayWIDTH - x; 
- #endif  
+#endif  
   if( x < 0 ) x = 0;
 
   return (uint16_t)(x);
 }
 
 
-//--------------------------------------------------------------
-// interne Funktion
-//--------------------------------------------------------------
-static uint16_t P_Touch_Read_Y(void)
-{
+static uint16_t P_Touch_Read_Y(void){
   int32_t y;
- if( Touch_Data.status == TOUCH_PRESSED){
-  
-  
+  if( Touch_Data.status == TOUCH_PRESSED){
+
+
 #ifdef DISPLAY_8IN 
-  y = P_Touch_Read_16b(IOE_REG_TP_DATA_Y); 
+    y = P_Touch_Read_16b(IOE_REG_TP_DATA_Y); 
 #endif
 #ifdef DISPLAY_9IN 
-  y = P_Touch_Read_16b(IOE_REG_TP_DATA_X); 
+    y = P_Touch_Read_16b(IOE_REG_TP_DATA_X); 
 #endif   
-  y -= Y_SUB;
-  y *=  Y_MAGNIFIER;
-  y /= 4096;
-  
- if(ORIENTATION_DEFAULT) y = DisplayHEIGHT - y;
- if( y < 0 ) y = 0;
- 
-}
+    y -= Y_SUB;
+    y *=  Y_MAGNIFIER;
+    y /= 4096;
+
+    if(ORIENTATION_DEFAULT) y = DisplayHEIGHT - y;
+    if( y < 0 ) y = 0;
+
+  }
   return (uint16_t)(y);
 }
 
-
-//--------------------------------------------------------------
-// interne Funktion
-//--------------------------------------------------------------
-uint16_t P_Touch_Read_16b(uint32_t RegisterAddr)
-{
+uint16_t P_Touch_Read_16b(uint32_t RegisterAddr){
   uint16_t ret_wert=0;
   int16_t i2c_wert1, i2c_wert2;
 
@@ -295,10 +237,6 @@ uint16_t P_Touch_Read_16b(uint32_t RegisterAddr)
 
   return(ret_wert);
 }
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 
 

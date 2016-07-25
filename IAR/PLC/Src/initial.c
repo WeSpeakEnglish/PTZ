@@ -1,50 +1,53 @@
 #include "initial.h"
-
-
+#include "delays.h"
 
 void InitPeriph(void){
-   date_time_t dt;
-SDRAM_Initialization_Sequence(&hsdram1);
-  
+  date_time_t dt;
+  SDRAM_Initialization_Sequence(&hsdram1);
+
   pMediumQueueIni();            // fill the medium queue by Zero functions
   pFastQueueIni();              // fill the fast queue by Zero functions
   pSlowQueueIni();              // fill the slow queue by Zero functions
-  
   NAND_readId();
-  
   Timer14_Init_Deal(1000, 0);   //just init timer
   Timer13_Init();
   Timer11_Init();
   UB_Touch_Init();
-//  BD_Init_TW8819();
   
   dt.weekday = 5;
   dt.day = 15;
-   dt.month = 07;
-   dt.year = 16;
-   dt.hours = 17;
-   dt.minutes = 03;
+  dt.month = 07;
+  dt.year = 16;
+  dt.hours = 17;
+  dt.minutes = 03;
   dt.seconds = 0;
- // PCF8563_set_datetime(&dt);
-  
-  
+  // PCF8563_set_datetime(&dt);
 
-  
   SDRAM_free();
-
-   MX_LTDC_Init();
-  //LCD_Layers_Init();
- // BD_Init_TW8819(); 
- // Switch_Camera(1);
-  
+  MX_LTDC_Init();
   LCD_Init();
   LCD_SetLight(7);
-  
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
   LED_control(1);
- 
-
 }
 
+
+void HAL_Delay(__IO uint32_t Delay){
+
+  static uint32_t OldTicksGlobal_mS   = 0x00000000;
+  static uint32_t Difference     = 0x00000000;
+
+  TicksGlobal_mS = HAL_GetTick();
+  if(OldTicksGlobal_mS > TicksGlobal_mS ){
+    Difference = 0xFFFFFFFF - OldTicksGlobal_mS + TicksGlobal_mS + 1;
+  }
+  else Difference = TicksGlobal_mS - OldTicksGlobal_mS;
+
+  WaitWhileSysTick(MAXDELAY_SYSTICK);      
+  while(Difference < Delay)  {
+      M_pull()(); // pull medium
+      if(!WaitWhileSysTick(0)) return;
+    }
+}
 
 

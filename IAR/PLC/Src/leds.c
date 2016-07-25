@@ -7,9 +7,6 @@ void LED_control(uint8_t Status){
              break;
      case 1: HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3,GPIO_PIN_RESET);
              break;
-  
-  
-  
   }
 
 }

@@ -40,4 +40,4 @@ HAL_DAC_Start(&hdac,DAC_CHANNEL_2);
        case 0:     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 800); break;
        case 1:     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);
  }
-  }
+}

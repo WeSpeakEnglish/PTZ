@@ -70,7 +70,6 @@ void MX_USB_HOST_Process(void);
   MX_TIM14_Init();
 
   /* USER CODE BEGIN 2 */
-  //MPU_Config(); 
   InitPeriph();
   Load_GUI_0();  
  
@@ -83,15 +82,6 @@ void MX_USB_HOST_Process(void);
 
   /* USER CODE BEGIN 3 */
    RoutineFast(); // get and run deals from medium queue 
-
-  //if(UpdateScreen){
-
- //  Tests();
-//   Run_GUI();
- //  Show_GUI();
- //UpdateScreen = 0;
- // DISP.ReleaseFlag = 0;
- // }
     
   }
   /* USER CODE END 3 */

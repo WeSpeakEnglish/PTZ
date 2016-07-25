@@ -7,18 +7,7 @@
 #include "OSDinitTable.h"
 #include "tw8819.h"
 
-	
-
-
-
-
-
-
 extern	const	uint8_t	FOSDWinBase[];
-
-
-
-
 const uint8_t Init_Osd_DisplayInput[] = {
 
 	//----- Input Selection : Zoom 2

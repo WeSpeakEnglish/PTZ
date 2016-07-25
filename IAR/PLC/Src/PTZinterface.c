@@ -15,27 +15,29 @@
 
 
 struct{
- uint8_t PressTransmiss; // pressure in the transmission
- uint8_t PressPneumosys; // pressuse in the pneumo system
- uint8_t PressEngineOil; // the pressure of oil
- uint8_t Speed;       //  the speed
- uint8_t RateEngine; // the RPM
- float Square;     // the square, which have been prepared
- float TimeOfRun;  // the total time of pass
- uint16_t Passes;  // number of passes
- float SquarePerHour;   // (100m)^2 per hour
- float PetrolPerHour;   // litres per hour
- float PetrolPerSquare; // litres per (100m)^2
- uint8_t Slip; // slipping
- int8_t Rising; // rasing/penetration(-)
- int8_t Calibration; //in centimeters
- struct{
-   uint8_t A;
-   uint8_t B;
-   float Time;
- }Hidroexits[5];
- 
-}PTZ;
+  uint8_t PressTransmiss; // pressure in the transmission
+  uint8_t PressPneumosys; // pressuse in the pneumo system
+  uint8_t PressEngineOil; // the pressure of oil
+  uint8_t Speed;       //  the speed
+  uint8_t RateEngine; // the RPM
+  float Square;     // the square, which have been prepared
+  float TimeOfRun;  // the total time of pass
+  uint16_t Passes;  // number of passes
+  float SquarePerHour;   // (100m)^2 per hour
+  float PetrolPerHour;   // litres per hour
+  float PetrolPerSquare; // litres per (100m)^2
+  uint8_t Slip; // slipping
+  int8_t Rising; // rasing/penetration(-)
+  int8_t Calibration; //in centimeters
+  struct{
+    uint8_t A;
+    uint8_t B;
+    float Time;
+  }
+  Hidroexits[5];
+
+}
+PTZ;
 
 static uint8_t StrTransmiss[] =           "     0.0";
 static uint8_t StrPneumosys[] =           "     0.0";
@@ -52,10 +54,7 @@ static uint8_t StrSleep[]        =        "      0%";
 static uint8_t StrRising[]       =        "      0";
 static uint8_t StrCalibration[]  =        "0      "; //in the LEFT mode
 
-
-
 static GUI_Object* Images[90]; 
-
 static GUI_Object* Text[80];
 //static GUI_Object* Lines[20];
 static GUI_Object* Polygons[6];
@@ -67,23 +66,54 @@ static uint8_t StrDATA[8][16];
 
 
 
-const uint8_t String_1[] = "Загрузка изображений в память:";
-//const uint8_t String_2[] = "атм";
+const uint8_t String_1[] = "???????? ??????????? ? ??????:";
+//const uint8_t String_2[] = "???";
 
-const Point Poly1_points[4]={{227,311},{363,317},{355,311},{363,304}};
-//const Point Poly1_points[4]={{227,311},{363,317},{363,304}};
-const Point Poly2_points[4]={{411,198},{477,202},{472,198},{477,194}};
-//const Point Poly2_points[4]={{411,198},{477,202},{477,194}};
-//const Point Poly3_points[4]={{662,123},{704,120},{701,123},{704,126}};
-const Point Poly3_points[4]={{662,123},{704,120},{704,126}};
-//const Point Poly4_points[4]={{662,311},{704,308},{701,311},{704,314}};
-const Point Poly4_points[4]={{662,311},{704,308},{704,314}};
-//const Point Poly5_points[4]={{662,311},{704,308},{704,314}};
+const Point Poly1_points[4]={
+  {
+    227,311  }
+  ,{
+    363,317  }
+  ,{
+    355,311  }
+  ,{
+    363,304  }
+};
+const Point Poly2_points[4]={
+  {
+    411,198  }
+  ,{
+    477,202  }
+  ,{
+    472,198  }
+  ,{
+    477,194  }
+};
+const Point Poly3_points[4]={
+  {
+    662,123  }
+  ,{
+    704,120  }
+  ,{
+    704,126  }
+};
+const Point Poly4_points[4]={
+  {
+    662,311  }
+  ,{
+    704,308  }
+  ,{
+    704,314  }
+};
 
-const Point TurnCenter1 = {399,303};
-const Point TurnCenter2 = {520,200};
-const Point TurnCenter3 = {710,123};
-const Point TurnCenter4 = {710,311};
+const Point TurnCenter1 = {
+  399,303};
+const Point TurnCenter2 = {
+  520,200};
+const Point TurnCenter3 = {
+  710,123};
+const Point TurnCenter4 = {
+  710,311};
 
 volatile uint8_t UpdateScreen = 0;
 
@@ -98,93 +128,274 @@ volatile date_time_t dt;
 volatile Disp DISP;
 
 struct{
-ImageInfo ImgArray[300];
-uint16_t Number;
-}IMAGES;
+  ImageInfo ImgArray[300];
+  uint16_t Number;
+}
+IMAGES;
 
 
 
 
-  const Zone ZonesTS_0[]={
-    {{13,405},{94,477}},  //0 BIG BOTTOM BTN#0  
-   {{112,405},{193,477}}, //1 BIG BOTTOM BTN#1  
-   {{211,405},{292,477}},  //2 BIG BOTTOM BTN#2 
-   {{310,405},{391,477}},  //3 BIG BOTTOM BTN#3  
-   {{409,405},{490,477}},  //4 BIG BOTTOM BTN#4 
-   {{508,405},{589,477}},  //5 BIG BOTTOM BTN#5 
-   {{607,405},{688,477}},  //6 BIG BOTTOM BTN#6  
-   {{706,405},{787,477}},  //7 BIG BOTTOM BTN#7 
-   {{688,141},{756,202}},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
-   {{688,218},{756,280}},  //9    |
-   {{688,296},{756,358}},  //10---| 
-   {{900,900},{900,900}},  //11  
-   {{900,900},{900,900}},   //12  
-   {{900,900},{900,900}},  //13  
-   {{900,900},{900,900}},  //14  
-   {{900,900},{900,900}},  //15  
-   
-   {{900,900},{900,900}},   //16  
-   {{900,900},{900,900}},   //17  
-   {{900,900},{900,900}},   //18  
-   
-   {{900,900},{900,900}},   //19  
-   {{900,900},{900,900}},   //20  
-   {{900,900},{900,900}},   //21  
-   
-   {{900,900},{900,900}},   //22  
-   {{900,900},{900,900}},   //23 
-   
-   {{900,900},{900,900}},    //24 
-   {{900,900},{900,900}},   //25  
-   
-   {{900,900},{900,900}},    //26  
-   {{900,900},{900,900}},   //27 
-   {{900,900},{900,900}},   //28  CAM
- };   
- 
+const Zone ZonesTS_0[]={
+  {
+    {
+      13,405    }
+    ,{
+      94,477    }
+  }
+  ,  //0 BIG BOTTOM BTN#0  
+  {
+    {
+      112,405    }
+    ,{
+      193,477    }
+  }
+  , //1 BIG BOTTOM BTN#1  
+  {
+    {
+      211,405    }
+    ,{
+      292,477    }
+  }
+  ,  //2 BIG BOTTOM BTN#2 
+  {
+    {
+      310,405    }
+    ,{
+      391,477    }
+  }
+  ,  //3 BIG BOTTOM BTN#3  
+  {
+    {
+      409,405    }
+    ,{
+      490,477    }
+  }
+  ,  //4 BIG BOTTOM BTN#4 
+  {
+    {
+      508,405    }
+    ,{
+      589,477    }
+  }
+  ,  //5 BIG BOTTOM BTN#5 
+  {
+    {
+      607,405    }
+    ,{
+      688,477    }
+  }
+  ,  //6 BIG BOTTOM BTN#6  
+  {
+    {
+      706,405    }
+    ,{
+      787,477    }
+  }
+  ,  //7 BIG BOTTOM BTN#7 
+  {
+    {
+      688,141    }
+    ,{
+      756,202    }
+  }
+  ,  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+  {
+    {
+      688,218    }
+    ,{
+      756,280    }
+  }
+  ,  //9    |
+  {
+    {
+      688,296    }
+    ,{
+      756,358    }
+  }
+  ,  //10---| 
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,  //11  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //12  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,  //13  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,  //14  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,  //15  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //16  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //17  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //18  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //19  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //20  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //21  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //22  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //23 
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,    //24 
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //25  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,    //26  
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //27 
+  {
+    {
+      900,900    }
+    ,{
+      900,900    }
+  }
+  ,   //28  CAM
+};   
+
 static struct{ // this is a (penetration/rising) condition
-    uint8_t label;  //which label to show
-    uint8_t bigImage;
-    uint8_t BlinkCounter; 
-    uint8_t penetration         : 1;
-    uint8_t set_penetration     : 1;
-    uint8_t stop                : 1;
-    uint8_t set_stop            : 1;
-    uint8_t rising              : 1;
-    uint8_t set_rising          : 1;
-    uint8_t activity            : 1; // to show the bottom and the right side buttons
-    uint8_t butt_selected       : 2;
-    uint8_t blink_button        : 2;
-  }Condition={5,1,0,0,0,1,0,0,0,0}; 
- 
+  uint8_t label;  //which label to show
+  uint8_t bigImage;
+  uint8_t BlinkCounter; 
+uint8_t penetration         : 
+  1;
+uint8_t set_penetration     : 
+  1;
+uint8_t stop                : 
+  1;
+uint8_t set_stop            : 
+  1;
+uint8_t rising              : 
+  1;
+uint8_t set_rising          : 
+  1;
+uint8_t activity            : 
+  1; // to show the bottom and the right side buttons
+uint8_t butt_selected       : 
+  2;
+uint8_t blink_button        : 
+  2;
+}
+Condition={
+  5,1,0,0,0,1,0,0,0,0}; 
+
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
 
 void CAM_ON_OFF(){
- if(!CAM_flag) {
-            CAM_flag = 1;
-            VideoCAMOnOff(4, 1); //number four on
-            }
-       else {
-            VideoCAMOnOff(4, 0); //number four off
-            CAM_flag = 0;
-          }
-return;
+  if(!CAM_flag) {
+    CAM_flag = 1;
+    VideoCAMOnOff(4, 1); //number four on
+  }
+  else {
+    VideoCAMOnOff(4, 0); //number four off
+    CAM_flag = 0;
+  }
+  return;
 }
 
 void Load_GUI_0(void){ 
-//
- 
- DISP.Screen = 0; 
+  //
 
- 
+  DISP.Screen = 0; 
+
+
   GUI_Free();
   Text[0] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 140, 240, (uint32_t)String_1, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Itoa(StrDATA[0],0);
   Text[1] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 400, 240, (uint32_t)StrDATA[0], LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
- 
+
   PreLoadImages();
- 
+
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
@@ -205,16 +416,16 @@ void Load_GUI_0(void){
   Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[19] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 100, 322, StrRising, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[20] = GUI_SetObject(TEXT_STRING ,0xFF000000, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
-  
+
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
- // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
- // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
- // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
-//  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
-   Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
-   Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[288], 41, 185);   //the triangle nice pointer green
-   Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[289], 126, 185); // the triangle nice pointer red
-  
+  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
+  // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
+  // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
+  //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
+  Images[5] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[197], 497 , 394); //piece of... with red
+  Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[288], 41, 185);   //the triangle nice pointer green
+  Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[289], 126, 185); // the triangle nice pointer red
+
   Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
   Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
   Images[10] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[177], 126 + 77*2 , 0); // the termometer red sign
@@ -222,17 +433,13 @@ void Load_GUI_0(void){
   Images[12] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[188], 126 + 77*4 , 0); // the valve red sign
   Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 126 + 77*5 , 0); // the filter red sign
   Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the hydro red sign
-  
   Images[15] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[10], 46 , 89); // the gypo and drop
-
   Images[16] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
-
   Images[17] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
 
-  
   Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
   Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[23], 86 , 320); // the tractor with clockwise arrow
-  
+
   Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
   Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
   Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[56], 316 , 325); // the far light sign
@@ -241,11 +448,11 @@ void Load_GUI_0(void){
   Images[25] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[61], 440 , 324); // the T letter in the ring letter
   Images[26] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[64], 474 , 324); // the Oil mark 
   Images[27] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
-  
+
   Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
   Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
   Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
-  
+
   Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[186], 696 , 135);            // the red fuel sign
   Images[32] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[185], 696 , 323);            // the red temp sign
 
@@ -253,339 +460,323 @@ void Load_GUI_0(void){
   Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points,4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
   Polygons[2] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly3_points, &TurnCenter3, 0); //the small arrow 
   Polygons[3] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly4_points, &TurnCenter4, 0); //the second small arrow 
-  
-//  Triangles[0] =  GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly5_points,&TurnCenter4,20000); //the second small arrow
-  
-  
 
 }
 
 void Run_GUI(void){
 
-ViewScreen();
+  ViewScreen();
 
- if(TimeIsReady){
+  if(TimeIsReady){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
     PCF8563_read_datetime(&dt);
     RESmutex_1 = 0;
-    
+
     GetDateToStr(StrDate, &dt);
     GetTimeToStr(StrTime, &dt);
     TimeIsReady = 0;
   }
-  
+
   if(DISP.Event){ 
-     switch(DISP.TS_ZoneNumber){
-        case 0:  //toggle index of button
-        case 1:  //toggle index of button
-        case 2:  //toggle index of button
-        case 3:  //toggle index of button
-        case 4:
-        case 5:
-        case 6:
-        case 7:  //toggle index of button    
-         actions(DISP.TS_ZoneNumber);
-         break;
-        case 8:  //toggle index of button  
-          break;
-        case 9:  //toggle index of button
-          break;  
-        case 12: //pressed topping
-          break; 
-        case 13: //pressed blade front
-          break;   
-        case 14: //pressed blade front
-          break;  
-        case 15: //pressed blade side
-          break; 
-          
-      }
-  switch(DISP.Screen){
-  case 0:
     switch(DISP.TS_ZoneNumber){
-        case 10:  ////toggle rectangles
-                
-          break;
-        case 11:  //toggle rectangles
-          
-          break;   
-     }
-   break;
-  case 1:
-    DISP.SelectedField = 0; 
-   switch(DISP.TS_ZoneNumber){
-        case 16:  ////toggle rectangles
-           break;
-        case 17:  //toggle rectangles
-           break; 
-        case 22:  //toggle rectangles LEFT PRESSED
-             break;
-        case 20:  // SW pressed
-             break;
-        case 18:  // NE
-             break;
-        case 21:  //toggle rectangles
-             break;   
-        case 19:  //toggle rectangles
-             break; 
-        case 23:  //toggle rectangles
-             break;   
+    case 0:  //toggle index of button
+    case 1:  //toggle index of button
+    case 2:  //toggle index of button
+    case 3:  //toggle index of button
+    case 4:
+    case 5:
+    case 6:
+    case 7:  //toggle index of button    
+      actions(DISP.TS_ZoneNumber);
+      break;
+    case 8:  //toggle index of button  
+      break;
+    case 9:  //toggle index of button
+      break;  
+    case 12: //pressed topping
+      break; 
+    case 13: //pressed blade front
+      break;   
+    case 14: //pressed blade front
+      break;  
+    case 15: //pressed blade side
+      break; 
+
     }
-   break;
-  case 2:  
-   switch(DISP.TS_ZoneNumber){ 
-    case 16: 
-          break;  
-    case 17:                   
-           break;  
-    case 22:
-           break; 
-    case 20:
-           break;  
-    case 18: //NE
-           break;
-    case 21:  //SE
-           break;    
-    case 19:  //toggle rectangles
-           break; 
-   case 23:  //RIGHT
-           break;        
-   }
-   break;
-  case 3:
-    switch(DISP.TS_ZoneNumber){ 
-        case 24: //TOP BRUSH
-           break;
-        case 25: //BOTTOM BRUSH
-           break;  
-        case 26: //TOP RATE
-           break;
-        case 27: //BOTTOM RATE
-           break;      
+    switch(DISP.Screen){
+    case 0:
+      switch(DISP.TS_ZoneNumber){
+      case 10:  ////toggle rectangles
+
+        break;
+      case 11:  //toggle rectangles
+
+        break;   
+      }
+      break;
+    case 1:
+      DISP.SelectedField = 0; 
+      switch(DISP.TS_ZoneNumber){
+      case 16:  ////toggle rectangles
+        break;
+      case 17:  //toggle rectangles
+        break; 
+      case 22:  //toggle rectangles LEFT PRESSED
+        break;
+      case 20:  // SW pressed
+        break;
+      case 18:  // NE
+        break;
+      case 21:  //toggle rectangles
+        break;   
+      case 19:  //toggle rectangles
+        break; 
+      case 23:  //toggle rectangles
+        break;   
+      }
+      break;
+    case 2:  
+      switch(DISP.TS_ZoneNumber){ 
+      case 16: 
+        break;  
+      case 17:                   
+        break;  
+      case 22:
+        break; 
+      case 20:
+        break;  
+      case 18: //NE
+        break;
+      case 21:  //SE
+        break;    
+      case 19:  //toggle rectangles
+        break; 
+      case 23:  //RIGHT
+        break;        
+      }
+      break;
+    case 3:
+      switch(DISP.TS_ZoneNumber){ 
+      case 24: //TOP BRUSH
+        break;
+      case 25: //BOTTOM BRUSH
+        break;  
+      case 26: //TOP RATE
+        break;
+      case 27: //BOTTOM RATE
+        break;      
+      }
+      break; 
     }
-   break; 
+
+    DISP.TS_ZoneNumber = -1; 
+    DISP.Event = 0;
   }
-  
-  DISP.TS_ZoneNumber = -1; 
-  DISP.Event = 0;
+
+  if(KB_Status.ENTER)KBD_Handle(KB_Status.code);
+
+  if(DISP.ReleaseFlag){
+    if((Touch_Data.status != TOUCH_PRESSED) && (!KB_Status.PRESSED))       ReleaseFunction();
+    DISP.ReleaseFlag = 0;
   }
- 
- if(KB_Status.ENTER)KBD_Handle(KB_Status.code);
- 
-    if(DISP.ReleaseFlag){
-     if((Touch_Data.status != TOUCH_PRESSED) && (!KB_Status.PRESSED))
-       ReleaseFunction();
-     DISP.ReleaseFlag = 0;
-   }
-   
+
 }
 
 void PreLoadImages(void){
 
-
   IMAGES.Number = 0;
   // just simply load images into the memory 
   FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   290);
-  
-   //image 006.bmp like base  
-   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
- //  FillImageSoft(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK1_OFFSET, IMAGES.ImgArray[164].xsize, IMAGES.ImgArray[164].ysize);
 
- return;
+  //image 006.bmp like base  
+  FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
+  return;
 }
 
 void KBD_Handle(uint8_t code){ //the handle of KBD
   KB_Status.ENTER = 0;
   //up flags
   if(KB_Status.PRESSED){
-  DISP.Event = 1;
-  DISP.KbdCode = KB_Status.code;
-  
-  switch(DISP.SelectedField){
+    DISP.Event = 1;
+    DISP.KbdCode = KB_Status.code;
+
+    switch(DISP.SelectedField){
     case 1:
-     break;
+      break;
     case 2:
-     break;
-  }
-  
-  switch(DISP.Screen){
-        case 0:
-          switch(code){
-          case 0x31:
-          case 0x32:
-          case 0x33:
-          case 0x34:
-          case 0x35:
-          case 0x36:
-          case 0x37:
-          case 0x38:
-           actions(code - 0x31);
-           break;
-          }
-          break;
-        case 1:
-          switch(KB_Status.code){
-               case 0x34:
+      break;
+    }
 
-                 break;
-                case 0x35:  
+    switch(DISP.Screen){
+    case 0:
+      switch(code){
+      case 0x31:
+      case 0x32:
+      case 0x33:
+      case 0x34:
+      case 0x35:
+      case 0x36:
+      case 0x37:
+      case 0x38:
+        actions(code - 0x31);
+        break;
+      }
+      break;
+    case 1:
+      switch(KB_Status.code){
+      case 0x34:
 
-                break; 
-               case 0x36:
+        break;
+      case 0x35:  
 
-                 break;
-               case 0x37:  
+        break; 
+      case 0x36:
 
-                 break;                   
-          }
-          break;
-          case 2: 
-  switch(KB_Status.code){
-               case 0x34:
+        break;
+      case 0x37:  
 
-                 break;
-               case 0x35:  
+        break;                   
+      }
+      break;
+    case 2: 
+      switch(KB_Status.code){
+      case 0x34:
 
-                 break; 
-               case 0x36:
+        break;
+      case 0x35:  
 
-                 break;
-               case 0x37:  
+        break; 
+      case 0x36:
 
-                 break;   
-          }
-          break;
-  }
+        break;
+      case 0x37:  
 
-  
+        break;   
+      }
+      break;
+    }
+
+
   }
   else
-  {
+      {
     DISP.Event = 1;
-      switch(DISP.Screen){
-        case 1:
-          DISP.ReleaseTask = 1;
-          DISP.ReleaseFlag = 1;
-          break;
-        case 2:
-          DISP.ReleaseTask = 2;
-          DISP.ReleaseFlag = 1;
-          break;
-        case 3:
-          DISP.ReleaseTask = 3;
-          DISP.ReleaseFlag = 1;
-          break;  
-     }
+    switch(DISP.Screen){
+    case 1:
+      DISP.ReleaseTask = 1;
+      DISP.ReleaseFlag = 1;
+      break;
+    case 2:
+      DISP.ReleaseTask = 2;
+      DISP.ReleaseFlag = 1;
+      break;
+    case 3:
+      DISP.ReleaseTask = 3;
+      DISP.ReleaseFlag = 1;
+      break;  
+    }
 
   }
- return;
+  return;
 }
 
 
 void TouchScreen_Handle(void){ //the handle of Touch Screen
- uint8_t Index;
- uint16_t x = Touch_Data.xp;
- uint16_t y = Touch_Data.yp;
- if(Touch_Data.status == TOUCH_PRESSED){
- DISP.TS_ZoneNumber = -1;
- 
-  
-   for(Index = 0; Index < sizeof(ZonesTS_0)/8; Index++){
+  uint8_t Index;
+  uint16_t x = Touch_Data.xp;
+  uint16_t y = Touch_Data.yp;
+  if(Touch_Data.status == TOUCH_PRESSED){
+    DISP.TS_ZoneNumber = -1;
+
+    for(Index = 0; Index < sizeof(ZonesTS_0)/8; Index++){
       if(DISP.Screen == 0) {
 
-       }
+      }
 
-         
-      
-    if(DISP.Screen == 3) {
+      if(DISP.Screen == 3) {
 
-       }   
-            if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
-               (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
-                 DISP.TS_ZoneNumber = Index;
-            if((DISP.TS_ZoneNumber != 7)&& CAM_flag) 
-                 DISP.TS_ZoneNumber = 100;
-               }
-     } 
-         if( DISP.Screen == 2)
-      {
+      }   
+      if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
+            (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
+        DISP.TS_ZoneNumber = Index;
+        if((DISP.TS_ZoneNumber != 7)&& CAM_flag)                  DISP.TS_ZoneNumber = 100;
+      }
+    } 
+    if( DISP.Screen == 2)      {
         if (Condition.activity){
-         if(DISP.TS_ZoneNumber == 8)DISP.TS_ZoneNumber =0;
-         if(DISP.TS_ZoneNumber == 9)DISP.TS_ZoneNumber =1;
-         if(DISP.TS_ZoneNumber == 10)DISP.TS_ZoneNumber =2;
+          if(DISP.TS_ZoneNumber == 8)DISP.TS_ZoneNumber =0;
+          if(DISP.TS_ZoneNumber == 9)DISP.TS_ZoneNumber =1;
+          if(DISP.TS_ZoneNumber == 10)DISP.TS_ZoneNumber =2;
         }
       }
-  SOUND.CounterSound= 0, SOUND.SoundPeriod = 50; 
-  
- }
- else{
-  Timer14_Init_Deal(200, 3);
- 
- }
- if(DISP.TS_ZoneNumber != -1){    
-  DISP.Event = 1;
-  //UpdateScreen = 1;
+    SOUND.CounterSound= 0, SOUND.SoundPeriod = 50; 
+  }
+  else{
+    Timer14_Init_Deal(200, 3);
 
-      } 
+  }
+  if(DISP.TS_ZoneNumber != -1){    
+    DISP.Event = 1;
+  } 
 
- return;
+  return;
 }
 
 void ViewScreen(void){
- uint16_t i;
- static uint8_t OldScreen = 0;
+  uint16_t i;
+  static uint8_t OldScreen = 0;
 
- if(OldScreen != DISP.Screen){
-  for(i = 4; i < sizeof(Text)/4 ; i++){
-   Text[i]->z_index = 0;
- } 
-   for(i = 4; i < sizeof(Images)/4 ; i++){
-   Images[i]->z_index = 0;
- } 
+  if(OldScreen != DISP.Screen){
+    for(i = 4; i < sizeof(Text)/4 ; i++){
+      Text[i]->z_index = 0;
+    } 
+    for(i = 4; i < sizeof(Images)/4 ; i++){
+      Images[i]->z_index = 0;
+    } 
     for(i = 0; i < sizeof(Polygons)/4 ; i++){
-   Polygons[i]->z_index = 0;
- } 
-  switch(DISP.Screen){
+      Polygons[i]->z_index = 0;
+    } 
+    switch(DISP.Screen){
     case 0:
-       Text[4]->z_index = 3; // StrTransmiss
-       Text[6]->z_index = 3; // StrPneumosys
-       Text[8]->z_index = 3; // StrPressEngineOil
-       Text[10]->z_index = 3; // StrTIME
-       Text[12]->z_index = 3; // StrSpeed
-       Text[14]->z_index = 3; // StrRPM
-       Polygons[0]-> z_index = 1; // BIG ARROW with speed 
-       Polygons[1]-> z_index = 1; //the middle arrow 
-       Polygons[2]-> z_index = 1; //the small arrow 
-       Polygons[3]-> z_index = 1; //the second small arrow 
-       StartTestFlag = 1;
+      Text[4]->z_index = 3; // StrTransmiss
+      Text[6]->z_index = 3; // StrPneumosys
+      Text[8]->z_index = 3; // StrPressEngineOil
+      Text[10]->z_index = 3; // StrTIME
+      Text[12]->z_index = 3; // StrSpeed
+      Text[14]->z_index = 3; // StrRPM
+      Polygons[0]-> z_index = 1; // BIG ARROW with speed 
+      Polygons[1]-> z_index = 1; //the middle arrow 
+      Polygons[2]-> z_index = 1; //the small arrow 
+      Polygons[3]-> z_index = 1; //the second small arrow 
+      StartTestFlag = 1;
 
-       Images[0]->params[1] = 3;
-       Images[0]->z_index = 1;
-       Images[23] -> z_index = 1;
-       Images[24] -> z_index = 1;
-       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
-             break; 
+      Images[0]->params[1] = 3;
+      Images[0]->z_index = 1;
+      Images[23] -> z_index = 1;
+      Images[24] -> z_index = 1;
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
+      break; 
     case 1:
-       Text[4]->z_index = 3; // StrTransmiss
-       Text[5]->z_index = 3; //Square
-       Text[6]->z_index = 3; // StrPneumosys
-       Text[7]->z_index = 3; // Time
-       Text[8]->z_index = 3; // StrPressEngineOil
-       Text[9]->z_index = 3; // Passes
-       Text[11]->z_index = 3; //square per hour 
-       Text[13]->z_index = 3; //petrol per hour
-       Text[15]->z_index = 3; //petrol per square
-       Text[16]->z_index = 3; // SPEED
-       Text[17]->z_index = 3; //RPM
-       Text[18]->z_index = 3; //Sleep
-       StartTestFlag = 0;
-       Images[0]->params[1] = 102; // coord of frame
-       Images[0]->z_index = 1;
-       Images[23] -> z_index = 1;
-       Images[24] -> z_index = 1;
-       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-            break;  
+      Text[4]->z_index = 3; // StrTransmiss
+      Text[5]->z_index = 3; //Square
+      Text[6]->z_index = 3; // StrPneumosys
+      Text[7]->z_index = 3; // Time
+      Text[8]->z_index = 3; // StrPressEngineOil
+      Text[9]->z_index = 3; // Passes
+      Text[11]->z_index = 3; //square per hour 
+      Text[13]->z_index = 3; //petrol per hour
+      Text[15]->z_index = 3; //petrol per square
+      Text[16]->z_index = 3; // SPEED
+      Text[17]->z_index = 3; //RPM
+      Text[18]->z_index = 3; //Sleep
+      StartTestFlag = 0;
+      Images[0]->params[1] = 102; // coord of frame
+      Images[0]->z_index = 1;
+      Images[23] -> z_index = 1;
+      Images[24] -> z_index = 1;
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[164].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      break;  
     case 2:
       Text[19]->z_index = 3;
       Text[20]->z_index = 3;
@@ -593,33 +784,22 @@ void ViewScreen(void){
       Images[6]->z_index = 1;
       Images[7]->z_index = 1;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
-            break;
+      break;
     case 3:
-            break;          
+      break;          
+    }
+    OldScreen = DISP.Screen;
   }
-  OldScreen = DISP.Screen;
- }
 }
 
 void ReleaseFunction(void){
   switch(DISP.ReleaseTask){
-   case 1 :
-//     Images[0]->z_index = 0;
- //    Images[1]->z_index = 0;
- //    Images[2]->z_index = 0;
- //    Images[3]->z_index = 0;
- //    Images[4]->z_index = 0;
- //    Images[5]->z_index = 0;
- //   Images[6]->z_index = 0;
-     
-         break;  
-   case 2 :
-
-         break;        
-   case 3 : 
-
-
-         break;
+  case 1 :
+    break;  
+  case 2 :
+    break;        
+  case 3 : 
+    break;
   } 
 
   DISP.ReleaseTask = 0;
@@ -627,136 +807,118 @@ void ReleaseFunction(void){
 
 
 void KBD_Repeat_Handle(void){
-      
-   return;
+
+  return;
 }
 
-
-
 void actions(uint8_t deal){
-static  struct {
-    uint8_t WriteGo : 1; 
-  
-}Flags={0};
+  static  struct {
+uint8_t WriteGo : 
+    1; 
+  }
+  Flags={
+    0  };
 
-  
-  
   switch(deal) {
-    case 0: 
-      if(!((DISP.Screen == 2)&&(Condition.activity)))DISP.Screen = 0;
-      if(DISP.Screen == 2 && Condition.activity)Condition.butt_selected = 1;
-      break;
-    case 1: 
-      if(DISP.Screen == 0) DISP.Screen = 1;
-      if(DISP.Screen == 2){
-         if(Condition.activity)Condition.butt_selected = 2;
-         else PenetrationRising(4, 1); //set activity to the control      
-      }
-      break;
-    case 2:  
-       if(DISP.Screen == 2){
-         
-         if(Condition.activity)Condition.butt_selected = 3;
-         else PenetrationRising(1, 1);
-      }
+  case 0: 
+    if(!((DISP.Screen == 2)&&(Condition.activity)))DISP.Screen = 0;
+    if(DISP.Screen == 2 && Condition.activity)Condition.butt_selected = 1;
+    break;
+  case 1: 
+    if(DISP.Screen == 0) DISP.Screen = 1;
+    if(DISP.Screen == 2){
+      if(Condition.activity)Condition.butt_selected = 2;
+      else PenetrationRising(4, 1); //set activity to the control      
+    }
+    break;
+  case 2:  
+    if(DISP.Screen == 2){
 
-      if(DISP.Screen < 2){
-        DISP.Screen = deal;
-        PenetrationRising(4, 0);
-      }
+      if(Condition.activity)Condition.butt_selected = 3;
+      else PenetrationRising(1, 1);
+    }
 
-      break;
-    case 3:
-     // if(DISP.Screen == 2) DISP.Screen = deal;
-      
-      break;
-    case 4:
-      if(DISP.Screen == 2){
-        if(Condition.activity){
-           Condition.blink_button = Condition.butt_selected;
-           Condition.BlinkCounter = 0;
-          }
-        else PenetrationRising(2, 1);
-        }
-         
-      
-      break;  
-     
-    case 5:
-      if(DISP.Screen == 0 || DISP.Screen == 1){
-           Flags.WriteGo = !Flags.WriteGo;
-           Images[5] ->z_index = Flags.WriteGo;
+    if(DISP.Screen < 2){
+      DISP.Screen = deal;
+      PenetrationRising(4, 0);
+    }
+
+    break;
+  case 3:
+
+    break;
+  case 4:
+    if(DISP.Screen == 2){
+      if(Condition.activity){
+        Condition.blink_button = Condition.butt_selected;
+        Condition.BlinkCounter = 0;
       }
-           break;
-    case 6:      
-      if(DISP.Screen == 2){
-         PenetrationRising(3, 1);
-      }
+      else PenetrationRising(2, 1);
+    }
+    break;  
+  case 5:
+    if(DISP.Screen == 0 || DISP.Screen == 1){
+      Flags.WriteGo = !Flags.WriteGo;
+      Images[5] ->z_index = Flags.WriteGo;
+    }
+    break;
+  case 6:      
+    if(DISP.Screen == 2){
+      PenetrationRising(3, 1);
+    }
     else{
       DISP.Screen = deal;
     }
-//     Images[deal]->z_index = 1; //show frame on the BTN6
-//     DISP.ReleaseTask = 1;
-      break;
-    case 7:
-      if(DISP.Screen == 2){
-        if(Condition.activity != 0)PenetrationRising(4,0);
-        else CAM_ON_OFF();
-      }
-      else{
-        CAM_ON_OFF();
-      }
-      break;
-    case 8:
-      break;
-    case 9:
-      break;
-    case 10:
-      break;
-    case 11: 
-      break;
+    break;
+  case 7:
+    if(DISP.Screen == 2){
+      if(Condition.activity != 0)PenetrationRising(4,0);
+      else CAM_ON_OFF();
+    }
+    else{
+      CAM_ON_OFF();
+    }
+    break;
+  case 8:
+    break;
+  case 9:
+    break;
+  case 10:
+    break;
+  case 11: 
+    break;
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // hanlders for test controls and others
 void Test2(void){  
- static uint16_t Counter1; 
-
-
-   if(Counter1 > 600){
-     BIG_Arrow(1200 - Counter1);
-     RPM_Arrow( (Counter1-600)*2/3);
-     FUEL_Arrow((1200-Counter1)/6);
-     TEMP_Arrow(40+ (12000- Counter1*10)/75);
-   }
-   else{ 
-     BIG_Arrow(Counter1);
-     FUEL_Arrow(Counter1/6);
-     TEMP_Arrow(40+ (Counter1*10)/75);
-     RPM_Arrow((600 - Counter1)*2/3);
-    }
-
-
-
- Counter1+=2; 
- if(Counter1 == 1200) Counter1 = 0;
-
-
-
+  static uint16_t Counter1; 
+  if(Counter1 > 600){
+    BIG_Arrow(1200 - Counter1);
+    RPM_Arrow( (Counter1-600)*2/3);
+    FUEL_Arrow((1200-Counter1)/6);
+    TEMP_Arrow(40+ (12000- Counter1*10)/75);
+  }
+  else{ 
+    BIG_Arrow(Counter1);
+    FUEL_Arrow(Counter1/6);
+    TEMP_Arrow(40+ (Counter1*10)/75);
+    RPM_Arrow((600 - Counter1)*2/3);
+  }
+  Counter1+=2; 
+  if(Counter1 == 1200) Counter1 = 0;
 }
 
 
 void Test1(void){
-static uint8_t Toggle1;
-static uint8_t Counter;
-
-
- if(Toggle1){
-  Toggle1 = 0;
+  static uint8_t Toggle1;
+  static uint8_t Counter;
+  if(Toggle1){
+    Toggle1 = 0;
   }
- else{ 
-  Toggle1 = 1;
-}
+  else{ 
+    Toggle1 = 1;
+  }
   Images[8]->z_index =  Toggle1;
   Images[9]->z_index =  Toggle1;
   Images[10]->z_index = Toggle1;
@@ -764,17 +926,15 @@ static uint8_t Counter;
   Images[12]->z_index = Toggle1;
   Images[13]->z_index = Toggle1;
   Images[14]->z_index = Toggle1;
-
   Counter++;
-
 }
 void Tests(void ){
-static uint32_t Counter = 0;
-if(StartTestFlag){
- if(Counter%8 == 0) Test1();
-  Test2();
-  Counter++; 
-}
+  static uint32_t Counter = 0;
+  if(StartTestFlag){
+    if(Counter%8 == 0) Test1();
+    Test2();
+    Counter++; 
+  }
 
 }
 ///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
@@ -782,34 +942,34 @@ if(StartTestFlag){
 ///!-- here is the our controls
 void BIG_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
- if(DISP.Screen == 0) Polygons[0]->params[3] = 4000 + SetValue * 296;
- return;
+  if(DISP.Screen == 0) Polygons[0]->params[3] = 4000 + SetValue * 296;
+  return;
 }
 
 void RPM_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
- if(DISP.Screen == 0) Polygons[1]->params[3] = 53500 + SetValue * 386;
- return;
+  if(DISP.Screen == 0) Polygons[1]->params[3] = 53500 + SetValue * 386;
+  return;
 }
 
 void FUEL_Arrow(uint16_t SetValue) // in the parts of 0.01 of tank
 {
   if(DISP.Screen == 0){
-  Polygons[2]->params[2] = SetValue * 1800;
-  if(SetValue < 17) Images[31]->z_index = 1;
-  else Images[31]->z_index = 0;
+    Polygons[2]->params[2] = SetValue * 1800;
+    if(SetValue < 17) Images[31]->z_index = 1;
+    else Images[31]->z_index = 0;
   }
- return;
+  return;
 }
 
 void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 {
   if(DISP.Screen == 0){
-  Polygons[3]->params[2] = (SetValue - 40) * 2250;
-  if(SetValue > 99)     Images[32]->z_index = 1;
-  else                  Images[32]->z_index = 0;
+    Polygons[3]->params[2] = (SetValue - 40) * 2250;
+    if(SetValue > 99)     Images[32]->z_index = 1;
+    else                  Images[32]->z_index = 0;
   }
- return;
+  return;
 }
 
 
@@ -819,237 +979,247 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 #define x_step_secondHE 16
 
 void LittleHidroExitsShow(void){
-uint16_t i,j;
-      PTZ.Hidroexits[0].A = 75;
-       PTZ.Hidroexits[2].B = 34;
-    for(i = 0; i < 10; i++ ){ 
-      for(j = 0; j < 5; j++){
-       if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
+  uint16_t i,j;
+  PTZ.Hidroexits[0].A = 75;
+  PTZ.Hidroexits[2].B = 34;
+  for(i = 0; i < 10; i++ ){ 
+    for(j = 0; j < 5; j++){
+      if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFF3366FF);
-        }
-       else{
-        LCD_SetColorPixel(0xFF999999);
-           }
-        LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + 12 + j * x_stepHE, pos_y_controlHE + 7 + i*10);
-  
-       if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
-        LCD_SetColorPixel(0xFFFF3333);
-        }
-       else{
-        LCD_SetColorPixel(0xFF999999);
-           }
-        LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + 7 + j * x_stepHE + x_step_secondHE, pos_y_controlHE + 7 + i*10);
-      
       }
+      else{
+        LCD_SetColorPixel(0xFF999999);
+      }
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + 12 + j * x_stepHE, pos_y_controlHE + 7 + i*10);
+
+      if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
+        LCD_SetColorPixel(0xFFFF3333);
+      }
+      else{
+        LCD_SetColorPixel(0xFF999999);
+      }
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + 7 + j * x_stepHE + x_step_secondHE, pos_y_controlHE + 7 + i*10);
+
     }
-return;
+  }
+  return;
 }
 
 #define BLINKPERIOD     8
 #define BLINKDUTY       4
 #define BLINKTIME       48
 
-
-
-
-
 void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it will Run
-  
-  uint32_t LineColours[3]={0xffffffff,0xffffffff,0xffffffff};
-  
+
+  uint32_t LineColours[3]={
+    0xffffffff,0xffffffff,0xffffffff  };
+
   //the images, what need to be chosen
   const ImageInfo* ImagesLabel[] = {
-         &IMAGES.ImgArray[166],    // 0 // penetration label gray
-         &IMAGES.ImgArray[165],    // 1 // penetration label red
-         &IMAGES.ImgArray[231],    // 2 // rise and snubber label gray
-         &IMAGES.ImgArray[230],    // 3 // rise and snubber label red
-         &IMAGES.ImgArray[223],    // 4 // stop label gray
-         &IMAGES.ImgArray[225]     // 5 // stop label red
+    &IMAGES.ImgArray[166],    // 0 // penetration label gray
+    &IMAGES.ImgArray[165],    // 1 // penetration label red
+    &IMAGES.ImgArray[231],    // 2 // rise and snubber label gray
+    &IMAGES.ImgArray[230],    // 3 // rise and snubber label red
+    &IMAGES.ImgArray[223],    // 4 // stop label gray
+    &IMAGES.ImgArray[225]     // 5 // stop label red
   };
-   const ImageInfo* ImagesBig[] = {
-         &IMAGES.ImgArray[167],    // 0 // penetration BIG RED IMAGE
-         &IMAGES.ImgArray[224],    // 1 // stop RED IMAGE
-         &IMAGES.ImgArray[232]     // 2 // rise and snubber BIG RED IMAGE
+  const ImageInfo* ImagesBig[] = {
+    &IMAGES.ImgArray[167],    // 0 // penetration BIG RED IMAGE
+    &IMAGES.ImgArray[224],    // 1 // stop RED IMAGE
+    &IMAGES.ImgArray[232]     // 2 // rise and snubber BIG RED IMAGE
   };  
- 
- const  struct{
+
+  const  struct{
     ImageInfo* Address[3];
     Point Coords[3];
- }ButtonImages = {{&IMAGES.ImgArray[211],&IMAGES.ImgArray[212],&IMAGES.ImgArray[213]},{{6,395},{104,394},{203,395}}};
+  }
+  ButtonImages = {
+    {
+      &IMAGES.ImgArray[211],&IMAGES.ImgArray[212],&IMAGES.ImgArray[213]    }
+    ,{
+      {
+        6,395      }
+      ,{
+        104,394      }
+      ,{
+        203,395      }
+    }
+  };
   const struct{ 
     ImageInfo* Address[3];  //3 //
-     Point Coords[3];
-    } ButtonBlinksImages={{&IMAGES.ImgArray[2],&IMAGES.ImgArray[31],&IMAGES.ImgArray[39]},{{683,136},{683,213},{683,292}}};
-    
+    Point Coords[3];
+  } 
+  ButtonBlinksImages={
+    {
+      &IMAGES.ImgArray[2],&IMAGES.ImgArray[31],&IMAGES.ImgArray[39]    }
+    ,{
+      {
+        683,136      }
+      ,{
+        683,213      }
+      ,{
+        683,292      }
+    }
+  };
+
   switch(Parm){ // we just setting the parameter
-      case 0: // Run
-        if(Condition.penetration || Condition.set_penetration){
-         
-          if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
-            if(!Condition.activity ) {
-            LineColours[0] = 0xFFFF0000;
-            LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
-                   } 
-            LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
-           }
-          }
+  case 0: // Run
+    if(Condition.penetration || Condition.set_penetration){
 
-          if(Condition.stop || Condition.set_stop){
-           if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
-            if(!Condition.activity ) { 
-             LineColours[1] = 0xFFFF0000;
-            LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
-            
-            }
-           
-            LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273);
-           }
-          }
-          if(Condition.rising || Condition.set_rising){
-           if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
-             if(!Condition.activity ) {  
-              LineColours[2] = 0xFFFF0000;
-              LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
-               }
-            
-             LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162); 
-              
-           }
-          }
-        if(!Condition.activity ) {   
-         LCD_SetColorPixel(LineColours[0]);
-            LCD_DrawLine(251, 253, 304, 200);
-            LCD_DrawLine(252, 253, 305, 200);
-            _HW_LCD_V_Line(251, 253, 130);
-            _HW_LCD_V_Line(252, 253, 130);  
-         LCD_SetColorPixel(LineColours[1]);   
-            _HW_LCD_V_Line(448, 345, 37);
-            _HW_LCD_V_Line(449, 345, 37);
-         LCD_SetColorPixel(LineColours[2]);     
-            LCD_DrawLine(598, 200, 651, 253);
-            LCD_DrawLine(599, 200, 652, 253);
-            _HW_LCD_V_Line(651, 253, 130);
-            _HW_LCD_V_Line(652, 253, 130);
+      if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
+        if(!Condition.activity ) {
+          LineColours[0] = 0xFFFF0000;
+          LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
         } 
+        LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
+      }
+    }
 
-          
+    if(Condition.stop || Condition.set_stop){
+      if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
+        if(!Condition.activity ) { 
+          LineColours[1] = 0xFFFF0000;
+          LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
+        }
 
-          
+        LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273);
+      }
+    }
+    if(Condition.rising || Condition.set_rising){
+      if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_rising) { 
+        if(!Condition.activity ) {  
+          LineColours[2] = 0xFFFF0000;
+          LCD_Fill_Image(&IMAGES.ImgArray[22], 597 , 394);
+        }
 
-          LCD_Fill_Image((ImageInfo *)ImagesLabel[Condition.label], 361, 102); // the label SHOW
+        LCD_Fill_Image(&IMAGES.ImgArray[245], 523 , 162); 
 
-          LCD_Fill_Image((ImageInfo *)ImagesBig[Condition.bigImage], 395, 145); 
-          /// condition activity gets a new picture
-          if(Condition.activity ) {
-          LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
+      }
+    }
+    if(!Condition.activity ) {   
+      LCD_SetColorPixel(LineColours[0]);
+      LCD_DrawLine(251, 253, 304, 200);
+      LCD_DrawLine(252, 253, 305, 200);
+      _HW_LCD_V_Line(251, 253, 130);
+      _HW_LCD_V_Line(252, 253, 130);  
+      LCD_SetColorPixel(LineColours[1]);   
+      _HW_LCD_V_Line(448, 345, 37);
+      _HW_LCD_V_Line(449, 345, 37);
+      LCD_SetColorPixel(LineColours[2]);     
+      LCD_DrawLine(598, 200, 651, 253);
+      LCD_DrawLine(599, 200, 652, 253);
+      _HW_LCD_V_Line(651, 253, 130);
+      _HW_LCD_V_Line(652, 253, 130);
+    } 
+    LCD_Fill_Image((ImageInfo *)ImagesLabel[Condition.label], 361, 102); // the label SHOW
+    LCD_Fill_Image((ImageInfo *)ImagesBig[Condition.bigImage], 395, 145); 
+    /// condition activity gets a new picture
+    if(Condition.activity ) {
+      LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
 
-        if(Condition.butt_selected)
-         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], \
+      if(Condition.butt_selected)         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], \
                         ButtonImages.Coords[Condition.butt_selected-1].X, \
                         ButtonImages.Coords[Condition.butt_selected-1].Y);
-        if(Condition.blink_button)
-          if((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)
-               LCD_Fill_Image(ButtonBlinksImages.Address[Condition.blink_button-1], \
+      if(Condition.blink_button)          if((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)               LCD_Fill_Image(ButtonBlinksImages.Address[Condition.blink_button-1], \
                               ButtonBlinksImages.Coords[Condition.blink_button-1].X, \
                           ButtonBlinksImages.Coords[Condition.blink_button-1].Y);      
-        }
-               
-        if(Condition.BlinkCounter++ == 48){
-          Condition.penetration = 0;
-          Condition.stop = 0;
-          Condition.rising = 0;
-          Condition.blink_button = 0;
-          if (Condition.set_penetration)Condition.label = 1;
-          if (Condition.set_rising)Condition.label = 3;
-          if (Condition.set_stop)Condition.label = 5;
-        }
-        
-        break;
-      case 1:
-        if(Condition.activity == 0){
-         if(Condition.penetration){ 
-           Condition.bigImage = 0;
-           Condition.set_penetration = 1;
-           Condition.label = 1; //set the  label 
-           Condition.set_rising = 0;
-           Condition.set_stop = 0;
-           Condition.penetration = 0;
-           Condition.rising = 0;
-           Condition.stop = 0;
-          }
-         else{
-           Condition.penetration = (set) ? 1 : 0;
-           Condition.label = 0;
-           Condition.rising = 0;
-           Condition.stop = 0;
-          }
-         Condition.BlinkCounter = 0;
-        }
-        break;
-      case 2:
-       if(Condition.activity == 0){
-        if(Condition.stop){ 
-          Condition.bigImage = 1;
-          Condition.set_stop = 1;
-          Condition.label = 5; //set the  label 
-          Condition.set_rising = 0;
-          Condition.set_penetration = 0;
-          Condition.penetration = 0;
-          Condition.rising = 0;
-          Condition.stop = 0;
-        }
-        else{
-          Condition.stop = (set) ? 1 : 0;
-          Condition.label = 4;
-          Condition.penetration = 0;
-          Condition.rising = 0;
-        }
-        Condition.BlinkCounter = 0;
-       }
-       
-        break;
-      case 3:
-       if(Condition.activity == 0){
-        if(Condition.rising){ 
-          Condition.bigImage = 2;
-          Condition.set_rising = 1;
-          Condition.label = 3; //set the  label 
-          Condition.set_stop = 0;
-          Condition.set_penetration = 0;
-          Condition.penetration = 0;
-          Condition.rising = 0;
-          Condition.stop = 0;
-        }
-        else{
-          Condition.rising = (set) ? 1 : 0;
-          Condition.label = 2;
-          Condition.penetration = 0;
-          Condition.stop = 0;
-        }
-        Condition.BlinkCounter = 0;
-       }
-       break;
-     case 4:
-       if(set==1){
-         Condition.activity = 1;
-         Condition.butt_selected = 0;
-       }
-          if(set==0)Condition.activity = 0;
-      break;
+    }
+
+    if(Condition.BlinkCounter++ == 48){
+      Condition.penetration = 0;
+      Condition.stop = 0;
+      Condition.rising = 0;
+      Condition.blink_button = 0;
+      if (Condition.set_penetration)Condition.label = 1;
+      if (Condition.set_rising)Condition.label = 3;
+      if (Condition.set_stop)Condition.label = 5;
+    }
+    break;
+  case 1:
+    if(Condition.activity == 0){
+      if(Condition.penetration){ 
+        Condition.bigImage = 0;
+        Condition.set_penetration = 1;
+        Condition.label = 1; //set the  label 
+        Condition.set_rising = 0;
+        Condition.set_stop = 0;
+        Condition.penetration = 0;
+        Condition.rising = 0;
+        Condition.stop = 0;
+      }
+      else{
+        Condition.penetration = (set) ? 1 : 0;
+        Condition.label = 0;
+        Condition.rising = 0;
+        Condition.stop = 0;
+      }
+      Condition.BlinkCounter = 0;
+    }
+    break;
+  case 2:
+    if(Condition.activity == 0){
+      if(Condition.stop){ 
+        Condition.bigImage = 1;
+        Condition.set_stop = 1;
+        Condition.label = 5; //set the  label 
+        Condition.set_rising = 0;
+        Condition.set_penetration = 0;
+        Condition.penetration = 0;
+        Condition.rising = 0;
+        Condition.stop = 0;
+      }
+      else{
+        Condition.stop = (set) ? 1 : 0;
+        Condition.label = 4;
+        Condition.penetration = 0;
+        Condition.rising = 0;
+      }
+      Condition.BlinkCounter = 0;
+    }
+
+    break;
+  case 3:
+    if(Condition.activity == 0){
+      if(Condition.rising){ 
+        Condition.bigImage = 2;
+        Condition.set_rising = 1;
+        Condition.label = 3; //set the  label 
+        Condition.set_stop = 0;
+        Condition.set_penetration = 0;
+        Condition.penetration = 0;
+        Condition.rising = 0;
+        Condition.stop = 0;
+      }
+      else{
+        Condition.rising = (set) ? 1 : 0;
+        Condition.label = 2;
+        Condition.penetration = 0;
+        Condition.stop = 0;
+      }
+      Condition.BlinkCounter = 0;
+    }
+    break;
+  case 4:
+    if(set==1){
+      Condition.activity = 1;
+      Condition.butt_selected = 0;
+    }
+    if(set==0)Condition.activity = 0;
+    break;
   }
-  
+
 }
 
 void UserControlsShow(void){
-    switch(DISP.Screen){
-    case 1:
-       LittleHidroExitsShow();
-       break;
-    case 2:
-       PenetrationRising(0, 0);
-       break;
+  switch(DISP.Screen){
+  case 1:
+    LittleHidroExitsShow();
+    break;
+  case 2:
+    PenetrationRising(0, 0);
+    break;
   }
-return;
+  return;
 }
 ////-----------------------------------------------------------------------------------------------------
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex){
@@ -1057,30 +1227,30 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
   static uint8_t Name[]="000.bmp";
   ImgSize SizesIMG;
   if (SD_mount(1)  == FR_OK){ //mount SD card in 4-bit mode
-  for(i = startIndex; i < stopIndex+1; i++){
-    Name[0] = (i/100) + 0x30;
-    Name[1] = (i/10 - 10*(i/100))  + 0x30;
-    Name[2] = (i%10)  + 0x30;
-   SizesIMG = LoadBitmapFromSD(Name, address);
-     
-   IMAGES.ImgArray[IMAGES.Number].index   = i;
-   IMAGES.ImgArray[IMAGES.Number].xsize   = SizesIMG.width;
-   IMAGES.ImgArray[IMAGES.Number].ysize   = SizesIMG.height; 
-   IMAGES.ImgArray[IMAGES.Number].address = address;
-   address += ((uint32_t)SizesIMG.height ) * ((uint32_t)SizesIMG.width) * 3;
-    if(UpdateScreen){
-  Itoa(StrDATA[0],i + 1);    
-  Run_GUI();
-  Show_GUI();
-  UpdateScreen = 0;
-  DISP.ReleaseFlag = 0;
+    for(i = startIndex; i < stopIndex+1; i++){
+      Name[0] = (i/100) + 0x30;
+      Name[1] = (i/10 - 10*(i/100))  + 0x30;
+      Name[2] = (i%10)  + 0x30;
+      SizesIMG = LoadBitmapFromSD(Name, address);
+
+      IMAGES.ImgArray[IMAGES.Number].index   = i;
+      IMAGES.ImgArray[IMAGES.Number].xsize   = SizesIMG.width;
+      IMAGES.ImgArray[IMAGES.Number].ysize   = SizesIMG.height; 
+      IMAGES.ImgArray[IMAGES.Number].address = address;
+      address += ((uint32_t)SizesIMG.height ) * ((uint32_t)SizesIMG.width) * 3;
+      if(UpdateScreen){
+        Itoa(StrDATA[0],i + 1);    
+        Run_GUI();
+        Show_GUI();
+        UpdateScreen = 0;
+        DISP.ReleaseFlag = 0;
+      }
+      IMAGES.Number++;
+    }  
+    Text[0]->existance = 0; //delete
+    Text[1]->existance = 0; //delete
+    SD_mount(0); //unmount SD card in 4-bit mode
   }
-   IMAGES.Number++;
-  }  
-  Text[0]->existance = 0; //delete
-  Text[1]->existance = 0; //delete
-  SD_mount(0); //unmount SD card in 4-bit mode
-}
 
   return address;
 }
@@ -1092,10 +1262,11 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
   float y1 = (float) pZone->LeftTop.Y;
   float y2 = (float) pZone->RightBottom.Y;
   float Ys, k;
-  
+
   k = (y2 - y1)/(x2 - x1);
   if(Type)  Ys = y1 + k*(X - x1);
   else Ys = y2 - k*(X - x1);
   if((uint16_t)Ys > Y) return 1; 
   return 0;
 }
+
