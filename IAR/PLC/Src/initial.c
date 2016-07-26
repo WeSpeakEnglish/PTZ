@@ -35,16 +35,20 @@ void InitPeriph(void){
 void HAL_Delay(__IO uint32_t Delay){
 
   static uint32_t OldTicksGlobal_mS   = 0x00000000;
-  static uint32_t Difference     = 0x00000000;
+  uint32_t Difference     = 0x00000000;
 
   TicksGlobal_mS = HAL_GetTick();
+  OldTicksGlobal_mS = TicksGlobal_mS; 
+  
+  while(Difference < Delay)  {
+    TicksGlobal_mS = HAL_GetTick();
   if(OldTicksGlobal_mS > TicksGlobal_mS ){
     Difference = 0xFFFFFFFF - OldTicksGlobal_mS + TicksGlobal_mS + 1;
   }
   else Difference = TicksGlobal_mS - OldTicksGlobal_mS;
 
   WaitWhileSysTick(MAXDELAY_SYSTICK);      
-  while(Difference < Delay)  {
+
       M_pull()(); // pull medium
       if(!WaitWhileSysTick(0)) return;
     }

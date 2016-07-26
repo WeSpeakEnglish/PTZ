@@ -2,7 +2,7 @@
 
 "--cpu=Cortex-M7" 
 
-"--fpu=VFPv5_SP" 
+"--fpu=None" 
 
 "--drv_verify_download" 
 

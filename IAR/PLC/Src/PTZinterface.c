@@ -66,7 +66,7 @@ static uint8_t StrDATA[8][16];
 
 
 
-const uint8_t String_1[] = "???????? ??????????? ? ??????:";
+const uint8_t String_1[] = "Гружу изображения в память:";
 //const uint8_t String_2[] = "???";
 
 const Point Poly1_points[4]={
@@ -346,24 +346,16 @@ static struct{ // this is a (penetration/rising) condition
   uint8_t label;  //which label to show
   uint8_t bigImage;
   uint8_t BlinkCounter; 
-uint8_t penetration         : 
-  1;
-uint8_t set_penetration     : 
-  1;
-uint8_t stop                : 
-  1;
-uint8_t set_stop            : 
-  1;
-uint8_t rising              : 
-  1;
-uint8_t set_rising          : 
-  1;
-uint8_t activity            : 
-  1; // to show the bottom and the right side buttons
-uint8_t butt_selected       : 
-  2;
-uint8_t blink_button        : 
-  2;
+uint8_t penetration         :   1;
+uint8_t set_penetration     :   1;
+uint8_t stop                :   1;
+uint8_t set_stop            :   1;
+uint8_t rising              :   1;
+uint8_t set_rising          :   1;
+uint8_t erase_flag          :   1;
+uint8_t activity            :   1; // to show the bottom and the right side buttons
+uint8_t butt_selected       :   2;
+uint8_t blink_button        :   2;
 }
 Condition={
   5,1,0,0,0,1,0,0,0,0}; 
@@ -418,7 +410,7 @@ void Load_GUI_0(void){
   Text[20] = GUI_SetObject(TEXT_STRING ,0xFF000000, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
 
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
-  // Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 102 , 394); //tractor in the gear
+  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF333333, 0, 3, &IMAGES.ImgArray[290], 549 , 95); //circle for indicator // 2-nd screen (from 0...)
   // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
   // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
   //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
@@ -783,6 +775,7 @@ void ViewScreen(void){
       Images[0]->z_index = 0;
       Images[6]->z_index = 1;
       Images[7]->z_index = 1;
+      Images[1]->z_index = 1;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
       break;
     case 3:
@@ -828,7 +821,7 @@ uint8_t WriteGo :
     if(DISP.Screen == 0) DISP.Screen = 1;
     if(DISP.Screen == 2){
       if(Condition.activity)Condition.butt_selected = 2;
-      else PenetrationRising(4, 1); //set activity to the control      
+      else {PenetrationRising(4, 1); }//set activity to the control      
     }
     break;
   case 2:  
@@ -845,13 +838,21 @@ uint8_t WriteGo :
 
     break;
   case 3:
-
+   if(DISP.Screen == 2){
+      if(Condition.activity){
+        Condition.blink_button = Condition.butt_selected;
+        Condition.BlinkCounter = 0;
+        Condition.erase_flag = 1; // set the erase token
+      }
+      
+    }
     break;
   case 4:
     if(DISP.Screen == 2){
       if(Condition.activity){
         Condition.blink_button = Condition.butt_selected;
         Condition.BlinkCounter = 0;
+        Condition.erase_flag = 0; // reset the erase token
       }
       else PenetrationRising(2, 1);
     }
@@ -1035,31 +1036,18 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
   }
   ButtonImages = {
     {
-      &IMAGES.ImgArray[211],&IMAGES.ImgArray[212],&IMAGES.ImgArray[213]    }
-    ,{
-      {
-        6,395      }
-      ,{
-        104,394      }
-      ,{
-        203,395      }
-    }
+      &IMAGES.ImgArray[211],&IMAGES.ImgArray[212],&IMAGES.ImgArray[213]}
+    ,{{6,395} ,{104,394} ,{203,395}}
   };
   const struct{ 
     ImageInfo* Address[3];  //3 //
+    ImageInfo* EAddress[3]; // erase button alternative
     Point Coords[3];
   } 
   ButtonBlinksImages={
-    {
-      &IMAGES.ImgArray[2],&IMAGES.ImgArray[31],&IMAGES.ImgArray[39]    }
-    ,{
-      {
-        683,136      }
-      ,{
-        683,213      }
-      ,{
-        683,292      }
-    }
+    {&IMAGES.ImgArray[2],&IMAGES.ImgArray[31],&IMAGES.ImgArray[39]},
+    {&IMAGES.ImgArray[1],&IMAGES.ImgArray[30],&IMAGES.ImgArray[38]},
+    {{683,136} ,{683,213} ,{683,292}}
   };
 
   switch(Parm){ // we just setting the parameter
@@ -1117,12 +1105,20 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
     if(Condition.activity ) {
       LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
 
-      if(Condition.butt_selected)         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], \
-                        ButtonImages.Coords[Condition.butt_selected-1].X, \
+      if(Condition.butt_selected)         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], 
+                        ButtonImages.Coords[Condition.butt_selected-1].X,
                         ButtonImages.Coords[Condition.butt_selected-1].Y);
-      if(Condition.blink_button)          if((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)               LCD_Fill_Image(ButtonBlinksImages.Address[Condition.blink_button-1], \
-                              ButtonBlinksImages.Coords[Condition.blink_button-1].X, \
-                          ButtonBlinksImages.Coords[Condition.blink_button-1].Y);      
+      if(Condition.blink_button)          
+        if((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) {              
+         if(Condition.erase_flag) 
+          LCD_Fill_Image(ButtonBlinksImages.EAddress[Condition.blink_button-1], 
+                          ButtonBlinksImages.Coords[Condition.blink_button-1].X, 
+                          ButtonBlinksImages.Coords[Condition.blink_button-1].Y);    
+         else
+          LCD_Fill_Image(ButtonBlinksImages.Address[Condition.blink_button-1], 
+                          ButtonBlinksImages.Coords[Condition.blink_button-1].X, 
+                          ButtonBlinksImages.Coords[Condition.blink_button-1].Y); 
+        }
     }
 
     if(Condition.BlinkCounter++ == 48){
@@ -1130,6 +1126,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
       Condition.stop = 0;
       Condition.rising = 0;
       Condition.blink_button = 0;
+      Condition.erase_flag = 0;
       if (Condition.set_penetration)Condition.label = 1;
       if (Condition.set_rising)Condition.label = 3;
       if (Condition.set_stop)Condition.label = 5;
@@ -1234,6 +1231,7 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
       SizesIMG = LoadBitmapFromSD(Name, address);
 
       IMAGES.ImgArray[IMAGES.Number].index   = i;
+     
       IMAGES.ImgArray[IMAGES.Number].xsize   = SizesIMG.width;
       IMAGES.ImgArray[IMAGES.Number].ysize   = SizesIMG.height; 
       IMAGES.ImgArray[IMAGES.Number].address = address;
@@ -1245,6 +1243,7 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
         UpdateScreen = 0;
         DISP.ReleaseFlag = 0;
       }
+       if(i==0)FillImageSoft(IMAGES.ImgArray[0].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[0].xsize, IMAGES.ImgArray[0].ysize); 
       IMAGES.Number++;
     }  
     Text[0]->existance = 0; //delete

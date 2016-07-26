@@ -159,15 +159,16 @@ uint8_t GUI_SetVisibility_Obj(GUI_Object* Obj, uint32_t Value){  // the alpha le
 void Show_GUI(void){
 
   if(!CAM_flag){ 
-
+    RCC->PLLSAICFGR =0x44003300; // PLL Adjust
     GUI_Release(); 
     UserControlsShow();
-    HAL_Delay(10);
 
     WaitWhileDMA2D(MAXDELAY_DMA2D);
 
     while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
+      if(!WaitWhileDMA2D(0))break;
     } 
+    
     if(!LayerOfView){
       HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + LAYER_1_OFFSET, 0); // set the present layer address
     }

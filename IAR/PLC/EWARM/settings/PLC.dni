@@ -14,7 +14,7 @@ stlinkserialNo=48341187
 stlinkfoundProbes=
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=-453017721
+Checksum=-1974024704
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -124,9 +124,10 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
-[TermIOLog]
+[Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
+Category=_ 0
 [DriverProfiling]
 Enabled=0
 Mode=3
@@ -143,13 +144,12 @@ mode=1
 Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
 Bp1=_ 0 "EMUL_CODE" "0x08028E50" 0 0 1 "" 0 "" 0
 Count=2
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
 [Aliases]
 A0=_ "E:\CODE\PLC\Drivers\CMSIS\Include\core_cm7.h" ""
 A1=_ "E:\CODE\PLC\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c" ""
 A2=_ "E:\CODE\PLC\Src\main.c" ""
 Count=3
 SuppressDialog=0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
