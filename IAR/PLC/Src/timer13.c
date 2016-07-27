@@ -1,12 +1,6 @@
-#include "timer13.h"
-#include "tim.h"
 #include "rtc.h"
 #include "initial.h"
-#include "core.h"
-#include "gui.h"
-#include "lcd.h"
 #include "keyboard.h"
-#include "sound.h"
 
 void Timer13_Init(void){
   TIM13->PSC = 20;

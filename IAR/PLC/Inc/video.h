@@ -35,6 +35,7 @@ extern volatile uint8_t CAM_flag;
  void TwoDigitsToChars(uint8_t * Src);
  void VideoCAMOnOff(uint8_t NumbCam, uint8_t On);
  void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress);
+ void _HW_Fill_Display_From_Mem_565(uint32_t SourceAddress, uint32_t DstAddress);
 #ifdef __cplusplus
  }
 #endif

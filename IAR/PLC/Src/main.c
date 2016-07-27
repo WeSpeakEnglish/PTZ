@@ -27,9 +27,6 @@ void MX_USB_HOST_Process(void);
 
 /* USER CODE BEGIN 0 */
 
-
-
-
 /* USER CODE END 0 */
 
  int main(void)
@@ -126,7 +123,7 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_USART6
                               |RCC_PERIPHCLK_I2C2|RCC_PERIPHCLK_SDMMC1
                               |RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 205;// 220;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 300;// 220;
   PeriphClkInitStruct.PLLSAI.PLLSAIR = 4;
   PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
   PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;

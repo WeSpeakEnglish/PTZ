@@ -3,15 +3,13 @@
 #include "calculations.h"
 #include "core.h"
 #include "keyboard.h"
-#include "sound.h"
+
 #include "fonts.h"
 #include "timer14.h"
 #include "timer13.h"
-#include "ltdc.h"
-#include "memory.h"
-#include "lm75.h"
-#include "spi_mem.h"
-#include "ff.h"
+
+
+#include "initial.h"
 
 
 struct{
@@ -701,6 +699,7 @@ void ViewScreen(void){
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
       break;
     case 3:
+      
       break;          
     }
     OldScreen = DISP.Screen;
@@ -1158,14 +1157,16 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
       IMAGES.ImgArray[IMAGES.Number].ysize   = SizesIMG.height; 
       IMAGES.ImgArray[IMAGES.Number].address = address;
       address += ((uint32_t)SizesIMG.height ) * ((uint32_t)SizesIMG.width) * 3;
+     if(i==0)FillImageSoft(IMAGES.ImgArray[0].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[0].xsize, IMAGES.ImgArray[0].ysize); 
+     else
       if(UpdateScreen){
-        Itoa(StrDATA[0],i + 1);    
+        Itoa(StrDATA[0],i);    
         Run_GUI();
         Show_GUI();
         UpdateScreen = 0;
         DISP.ReleaseFlag = 0;
       }
-       if(i==0)FillImageSoft(IMAGES.ImgArray[0].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[0].xsize, IMAGES.ImgArray[0].ysize); 
+       
       IMAGES.Number++;
     }  
     Text[0]->existance = 0; //delete

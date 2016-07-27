@@ -1,5 +1,5 @@
 #include "initial.h"
-#include "delays.h"
+
 
 void InitPeriph(void){
   date_time_t dt;
@@ -26,7 +26,7 @@ void InitPeriph(void){
   SDRAM_free();
   MX_LTDC_Init();
   LCD_Init();
-  LCD_SetLight(7);
+  LCD_SetLight(2);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
   LED_control(1);
 }

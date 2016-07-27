@@ -1,20 +1,4 @@
-#include "video.h"
-#include "gui.h"
-#include "stm32f7xx_hal.h"
-#include "variables.h"
-#include "core.h"
-#include "ltdc.h"
-#include "ff.h"
-#include "rtc.h"
-#include "variables.h"
-#include "fonts.h"
-#include "tw8819.h"
-#include "OSDFont.h"
-#include "OSDBasic.h"
-#include "OSDinitTable.h"
-#include "DispInfo.h"
-#include "sdmmc.h"
-#include "delays.h"
+#include "initial.h"
 
 volatile DMA2D_Status PLC_DMA2D_Status = {
   1};
@@ -141,6 +125,41 @@ void _HW_Fill_Display_From_Mem(uint32_t SourceAddress, uint32_t DstAddress){
     }
   }
 }
+
+void _HW_Fill_Display_From_Mem_565(uint32_t SourceAddress, uint32_t DstAddress){
+
+  hdma2d.Init.Mode               = DMA2D_M2M_PFC;
+  hdma2d.Init.ColorMode          = DMA2D_RGB565;
+  hdma2d.Init.OutputOffset       = 0;
+  hdma2d.XferCpltCallback = Transfer_DMA2D_Completed;
+
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0xFF;
+  hdma2d.LayerCfg[1].InputColorMode = CM_ARGB8888;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  hdma2d.Instance          = DMA2D;
+
+  if(HAL_DMA2D_Init(&hdma2d) == HAL_OK){  
+    if(PLC_DMA2D_Status.Ready != 0){
+      PLC_DMA2D_Status.Ready = 0;
+      if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK)    {
+        if(HAL_DMA2D_Start_IT(&hdma2d, 
+          SourceAddress, /* Color value in Register to Memory DMA2D mode */
+          DstAddress,  /* DMA2D output buffer */
+          DisplayWIDTH, /* width of buffer in pixels */
+          DisplayHEIGHT) /* height of buffer in lines */ 
+          == HAL_OK)    {
+          WaitWhileDMA2D(MAXDELAY_DMA2D);
+          while(PLC_DMA2D_Status.Ready == 0){ 
+            //    M_pull()();
+            if(!WaitWhileDMA2D(0)) return;
+          }
+        }  
+      }
+    }
+  }
+}
+
 void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
 
   hdma2d.Init.Mode               = DMA2D_M2M_PFC;

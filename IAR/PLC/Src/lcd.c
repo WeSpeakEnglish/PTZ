@@ -1,11 +1,4 @@
-#include "lcd.h"
-#include "dma2d.h"
-#include "ltdc.h"
-#include "video.h"
-#include "dac.h"
-#include "core.h"
-#include "variables.h"
-#include "fonts.h"
+#include "initial.h"
 
 #define POLY_X(Z)              ((int32_t)((Points + Z)->X))
 #define POLY_Y(Z)              ((int32_t)((Points + Z)->Y))      
@@ -45,7 +38,7 @@ void LCD_LayerDefaultInit(uint16_t LayerIndex, uint32_t FB_Address){
   layer_cfg.WindowX1 = LCD_GetXSize();
   layer_cfg.WindowY0 = 0;
   layer_cfg.WindowY1 = LCD_GetYSize(); 
-  layer_cfg.PixelFormat = LTDC_PIXEL_FORMAT_ARGB8888;
+  layer_cfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
   layer_cfg.FBStartAdress = FB_Address;
   layer_cfg.Alpha = 255;
   layer_cfg.Alpha0 = 0;
@@ -1027,7 +1020,7 @@ uint8_t LCD_Init(void){
   LCD_SetLayerVisible(1, DISABLE);  // if I comment THIS line the 0 layer will be displayed fine 
   LCD_SetXSize(800);
   LCD_SetYSize(480);
-  LCD_LayerDefaultInit(0, LAYER_1_OFFSET + SDRAM_BANK_ADDR);
+  LCD_LayerDefaultInit(0,SDRAM_BANK_ADDR + FB_565_1);
   LCD_SelectLayer(0);
   LCD_InitParams(0, 0, 0xFFFF0000, &GOST_B_23_var);
   return 0;

@@ -136,7 +136,7 @@
         </option>
         <option>
           <name>OGUseCmsisDspLib</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>GRuntimeLibThreads</name>
@@ -370,7 +370,7 @@
         </option>
         <option>
           <name>CCPosIndRopi</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCPosIndRwpi</name>
@@ -418,7 +418,7 @@
         </option>
         <option>
           <name>IccFloatSemantics</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCNoLiteralPool</name>
@@ -905,11 +905,11 @@
         </option>
         <option>
           <name>IlinkOptMergeDuplSections</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkOptUseVfe</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptForceVfe</name>

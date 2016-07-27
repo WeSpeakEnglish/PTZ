@@ -1,13 +1,9 @@
-#include "gui.h"
-#include "video.h"
 #include <stdarg.h>
-#include "core.h"
-#include "ltdc.h"
 #include "calculations.h"
 #include "initial.h"
-#include "delays.h"
 
-static GUI_Object GUI_Objects[MAX_OBJECTS_Q]@(SDRAM_BANK_ADDR + DATA_IN_SDRAM);//@(DATA_IN_SDRAM+SDRAM_BANK_ADDR);
+
+static GUI_Object GUI_Objects[MAX_OBJECTS_Q];//@(DATA_IN_SDRAM+SDRAM_BANK_ADDR);
 
 
 void GUI_Free(void){
@@ -163,17 +159,28 @@ void Show_GUI(void){
     GUI_Release(); 
     UserControlsShow();
 
-    WaitWhileDMA2D(MAXDELAY_DMA2D);
 
-    while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
-      if(!WaitWhileDMA2D(0))break;
-    } 
+
+
+    
+
     
     if(!LayerOfView){
-      HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + LAYER_1_OFFSET, 0); // set the present layer address
+      _HW_Fill_Display_From_Mem_565(SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + FB_565_1);
+               WaitWhileDMA2D(MAXDELAY_DMA2D); 
+               while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
+           if(!WaitWhileDMA2D(0))break;
+           } 
+      HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + FB_565_1, 0); // set the present layer address
     }
     else{
-      HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + LAYER_2_OFFSET, 0); // set the present layer address
+      _HW_Fill_Display_From_Mem_565(SDRAM_BANK_ADDR + LAYER_2_OFFSET, SDRAM_BANK_ADDR + FB_565_2);
+         WaitWhileDMA2D(MAXDELAY_DMA2D); 
+           
+      while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
+          if(!WaitWhileDMA2D(0))break;
+         } 
+      HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + FB_565_2, 0); // set the present layer address
     }
 
     LayerOfView++;

@@ -1,9 +1,5 @@
-#include "interrupts.h"
-#include "stmpe811.h"
-#include "timer14.h"
-#include "core.h"
 #include "initial.h"
-#include "rtc.h"
+
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   NVIC_ClearPendingIRQ (EXTI0_IRQn);

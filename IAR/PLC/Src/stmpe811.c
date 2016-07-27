@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "core.h"
 #include "lcd.h"
+#include "initial.h"
+
 Touch_Data_t Touch_Data;
 
 void P_Touch_Reset(void); // reset MC
