@@ -326,7 +326,7 @@ void Load_GUI_0(void){
   Text[20] = GUI_SetObject(TEXT_STRING ,0xFF000000, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
 
   Images[0] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 1, 3, &IMAGES.ImgArray[287], 3   , 394); //HOME+ 99*i
-  Images[1] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF333333, 0, 3, &IMAGES.ImgArray[290], 549 , 95); //circle for indicator // 2-nd screen (from 0...)
+  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF333333, 0, 3, &IMAGES.ImgArray[290], 549 , 95); //circle for indicator // 2-nd screen (from 0...)
   // Images[2] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 201 , 394); //turn up/dowm
   // Images[3] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 300 , 394); //hydrocilinder
   //  Images[4] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF121211, 0, 3, &IMAGES.ImgArray[287], 399 , 394); //microchip
@@ -406,9 +406,14 @@ void Run_GUI(void){
     case 10:
       if (DISP.Screen == 2 && Condition.activity) actions(2);
       break;
+    case 11:
+       actions(2);
+      break;  
     case 12: //pressed topping
+       actions(4);
       break; 
     case 13: //pressed blade front
+       actions(6);
       break;   
     case 14: //pressed blade front
       break;  
@@ -692,7 +697,7 @@ void ViewScreen(void){
       Images[0]->z_index = 0;
       Images[6]->z_index = 1;
       Images[7]->z_index = 1;
-      Images[1]->z_index = 1;
+      Images[4]->z_index = 1;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
       break;
     case 3:
