@@ -55,7 +55,7 @@
         </option>
         <option>
           <name>OGCoreOrChip</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibSelect</name>
@@ -154,12 +154,12 @@
         <option>
           <name>FPU2</name>
           <version>0</version>
-          <state>0</state>
+          <state>6</state>
         </option>
         <option>
           <name>NrRegs</name>
           <version>0</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>NEON</name>
@@ -370,7 +370,7 @@
         </option>
         <option>
           <name>CCPosIndRopi</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCPosIndRwpi</name>
@@ -418,7 +418,7 @@
         </option>
         <option>
           <name>IccFloatSemantics</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCNoLiteralPool</name>

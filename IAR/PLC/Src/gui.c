@@ -7,8 +7,8 @@
 #include "initial.h"
 #include "delays.h"
 
-static GUI_Object GUI_Objects[MAX_OBJECTS_Q];//@(DATA_IN_SDRAM+SDRAM_BANK_ADDR);
-Point StoreArrayOfPoly[MAX_POLY_POINTS];     //@(DATA_IN_SDRAM+SDRAM_BANK_ADDR)+sizeof(GUI_Objects);
+static GUI_Object GUI_Objects[MAX_OBJECTS_Q]@(SDRAM_BANK_ADDR + DATA_IN_SDRAM);//@(DATA_IN_SDRAM+SDRAM_BANK_ADDR);
+
 
 void GUI_Free(void){
   int i, j;
@@ -159,7 +159,7 @@ uint8_t GUI_SetVisibility_Obj(GUI_Object* Obj, uint32_t Value){  // the alpha le
 void Show_GUI(void){
 
   if(!CAM_flag){ 
-    RCC->PLLSAICFGR =0x44003300; // PLL Adjust
+ //   RCC->PLLSAICFGR =0x44003300; // PLL Adjust
     GUI_Release(); 
     UserControlsShow();
 

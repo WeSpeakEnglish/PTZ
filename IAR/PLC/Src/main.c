@@ -81,8 +81,9 @@ void MX_USB_HOST_Process(void);
     MX_USB_HOST_Process();
 
   /* USER CODE BEGIN 3 */
-   RoutineFast(); // get and run deals from medium queue 
-    
+  // RoutineFast(); // get and run deals from medium queue 
+    Run_GUI();
+    Show_GUI();
   }
   /* USER CODE END 3 */
 
@@ -125,7 +126,7 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_USART6
                               |RCC_PERIPHCLK_I2C2|RCC_PERIPHCLK_SDMMC1
                               |RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 220;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 205;// 220;
   PeriphClkInitStruct.PLLSAI.PLLSAIR = 4;
   PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
   PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;

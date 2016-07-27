@@ -6,6 +6,8 @@
 
 --plugin "D:\Program Files\IAR Systems\Embedded Workbench 7.5\arm\bin\armbat.dll" 
 
+--device_macro "D:\Program Files\IAR Systems\Embedded Workbench 7.5\arm\config\debugger\ST\STM32F7xx.dmac" 
+
 --flash_loader "D:\Program Files\IAR Systems\Embedded Workbench 7.5\arm\config\flashloader\ST\FlashSTM32F74xxG.board" 
 
 

@@ -137,104 +137,20 @@ IMAGES;
 
 
 const Zone ZonesTS_0[]={
-  {
-    {
-      13,405    }
-    ,{
-      94,477    }
-  }
-  ,  //0 BIG BOTTOM BTN#0  
-  {
-    {
-      112,405    }
-    ,{
-      193,477    }
-  }
-  , //1 BIG BOTTOM BTN#1  
-  {
-    {
-      211,405    }
-    ,{
-      292,477    }
-  }
-  ,  //2 BIG BOTTOM BTN#2 
-  {
-    {
-      310,405    }
-    ,{
-      391,477    }
-  }
-  ,  //3 BIG BOTTOM BTN#3  
-  {
-    {
-      409,405    }
-    ,{
-      490,477    }
-  }
-  ,  //4 BIG BOTTOM BTN#4 
-  {
-    {
-      508,405    }
-    ,{
-      589,477    }
-  }
-  ,  //5 BIG BOTTOM BTN#5 
-  {
-    {
-      607,405    }
-    ,{
-      688,477    }
-  }
-  ,  //6 BIG BOTTOM BTN#6  
-  {
-    {
-      706,405    }
-    ,{
-      787,477    }
-  }
-  ,  //7 BIG BOTTOM BTN#7 
-  {
-    {
-      688,141    }
-    ,{
-      756,202    }
-  }
-  ,  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
-  {
-    {
-      688,218    }
-    ,{
-      756,280    }
-  }
-  ,  //9    |
-  {
-    {
-      688,296    }
-    ,{
-      756,358    }
-  }
-  ,  //10---| 
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,  //11  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //12  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,  //13  
+  {{13,405},{94,477}},  //0 BIG BOTTOM BTN#0  
+  {{112,405},{193,477}}, //1 BIG BOTTOM BTN#1  
+  {{211,405},{292,477}},  //2 BIG BOTTOM BTN#2 
+  {{310,405},{391,477}},  //3 BIG BOTTOM BTN#3  
+  {{409,405},{490,477}},  //4 BIG BOTTOM BTN#4 
+  {{508,405},{589,477}},  //5 BIG BOTTOM BTN#5 
+  {{607,405},{688,477}},  //6 BIG BOTTOM BTN#6  
+  {{706,405},{787,477}},  //7 BIG BOTTOM BTN#7 
+  {{688,141},{756,202}},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+  {{688,218},{756,280}},  //9    |
+  {{688,296},{756,358}},  //10---| 
+  {{310,172},{367,227}},  //11 //alternative penetration button 
+  {{420,280},{480,340}},  //12 //alternative STOP button  
+  {{530,172},{586,227}},  //13 // alternative arm button 
   {
     {
       900,900    }
@@ -469,7 +385,6 @@ void Run_GUI(void){
     GetTimeToStr(StrTime, &dt);
     TimeIsReady = 0;
   }
-
   if(DISP.Event){ 
     switch(DISP.TS_ZoneNumber){
     case 0:  //toggle index of button
@@ -483,9 +398,14 @@ void Run_GUI(void){
       actions(DISP.TS_ZoneNumber);
       break;
     case 8:  //toggle index of button  
+      if (DISP.Screen == 2 && Condition.activity) actions(0);
       break;
     case 9:  //toggle index of button
+      if (DISP.Screen == 2 && Condition.activity) actions(1);
       break;  
+    case 10:
+      if (DISP.Screen == 2 && Condition.activity) actions(2);
+      break;
     case 12: //pressed topping
       break; 
     case 13: //pressed blade front
@@ -610,8 +530,11 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
       case 0x35:
       case 0x36:
       case 0x37:
-      case 0x38:
+
         actions(code - 0x31);
+        break; 
+      case 0x38:
+        Tests();
         break;
       }
       break;
@@ -695,13 +618,7 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
         if((DISP.TS_ZoneNumber != 7)&& CAM_flag)                  DISP.TS_ZoneNumber = 100;
       }
     } 
-    if( DISP.Screen == 2)      {
-        if (Condition.activity){
-          if(DISP.TS_ZoneNumber == 8)DISP.TS_ZoneNumber =0;
-          if(DISP.TS_ZoneNumber == 9)DISP.TS_ZoneNumber =1;
-          if(DISP.TS_ZoneNumber == 10)DISP.TS_ZoneNumber =2;
-        }
-      }
+
     SOUND.CounterSound= 0, SOUND.SoundPeriod = 50; 
   }
   else{
@@ -718,7 +635,7 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 void ViewScreen(void){
   uint16_t i;
   static uint8_t OldScreen = 0;
-
+  Tests();
   if(OldScreen != DISP.Screen){
     for(i = 4; i < sizeof(Text)/4 ; i++){
       Text[i]->z_index = 0;

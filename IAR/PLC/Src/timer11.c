@@ -20,9 +20,9 @@ void Timer11_Init(void){
 
 void TIM11_IRQHandler(void){
  TIM11->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
- F_push(Tests);
- F_push(Run_GUI);
- F_push(Show_GUI);
+ 
+ //F_push(Run_GUI);
+// F_push(Show_GUI);
  UpdateScreen = 1;
  return;
 }
