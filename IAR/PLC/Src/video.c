@@ -185,7 +185,7 @@ void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
           == HAL_OK)    {
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
-            //     M_pull()();
+                 M_pull()();
             if(!WaitWhileDMA2D(0)) return;
           }
         }  

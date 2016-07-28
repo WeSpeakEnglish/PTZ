@@ -48,6 +48,7 @@ void FUEL_Arrow(uint16_t SetValue);
 void TEMP_Arrow(uint16_t SetValue);
 void LittleHidroExitsShow(void);
 void UserControlsShow(void);
+void BigHidroExitsShow(uint8_t Number, uint8_t Parm);
 void Tests(void);
 void Test1(void);
 void Test2(void);

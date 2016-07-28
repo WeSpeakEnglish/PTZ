@@ -68,50 +68,32 @@ const uint8_t String_1[] = "Гружу изображения в память:";
 //const uint8_t String_2[] = "???";
 
 Point Poly1_points[4]={
-  {
-    227,311  }
-  ,{
-    363,317  }
-  ,{
-    355,311  }
-  ,{
-    363,304  }
+  {  227,311  }
+  ,{ 363,317  }
+  ,{ 355,311  }
+  ,{ 363,304  }
 };
 Point Poly2_points[4]={
-  {
-    411,198  }
-  ,{
-    477,202  }
-  ,{
-    472,198  }
-  ,{
-    477,194  }
+  {  411,198  }
+  ,{ 477,202  }
+  ,{ 472,198  }
+  ,{ 477,194  }
 };
 Point Poly3_points[4]={
-  {
-    662,123  }
-  ,{
-    704,120  }
-  ,{
-    704,126  }
+  {  662,123  }
+  ,{ 704,120  }
+  ,{ 704,126  }
 };
 Point Poly4_points[4]={
-  {
-    662,311  }
-  ,{
-    704,308  }
-  ,{
-    704,314  }
+  {  662,311  }
+  ,{ 704,308  }
+  ,{ 704,314  }
 };
 
-const Point TurnCenter1 = {
-  399,303};
-const Point TurnCenter2 = {
-  520,200};
-const Point TurnCenter3 = {
-  710,123};
-const Point TurnCenter4 = {
-  710,311};
+const Point Origin_1 = {399,303};
+const Point Origin_2 = {520,200};
+const Point Origin_3 = {710,123};
+const Point Origin_4 = {710,311};
 
 volatile uint8_t UpdateScreen = 0;
 
@@ -256,7 +238,7 @@ const Zone ZonesTS_0[]={
   ,   //28  CAM
 };   
 
-static struct{ // this is a (penetration/rising) condition
+struct{ // this is a (penetration/rising) condition
   uint8_t label;  //which label to show
   uint8_t bigImage;
   uint8_t BlinkCounter; 
@@ -273,6 +255,13 @@ uint8_t blink_button        :   2;
 }
 Condition={
   5,1,0,0,0,1,0,0,0,0}; 
+
+typedef struct{
+uint8_t EntireSelect    :       1; // select this complex exits
+uint8_t SelectedSide    :       1; // A or B side
+uint8_t EditShow        :       1; //
+uint8_t TimeEdit        :       1; // are we modefying the Time, right? 
+} BigHidroExitStruct;
 
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
@@ -362,10 +351,10 @@ void Load_GUI_0(void){
   Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[186], 696 , 135);            // the red fuel sign
   Images[32] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[185], 696 , 323);            // the red temp sign
 
-  Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points,4, &TurnCenter1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
-  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points,4, &TurnCenter2, 53500); //the middle arrow at 53.5 degrees
-  Polygons[2] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly3_points, &TurnCenter3, 0); //the small arrow 
-  Polygons[3] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly4_points, &TurnCenter4, 0); //the second small arrow 
+  Polygons[0] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly1_points,4, &Origin_1, 4000); // BIG ARROW with speed Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg (*0.001 degrees)
+  Polygons[1] = GUI_SetObject(ROTATING_FILLED_POLY_TYPE_FAST, 0xFFFF0000, 2, 4, Poly2_points,4, &Origin_2, 53500); //the middle arrow at 53.5 degrees
+  Polygons[2] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly3_points, &Origin_3, 0); //the small arrow 
+  Polygons[3] = GUI_SetObject(ROTATING_FILLED_TRIANGLE_FAST, 0xFFFF0000, 2, 3, Poly4_points, &Origin_4, 0); //the second small arrow 
 
 }
 
@@ -568,10 +557,8 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
       case 0x35:
       case 0x36:
       case 0x37:
-        actions(code - 0x31); 
-        break;
       case 0x38:
-        CAM_ON_OFF();
+        actions(code - 0x31); 
         break;                   
       }
       break;
@@ -903,10 +890,119 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 }
 
 
-#define pos_x_controlHE 601
-#define pos_y_controlHE 117
-#define x_stepHE 35
-#define x_step_secondHE 16
+///------------------------------------------------------------------------------------------------------------------------------------------------------------
+///-------------USER CONTROL -------------------
+#define STEP_BIG_HIDRO_CONTROL          153 // means on the X direction
+#define ORIGIN_BIG_HIDRO_CONTROL        18
+#define Y_BIG_HIDRO_CONTROL             77
+#define y_stepHE_BIG                    14
+#define ShowStrokePaddingX              56  // pixels padding of show line of squares in the SHOW condition (Number eq 0, Parm eq 0;)
+#define ShowStrokePaddingY              70  //  show and editing at the same distantion
+#define EditStrokePaddingX_A            25 // A column padding
+#define EditStrokePaddingX_B            87 // B column padding
+#define BHE_height_element              12 // 10 px of height
+#define BHE_width_element               40 // 10 px of height 
+#define GAP_elements                    5  //clearance between elements on Y direction
+#define GAP_EditPictureX                14
+#define GAP_EditPictureY                60
+#define BHE_inactive_color              0xFF666666
+#define BHE_active_color                0xFFFF3333
+#define BHE_NUMB_ORIGIN_X               68 // big numbers at the top GAP position
+#define BHE_NUMB_ORIGIN_Y               86
+//
+void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex controls based on images, figures, texts 
+                                                      // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
+  static BigHidroExitStruct PoolOfExits[5]=
+  {
+   {1,0,0,0},
+   {0,0,1,0},
+   {0,0,0,0},
+   {0,0,0,0},
+   {0,0,0,0}
+  };
+
+uint8_t i,j; // indexes for increment, plain usage 
+
+const Point Coords[5] = 
+{{ORIGIN_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
+{ORIGIN_BIG_HIDRO_CONTROL + STEP_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
+{ORIGIN_BIG_HIDRO_CONTROL + 2 * STEP_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
+{ORIGIN_BIG_HIDRO_CONTROL + 3 * STEP_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
+{ORIGIN_BIG_HIDRO_CONTROL + 4 * STEP_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL}};
+
+const ImageInfo* ImagesNumber[] = { // the pool of images at the top of this big control
+    &IMAGES.ImgArray[278],    // 0 // penetration label gray
+    &IMAGES.ImgArray[280],    // 1 // penetration label red
+    &IMAGES.ImgArray[282],    // 2 // rise and snubber label gray
+    &IMAGES.ImgArray[284],    // 3 // rise and snubber label red
+    &IMAGES.ImgArray[286]     // 4 // stop label gray
+  };
+
+
+if(!Number && !Parm){ // inside the show level
+
+ for(j = 0; j < 5; j++){
+   if(!PoolOfExits[j].EntireSelect){
+     LCD_Fill_Image(&IMAGES.ImgArray[218], Coords[j].X, Coords[j].Y);
+     if(PoolOfExits[j].EditShow){ // show the EditMode
+      if(PoolOfExits[j].SelectedSide)LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+      else LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+     }
+   }
+   else {
+     LCD_Fill_Image(&IMAGES.ImgArray[219], Coords[j].X, Coords[j].Y);
+   }
+   
+   for(i = 0; i < 10; i++ ){
+  if(PoolOfExits[j].EditShow) { 
+   if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
+        LCD_SetColorPixel(BHE_active_color);
+      }
+      else{
+        LCD_SetColorPixel(BHE_inactive_color );
+      }
+      LCD_FillRect(Coords[j].X + EditStrokePaddingX_A , 
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
+                   Coords[j].X + EditStrokePaddingX_A + BHE_width_element,
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
+
+      if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
+        LCD_SetColorPixel(BHE_active_color);
+      }
+      else{
+        LCD_SetColorPixel(BHE_inactive_color );
+      }
+      LCD_FillRect(Coords[j].X + EditStrokePaddingX_B , 
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
+                   Coords[j].X + EditStrokePaddingX_B + BHE_width_element,
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
+   }   
+   else{
+    LCD_SetColorPixel(BHE_inactive_color);
+    LCD_FillRect(Coords[j].X  + ShowStrokePaddingX , 
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
+                   Coords[j].X + ShowStrokePaddingX + BHE_width_element,
+                   Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
+    }
+   }
+   //show the numbers at the top 1,2,3,4,5
+   LCD_Fill_Image((ImageInfo *)ImagesNumber[j], BHE_NUMB_ORIGIN_X + j * STEP_BIG_HIDRO_CONTROL, BHE_NUMB_ORIGIN_Y);
+ 
+}
+}
+return;
+}
+
+
+//----------------
+
+#define pos_x_controlHE         601
+#define pos_y_controlHE         117
+#define x_stepHE                35
+#define x_step_secondHE         16
+#define longierSquareW          12
+#define shorherSquareW          7
+#define y_stepHE                7
 
 void LittleHidroExitsShow(void){
   uint16_t i,j;
@@ -920,7 +1016,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + 12 + j * x_stepHE, pos_y_controlHE + 7 + i*10);
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
 
       if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFFFF3333);
@@ -928,7 +1024,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + 7 + j * x_stepHE + x_step_secondHE, pos_y_controlHE + 7 + i*10);
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
 
     }
   }
@@ -1143,6 +1239,9 @@ void UserControlsShow(void){
     break;
   case 2:
     PenetrationRising(0, 0);
+    break;
+  case 3:
+    BigHidroExitsShow(0, 0);
     break;
   }
   return;
