@@ -109,41 +109,7 @@ Point RotatePoint(Point Coord, Point Coord0, uint16_t angle){ //angle max is 2pi
   return Coord;
 }
 
-void RotatePoly(Point* pToPoints, uint8_t NumbOfPoints, const pPoint Origin, uint32_t angle_deg){
-  int i;
 
-  uint16_t angle = angle_deg/352;//2.8444443592513164e-3 * (float32_t)angle_deg;
-  
-  for(i = 0; i < NumbOfPoints; i++){
-    pToPoints[i] =  RotatePoint(pToPoints[i], *Origin, angle);
-  }
-  RotatedF = 1;
-}
-
-Point* StorePoly(const Point* pToPoints, uint8_t NumbOfPoints) //we can store our poly before rotation 
-{
-  uint8_t i;
-  if(NumbOfPoints < MAX_POLY_POINTS){
-    if(!RotatedF){  
-      for(i = 0; i < NumbOfPoints; i++) StoreArrayOfPoly[i] = pToPoints[i];
-
-
-      RotatedF = 1;
-    }
-  }
-  return StoreArrayOfPoly;
-}
-
-void RestorePoly(Point* pToPoints, uint8_t NumbOfPoints) //and restore it after to iliminate degradation 
-{
-  uint8_t i;
-  if(NumbOfPoints < MAX_POLY_POINTS){
-    if(RotatedF){
-      for(i = 0; i < NumbOfPoints; i++) pToPoints[i] = StoreArrayOfPoly[i];
-      RotatedF = 0;
-    }
-  }
-}
 
 uint8_t * Itoa(uint8_t * StrDst, uint16_t Number){ // convert int into string
 

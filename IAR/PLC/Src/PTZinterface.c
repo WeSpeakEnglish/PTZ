@@ -67,7 +67,7 @@ static uint8_t StrDATA[8][16];
 const uint8_t String_1[] = "Гружу изображения в память:";
 //const uint8_t String_2[] = "???";
 
-const Point Poly1_points[4]={
+Point Poly1_points[4]={
   {
     227,311  }
   ,{
@@ -77,7 +77,7 @@ const Point Poly1_points[4]={
   ,{
     363,304  }
 };
-const Point Poly2_points[4]={
+Point Poly2_points[4]={
   {
     411,198  }
   ,{
@@ -87,7 +87,7 @@ const Point Poly2_points[4]={
   ,{
     477,194  }
 };
-const Point Poly3_points[4]={
+Point Poly3_points[4]={
   {
     662,123  }
   ,{
@@ -95,7 +95,7 @@ const Point Poly3_points[4]={
   ,{
     704,126  }
 };
-const Point Poly4_points[4]={
+Point Poly4_points[4]={
   {
     662,311  }
   ,{
@@ -537,40 +537,42 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
         actions(code - 0x31);
         break; 
       case 0x38:
-        Tests();
+        CAM_ON_OFF();
         break;
       }
       break;
     case 1:
-      switch(KB_Status.code){
+      switch(code){
+      case 0x31:
+      case 0x32:
+      case 0x33:
       case 0x34:
-
-        break;
-      case 0x35:  
-
-        break; 
+      case 0x35:
       case 0x36:
+      case 0x37:
 
+        actions(code - 0x31); 
         break;
-      case 0x37:  
-
+      case 0x38:
+        CAM_ON_OFF();
         break;                   
       }
       break;
     case 2: 
-      switch(KB_Status.code){
+      switch(code){
+ 
+      case 0x31:
+      case 0x32:
+      case 0x33:
       case 0x34:
-
-        break;
-      case 0x35:  
-
-        break; 
+      case 0x35:
       case 0x36:
-
+      case 0x37:
+        actions(code - 0x31); 
         break;
-      case 0x37:  
-
-        break;   
+      case 0x38:
+        CAM_ON_OFF();
+        break;                   
       }
       break;
     }
@@ -699,7 +701,8 @@ void ViewScreen(void){
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
       break;
     case 3:
-      
+      Images[0]->z_index = 0;
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[239].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
       break;          
     }
     OldScreen = DISP.Screen;
@@ -759,6 +762,7 @@ uint8_t WriteGo :
 
     break;
   case 3:
+   if((DISP.Screen == 0)||(DISP.Screen == 1))DISP.Screen = 3;
    if(DISP.Screen == 2){
       if(Condition.activity){
         Condition.blink_button = Condition.butt_selected;
@@ -797,6 +801,10 @@ uint8_t WriteGo :
       if(Condition.activity != 0)PenetrationRising(4,0);
       else CAM_ON_OFF();
     }
+    else
+    if(DISP.Screen == 3){
+        DISP.Screen = 0;
+      }
     else{
       CAM_ON_OFF();
     }
