@@ -19,8 +19,9 @@ typedef struct{
 
 // define zones for Touh Screen pressing detection
 typedef struct { 
-  Point LeftTop;
-  Point RightBottom;
+  Point LeftTop;   // the left top corner coords of zone
+  Point RightBottom; //the right bottom one
+  uint8_t PagesActivities; // on which pages this zone is active like 0b00010101 - means, that it is active on 0-th AND 2-nd AND 4-th pages
 } Zone;
 
 extern volatile uint8_t UpdateScreen;

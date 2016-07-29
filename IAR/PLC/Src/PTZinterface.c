@@ -114,128 +114,21 @@ struct{
 IMAGES;
 
 
-
-
 const Zone ZonesTS_0[]={
-  {{13,405},{94,477}},  //0 BIG BOTTOM BTN#0  
-  {{112,405},{193,477}}, //1 BIG BOTTOM BTN#1  
-  {{211,405},{292,477}},  //2 BIG BOTTOM BTN#2 
-  {{310,405},{391,477}},  //3 BIG BOTTOM BTN#3  
-  {{409,405},{490,477}},  //4 BIG BOTTOM BTN#4 
-  {{508,405},{589,477}},  //5 BIG BOTTOM BTN#5 
-  {{607,405},{688,477}},  //6 BIG BOTTOM BTN#6  
-  {{706,405},{787,477}},  //7 BIG BOTTOM BTN#7 
-  {{688,141},{756,202}},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
-  {{688,218},{756,280}},  //9    |
-  {{688,296},{756,358}},  //10---| 
-  {{310,172},{367,227}},  //11 //alternative penetration button 
-  {{420,280},{480,340}},  //12 //alternative STOP button  
-  {{530,172},{586,227}},  //13 // alternative arm button 
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,  //14  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,  //15  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //16  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //17  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //18  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //19  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //20  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //21  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //22  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //23 
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,    //24 
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //25  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,    //26  
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //27 
-  {
-    {
-      900,900    }
-    ,{
-      900,900    }
-  }
-  ,   //28  CAM
+  {{13,405},{94,477},           ob11111111},  //0 BIG BOTTOM BTN#0  valid on  all the pages
+  {{112,405},{193,477},         ob11111111}, //1 BIG BOTTOM BTN#1  
+  {{211,405},{292,477},         ob11111111},  //2 BIG BOTTOM BTN#2 
+  {{310,405},{391,477},         ob11111111},          //3 BIG BOTTOM BTN#3  
+  {{409,405},{490,477},         ob11111111},  //4 BIG BOTTOM BTN#4 
+  {{508,405},{589,477},         ob11111111},  //5 BIG BOTTOM BTN#5 
+  {{607,405},{688,477},         ob11111111},  //6 BIG BOTTOM BTN#6  
+  {{706,405},{787,477},         ob11111111},  //7 BIG BOTTOM BTN#7 
+  {{688,141},{756,202},         ob11111111},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+  {{688,218},{756,280},         ob11111111},  //9    |
+  {{688,296},{756,358},         ob11111111},  //10---| 
+  {{310,172},{367,227},         ob11111111},  //11 //alternative penetration button 
+  {{420,280},{480,340},         ob11111111},  //12 //alternative STOP button  
+  {{530,172},{586,227},         ob11111111},  //13 // alternative arm button 
 };   
 
 struct{ // this is a (penetration/rising) condition
@@ -394,13 +287,13 @@ void Run_GUI(void){
       if (DISP.Screen == 2 && Condition.activity) actions(2);
       break;
     case 11:
-       actions(2);
+       if (DISP.Screen == 2 && !Condition.activity)actions(2);
       break;  
     case 12: //pressed topping
-       actions(4);
+       if (DISP.Screen == 2 && !Condition.activity)actions(4);
       break; 
     case 13: //pressed blade front
-       actions(6);
+       if (DISP.Screen == 2 && !Condition.activity)actions(6);
       break;   
     case 14: //pressed blade front
       break;  
@@ -909,13 +802,17 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 #define BHE_active_color                0xFFFF3333
 #define BHE_NUMB_ORIGIN_X               68 // big numbers at the top GAP position
 #define BHE_NUMB_ORIGIN_Y               86
+#define BHE_LEFT_ARR_GAP_X              18 // position of the left indicative arrow
+#define BHE_ARR_GAP_Y                   222  // position of the left indicative arrow
+#define BHE_RIGHT_ARR_GAP_X             104 // position of the left indicative arrow
+#define BHE_ARR_MOVE_SCALE              1.65f //the scale factor
 //
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex controls based on images, figures, texts 
                                                       // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
   static BigHidroExitStruct PoolOfExits[5]=
   {
    {1,0,0,0},
-   {0,0,1,0},
+   {0,0,0,0},
    {0,0,0,0},
    {0,0,0,0},
    {0,0,0,0}
@@ -944,6 +841,7 @@ if(!Number && !Parm){ // inside the show level
  for(j = 0; j < 5; j++){
    if(!PoolOfExits[j].EntireSelect){
      LCD_Fill_Image(&IMAGES.ImgArray[218], Coords[j].X, Coords[j].Y);
+
      if(PoolOfExits[j].EditShow){ // show the EditMode
       if(PoolOfExits[j].SelectedSide)LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
       else LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
@@ -979,7 +877,7 @@ if(!Number && !Parm){ // inside the show level
    }   
    else{
     LCD_SetColorPixel(BHE_inactive_color);
-    LCD_FillRect(Coords[j].X  + ShowStrokePaddingX , 
+    LCD_FillRect(Coords[j].X    + ShowStrokePaddingX , 
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
                    Coords[j].X + ShowStrokePaddingX + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
@@ -987,7 +885,11 @@ if(!Number && !Parm){ // inside the show level
    }
    //show the numbers at the top 1,2,3,4,5
    LCD_Fill_Image((ImageInfo *)ImagesNumber[j], BHE_NUMB_ORIGIN_X + j * STEP_BIG_HIDRO_CONTROL, BHE_NUMB_ORIGIN_Y);
- 
+      // show the arrows------
+   LCD_SetColorPixel(0xFF0A0C0B);
+   LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
+   LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));
+     //----------------------
 }
 }
 return;
@@ -1006,8 +908,8 @@ return;
 
 void LittleHidroExitsShow(void){
   uint16_t i,j;
-  PTZ.Hidroexits[0].A = 75;
-  PTZ.Hidroexits[2].B = 34;
+  PTZ.Hidroexits[0].A = 100;
+  PTZ.Hidroexits[2].B = 0;
   for(i = 0; i < 10; i++ ){ 
     for(j = 0; j < 5; j++){
       if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
