@@ -116,45 +116,50 @@ IMAGES;
 
 const Zone ZonesTS_0[]={
   {{13,405},{94,477},           ob11111111},  //0 BIG BOTTOM BTN#0  valid on  all the pages
-  {{112,405},{193,477},         ob11111111}, //1 BIG BOTTOM BTN#1  
+  {{112,405},{193,477},         ob11111111},  //1 BIG BOTTOM BTN#1  
   {{211,405},{292,477},         ob11111111},  //2 BIG BOTTOM BTN#2 
-  {{310,405},{391,477},         ob11111111},          //3 BIG BOTTOM BTN#3  
+  {{310,405},{391,477},         ob11111111},  //3 BIG BOTTOM BTN#3  
   {{409,405},{490,477},         ob11111111},  //4 BIG BOTTOM BTN#4 
-  {{508,405},{589,477},         ob11111111},  //5 BIG BOTTOM BTN#5 
+  {{508,405},{589,477},         ob11110111},  //5 BIG BOTTOM BTN#5 
   {{607,405},{688,477},         ob11111111},  //6 BIG BOTTOM BTN#6  
   {{706,405},{787,477},         ob11111111},  //7 BIG BOTTOM BTN#7 
-  {{688,141},{756,202},         ob11111111},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
-  {{688,218},{756,280},         ob11111111},  //9    |
-  {{688,296},{756,358},         ob11111111},  //10---| 
-  {{310,172},{367,227},         ob11111111},  //11 //alternative penetration button 
-  {{420,280},{480,340},         ob11111111},  //12 //alternative STOP button  
-  {{530,172},{586,227},         ob11111111},  //13 // alternative arm button 
+  {{688,141},{756,202},         ob00000100},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+  {{688,218},{756,280},         ob00000100},  //9    |
+  {{688,296},{756,358},         ob00000100},  //10---| 
+  {{310,172},{367,227},         ob00000100},  //11 //alternative penetration button 
+  {{420,280},{480,340},         ob00000100},  //12 //alternative STOP button  
+  {{530,172},{586,227},         ob00000100},  //13 // alternative arm button 
+  {{18,77},  {171,384},         ob00001000},  //14 // alternative arm button 
+  {{171,77}, {324,384},         ob00001000},  //15 // alternative arm button 
+  {{324,77}, {477,384},         ob00001000},  //16 // alternative arm button 
+  {{477,77}, {630,384},         ob00001000},  //17 // alternative arm button 
+  {{630,77}, {783,384},         ob00001000},  //18 // alternative arm button 
 };   
 
 struct{ // this is a (penetration/rising) condition
   uint8_t label;  //which label to show
   uint8_t bigImage;
   uint8_t BlinkCounter; 
-uint8_t penetration         :   1;
-uint8_t set_penetration     :   1;
-uint8_t stop                :   1;
-uint8_t set_stop            :   1;
-uint8_t rising              :   1;
-uint8_t set_rising          :   1;
-uint8_t erase_flag          :   1;
-uint8_t activity            :   1; // to show the bottom and the right side buttons
-uint8_t butt_selected       :   2;
-uint8_t blink_button        :   2;
+  uint8_t penetration         :   1;
+  uint8_t set_penetration     :   1;
+  uint8_t stop                :   1;
+  uint8_t set_stop            :   1;
+  uint8_t rising              :   1;
+  uint8_t set_rising          :   1;
+  uint8_t erase_flag          :   1;
+  uint8_t activity            :   1; // to show the bottom and the right side buttons
+  uint8_t butt_selected       :   2;
+  uint8_t blink_button        :   2;
 }
 Condition={
   5,1,0,0,0,1,0,0,0,0}; 
 
-typedef struct{
-uint8_t EntireSelect    :       1; // select this complex exits
-uint8_t SelectedSide    :       1; // A or B side
-uint8_t EditShow        :       1; //
-uint8_t TimeEdit        :       1; // are we modefying the Time, right? 
-} BigHidroExitStruct;
+struct{
+  uint8_t EntireSelect    :       3; // select THIS complex exit
+  uint8_t SelectedSide    :       1; // A or B side
+  uint8_t EditShow        :       1; //edit or just show condition...which of them is edit
+  uint8_t TimeEdit        :       1; // are we modefying the Time, right? 
+ } PoolOfExits = {0,0,0,0};
 
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
@@ -174,7 +179,7 @@ void CAM_ON_OFF(){
 void Load_GUI_0(void){ 
   //
 
-  DISP.Screen = 0; 
+  DISP.Screen = 10; // out of range to prevent any activities
 
 
   GUI_Free();
@@ -183,7 +188,8 @@ void Load_GUI_0(void){
   Text[1] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 400, 240, (uint32_t)StrDATA[0], LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
 
   PreLoadImages();
-
+  DISP.Screen = 0; 
+  
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
@@ -278,27 +284,43 @@ void Run_GUI(void){
       actions(DISP.TS_ZoneNumber);
       break;
     case 8:  //toggle index of button  
-      if (DISP.Screen == 2 && Condition.activity) actions(0);
+      if (Condition.activity) actions(0);
       break;
     case 9:  //toggle index of button
-      if (DISP.Screen == 2 && Condition.activity) actions(1);
+      if (Condition.activity) actions(1);
       break;  
     case 10:
-      if (DISP.Screen == 2 && Condition.activity) actions(2);
+      if (Condition.activity) actions(2);
       break;
     case 11:
-       if (DISP.Screen == 2 && !Condition.activity)actions(2);
+       if (!Condition.activity)actions(2);
       break;  
     case 12: //pressed topping
-       if (DISP.Screen == 2 && !Condition.activity)actions(4);
+       if (!Condition.activity)actions(4);
       break; 
     case 13: //pressed blade front
-       if (DISP.Screen == 2 && !Condition.activity)actions(6);
+       if (!Condition.activity)actions(6);
       break;   
     case 14: //pressed blade front
+      PoolOfExits.EntireSelect = 0;
+      PoolOfExits.EditShow = 0;
       break;  
     case 15: //pressed blade side
+      PoolOfExits.EntireSelect = 1;
+      PoolOfExits.EditShow = 0;
       break; 
+    case 16: //pressed blade front
+      PoolOfExits.EntireSelect = 2;
+      PoolOfExits.EditShow = 0;
+      break;  
+    case 17: //pressed blade side
+      PoolOfExits.EntireSelect = 3;
+      PoolOfExits.EditShow = 0;
+      break;      
+    case 18: //pressed blade side
+      PoolOfExits.EntireSelect = 4;
+      PoolOfExits.EditShow = 0;
+      break;         
 
     }
     switch(DISP.Screen){
@@ -496,7 +518,8 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 
       if(DISP.Screen == 3) {
 
-      }   
+      }  
+      if(ZonesTS_0[Index].PagesActivities & (1<<DISP.Screen)) // are we allowed here?
       if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
             (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
         DISP.TS_ZoneNumber = Index;
@@ -649,8 +672,10 @@ uint8_t WriteGo :
         Condition.BlinkCounter = 0;
         Condition.erase_flag = 1; // set the erase token
       }
-      
-    }
+   }
+   if(DISP.Screen == 3 && !PoolOfExits.EditShow)PoolOfExits.EditShow = 1;
+   else ;; //plus button
+     
     break;
   case 4:
     if(DISP.Screen == 2){
@@ -664,6 +689,10 @@ uint8_t WriteGo :
     break;  
   case 5:
     if(DISP.Screen == 0 || DISP.Screen == 1){
+      if(Flags.WriteGo){ 
+        PTZ.Passes++;
+        Itoa_R(StrPasses, sizeof(StrPasses), PTZ.Passes);
+      }
       Flags.WriteGo = !Flags.WriteGo;
       Images[5] ->z_index = Flags.WriteGo;
     }
@@ -809,15 +838,6 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 //
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex controls based on images, figures, texts 
                                                       // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
-  static BigHidroExitStruct PoolOfExits[5]=
-  {
-   {1,0,0,0},
-   {0,0,0,0},
-   {0,0,0,0},
-   {0,0,0,0},
-   {0,0,0,0}
-  };
-
 uint8_t i,j; // indexes for increment, plain usage 
 
 const Point Coords[5] = 
@@ -839,20 +859,21 @@ const ImageInfo* ImagesNumber[] = { // the pool of images at the top of this big
 if(!Number && !Parm){ // inside the show level
 
  for(j = 0; j < 5; j++){
-   if(!PoolOfExits[j].EntireSelect){
+   if(PoolOfExits.EntireSelect != j){
      LCD_Fill_Image(&IMAGES.ImgArray[218], Coords[j].X, Coords[j].Y);
 
-     if(PoolOfExits[j].EditShow){ // show the EditMode
-      if(PoolOfExits[j].SelectedSide)LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
-      else LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
-     }
+    
    }
    else {
      LCD_Fill_Image(&IMAGES.ImgArray[219], Coords[j].X, Coords[j].Y);
+     if(PoolOfExits.EditShow){ // show the EditMode
+     if(PoolOfExits.SelectedSide)LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+      else LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+     }
    }
    
    for(i = 0; i < 10; i++ ){
-  if(PoolOfExits[j].EditShow) { 
+  if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
    if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(BHE_active_color);
       }
@@ -887,8 +908,10 @@ if(!Number && !Parm){ // inside the show level
    LCD_Fill_Image((ImageInfo *)ImagesNumber[j], BHE_NUMB_ORIGIN_X + j * STEP_BIG_HIDRO_CONTROL, BHE_NUMB_ORIGIN_Y);
       // show the arrows------
    LCD_SetColorPixel(0xFF0A0C0B);
-   LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
-   LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));
+   if(!(PoolOfExits.EditShow && j == PoolOfExits.EntireSelect)){
+      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
+      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));
+   }
      //----------------------
 }
 }

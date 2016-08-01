@@ -109,14 +109,32 @@ Point RotatePoint(Point Coord, Point Coord0, uint16_t angle){ //angle max is 2pi
   return Coord;
 }
 
+uint8_t * Itoa_R(uint8_t * StrDst, uint8_t SizeOfStr, int16_t Number){ // right aligment version of Itoa
+    uint8_t * pStrDst = &StrDst[SizeOfStr - 2];
+    int16_t Tmp;
+    uint8_t i; // just the index
+    uint8_t Sign = 0;
+    
+    if(Number < 0 )Sign =1;
+    Number = (Number < 0) ? -Number : Number;
+        
+  for(i = 1; i < SizeOfStr && Number;   i++){ 
+   Tmp = Number%10;
+   *pStrDst-- = Tmp + 0x30;
+   Number /= 10;
+     }
+  if (Sign)  *pStrDst-- ='-';   
+return StrDst;
+}
 
-
-uint8_t * Itoa(uint8_t * StrDst, uint16_t Number){ // convert int into string
-
+uint8_t * Itoa(uint8_t * StrDst, int16_t Number){ // convert int into string
   uint8_t * pStrDst = StrDst;
-  uint16_t Tmp;
+  int16_t Tmp;
   uint8_t Iliminate = 1;
-
+  
+    if(Number < 0 )*pStrDst++ = '-';
+    Number = (Number < 0) ? -Number : Number;
+    
   Tmp = Number/10000;
   if(Tmp)*pStrDst++ = Tmp + 0x30, Iliminate = 0;
   Number -= Tmp*10000;
@@ -137,5 +155,5 @@ uint8_t * Itoa(uint8_t * StrDst, uint16_t Number){ // convert int into string
   Tmp = Number%10;
   *pStrDst++ = Tmp + 0x30;
   *pStrDst = '\0';
-  return &StrDst[0];
+  return StrDst;
 }
