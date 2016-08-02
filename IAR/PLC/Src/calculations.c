@@ -117,13 +117,24 @@ uint8_t * Itoa_R(uint8_t * StrDst, uint8_t SizeOfStr, int16_t Number){ // right 
     
     if(Number < 0 )Sign =1;
     Number = (Number < 0) ? -Number : Number;
-        
-  for(i = 1; i < SizeOfStr && Number;   i++){ 
-   Tmp = Number%10;
-   *pStrDst-- = Tmp + 0x30;
-   Number /= 10;
-     }
-  if (Sign)  *pStrDst-- ='-';   
+   
+    if(!Number){
+      i = 2; 
+      *pStrDst-- = '0';} 
+    else
+     for(i = 1; i < SizeOfStr && Number;   i++){ 
+      Tmp = Number%10;
+      *pStrDst-- = Tmp + 0x30;
+      Number /= 10;
+       }
+  if (Sign){  
+    *pStrDst-- ='-'; 
+    i++;
+  }
+  while(i < SizeOfStr){
+    *pStrDst-- = ' ';
+    i++;
+  }
 return StrDst;
 }
 

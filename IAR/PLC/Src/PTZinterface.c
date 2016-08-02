@@ -10,7 +10,7 @@
 
 
 #include "initial.h"
-
+// (c) RA3TVD code, 2016
 
 struct{
   uint8_t PressTransmiss; // pressure in the transmission
@@ -159,7 +159,10 @@ struct{
   uint8_t SelectedSide    :       1; // A or B side
   uint8_t EditShow        :       1; //edit or just show condition...which of them is edit
   uint8_t TimeEdit        :       1; // are we modefying the Time, right? 
- } PoolOfExits = {0,0,0,0};
+  uint8_t EntranceToEdit  :       2; // we went to edit
+  uint8_t TempA;                     // we should store temporarily variable value of Extits intensity of the flow
+  uint8_t TempB;
+ } PoolOfExits = {0,0,0,0,0,0,0};
 
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
@@ -206,7 +209,7 @@ void Load_GUI_0(void){
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 275, PetrolPerSquare, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[16] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 312, 141, StrSpeed, RIGHT_MODE, 1, &RIAD_30pt,0);
-  Text[17] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 456, 141, StrRPM, RIGHT_MODE, 1, &RIAD_30pt,0);
+  Text[17] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 456, 141, StrRPM, RIGHT_MODE, 1, &RIAD_30pt,0); // last parameter is bg_color 0 is transparent
   Text[18] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 708, 335, StrSleep, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[19] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 100, 322, StrRising, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[20] = GUI_SetObject(TEXT_STRING ,0xFF000000, 0, 7, 300, 97, StrCalibration, LEFT_MODE, 1, &RIAD_20pt,0);
@@ -295,31 +298,36 @@ void Run_GUI(void){
     case 11:
        if (!Condition.activity)actions(2);
       break;  
-    case 12: //pressed topping
+    case 12: 
        if (!Condition.activity)actions(4);
       break; 
-    case 13: //pressed blade front
+    case 13: 
        if (!Condition.activity)actions(6);
       break;   
-    case 14: //pressed blade front
+    case 14: 
       PoolOfExits.EntireSelect = 0;
       PoolOfExits.EditShow = 0;
+      PoolOfExits.EntranceToEdit = 0;
       break;  
-    case 15: //pressed blade side
+    case 15: 
       PoolOfExits.EntireSelect = 1;
       PoolOfExits.EditShow = 0;
+      PoolOfExits.EntranceToEdit = 0;
       break; 
-    case 16: //pressed blade front
+    case 16:
       PoolOfExits.EntireSelect = 2;
       PoolOfExits.EditShow = 0;
+      PoolOfExits.EntranceToEdit = 0;
       break;  
-    case 17: //pressed blade side
+    case 17: 
       PoolOfExits.EntireSelect = 3;
       PoolOfExits.EditShow = 0;
+      PoolOfExits.EntranceToEdit = 0;
       break;      
-    case 18: //pressed blade side
+    case 18: 
       PoolOfExits.EntireSelect = 4;
       PoolOfExits.EditShow = 0;
+      PoolOfExits.EntranceToEdit = 0; // loose the changes
       break;         
 
     }
@@ -522,8 +530,9 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
       if(ZonesTS_0[Index].PagesActivities & (1<<DISP.Screen)) // are we allowed here?
       if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
             (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
-        DISP.TS_ZoneNumber = Index;
-        if((DISP.TS_ZoneNumber != 7)&& CAM_flag)                  DISP.TS_ZoneNumber = 100;
+                DISP.TS_ZoneNumber = Index;
+        if((DISP.TS_ZoneNumber != 7)&& CAM_flag)     
+                DISP.TS_ZoneNumber = 100;
       }
     } 
 
@@ -650,10 +659,27 @@ uint8_t WriteGo :
       if(Condition.activity)Condition.butt_selected = 2;
       else {PenetrationRising(4, 1); }//set activity to the control      
     }
+    if(DISP.Screen == 3){
+      if(PoolOfExits.EditShow){
+        if(!PoolOfExits.SelectedSide)PoolOfExits.SelectedSide = 1;
+        else PoolOfExits.SelectedSide = 0;
+      }
+      else{
+       if(PoolOfExits.EntireSelect)PoolOfExits.EntireSelect--;
+      }
+    }
     break;
-  case 2:  
+  case 2: 
+    if(DISP.Screen == 3){
+      if(PoolOfExits.EditShow){
+        if(!PoolOfExits.SelectedSide)PoolOfExits.SelectedSide = 1;
+        else PoolOfExits.SelectedSide = 0;
+      }
+      else{
+       if(PoolOfExits.EntireSelect < 4)PoolOfExits.EntireSelect++;
+      }
+    }
     if(DISP.Screen == 2){
-
       if(Condition.activity)Condition.butt_selected = 3;
       else PenetrationRising(1, 1);
     }
@@ -664,7 +690,18 @@ uint8_t WriteGo :
     }
 
     break;
-  case 3:
+  case 3: 
+    if(DISP.Screen == 3){
+      if(!PoolOfExits.EditShow)PoolOfExits.EditShow = 1;
+      else{
+        if(!PoolOfExits.SelectedSide){
+         if(PoolOfExits.TempA < 100) PoolOfExits.TempA++;
+        }
+        else{
+         if(PoolOfExits.TempB < 100) PoolOfExits.TempB++;
+        } 
+      }
+    }
    if((DISP.Screen == 0)||(DISP.Screen == 1))DISP.Screen = 3;
    if(DISP.Screen == 2){
       if(Condition.activity){
@@ -673,7 +710,7 @@ uint8_t WriteGo :
         Condition.erase_flag = 1; // set the erase token
       }
    }
-   if(DISP.Screen == 3 && !PoolOfExits.EditShow)PoolOfExits.EditShow = 1;
+ 
    else ;; //plus button
      
     break;
@@ -702,7 +739,12 @@ uint8_t WriteGo :
       PenetrationRising(3, 1);
     }
     else{
-      DISP.Screen = deal;
+      if(DISP.Screen == 3){
+        if(PoolOfExits.EditShow && PoolOfExits.EntranceToEdit)
+               PoolOfExits.EntranceToEdit = 2; 
+      
+      }
+     // DISP.Screen = deal;
     }
     break;
   case 7:
@@ -712,7 +754,11 @@ uint8_t WriteGo :
     }
     else
     if(DISP.Screen == 3){
-        DISP.Screen = 0;
+        if(!PoolOfExits.EditShow) DISP.Screen = 0; //if we in the edit mode
+        else{
+         PoolOfExits.EditShow = 0; //else go from Edit mode and discard changes
+         PoolOfExits.EntranceToEdit = 0;
+           } 
       }
     else{
       CAM_ON_OFF();
@@ -835,10 +881,14 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 #define BHE_ARR_GAP_Y                   222  // position of the left indicative arrow
 #define BHE_RIGHT_ARR_GAP_X             104 // position of the left indicative arrow
 #define BHE_ARR_MOVE_SCALE              1.65f //the scale factor
+#define BHE_STRA_X_GAP                  60 // the string A x gap  
+#define BHE_STRB_X_GAP                  122 // the string B x gap  
+#define BHE_STRAB_Y_GAP                 254    // the string A x gap         
 //
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex controls based on images, figures, texts 
                                                       // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
 uint8_t i,j; // indexes for increment, plain usage 
+uint8_t StrRightView[]  =        "      0"; //in the LEFT mode
 
 const Point Coords[5] = 
 {{ORIGIN_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
@@ -861,20 +911,43 @@ if(!Number && !Parm){ // inside the show level
  for(j = 0; j < 5; j++){
    if(PoolOfExits.EntireSelect != j){
      LCD_Fill_Image(&IMAGES.ImgArray[218], Coords[j].X, Coords[j].Y);
-
-    
    }
    else {
      LCD_Fill_Image(&IMAGES.ImgArray[219], Coords[j].X, Coords[j].Y);
      if(PoolOfExits.EditShow){ // show the EditMode
-     if(PoolOfExits.SelectedSide)LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
-      else LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+     if(!PoolOfExits.SelectedSide)
+       LCD_Fill_Image(&IMAGES.ImgArray[234], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+      else 
+       LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
+      
+      if(!PoolOfExits.EntranceToEdit){
+        PoolOfExits.EntranceToEdit = 1; /// turn the flag ON once
+        PoolOfExits.TempA = PTZ.Hidroexits[j].A; // and load values to the temp variables
+        PoolOfExits.TempB = PTZ.Hidroexits[j].B; // 
+      }
+      else{
+        if(PoolOfExits.EntranceToEdit == 2) {
+          PTZ.Hidroexits[j].A = PoolOfExits.TempA;
+          PTZ.Hidroexits[j].B = PoolOfExits.TempB;
+          PoolOfExits.EntranceToEdit = 0; 
+          PoolOfExits.EditShow = 0;
+        }
+      }
+       LCD_Fill_Image(&IMAGES.ImgArray[34], 400, 394); // "-"     //and three addition buttons in the edit mode
+       LCD_Fill_Image(&IMAGES.ImgArray[269], 301, 394); // "+" 
+       LCD_Fill_Image(&IMAGES.ImgArray[42],  597, 394); // "Enter" 
+       
+       LCD_InitParams(0, 0, 0xFF0000FF, &RIAD_16pt);
+       Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempA);
+       LCD_DisplayStringAt(Coords[j].X + BHE_STRA_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
+       Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempB);
+       LCD_DisplayStringAt(Coords[j].X + BHE_STRB_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
      }
    }
    
    for(i = 0; i < 10; i++ ){
   if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
-   if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
+   if ((PoolOfExits.TempA + 5) / (100 - i*10)){ //math.round :) TempA instead of PTZ.Hidroexits[j].A
         LCD_SetColorPixel(BHE_active_color);
       }
       else{
@@ -885,7 +958,7 @@ if(!Number && !Parm){ // inside the show level
                    Coords[j].X + EditStrokePaddingX_A + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
 
-      if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
+      if ((PoolOfExits.TempB + 5) / (100 - i*10)){ //math.round :) TempB instead of PTZ.Hidroexits[j].B
         LCD_SetColorPixel(BHE_active_color);
       }
       else{
@@ -907,13 +980,13 @@ if(!Number && !Parm){ // inside the show level
    //show the numbers at the top 1,2,3,4,5
    LCD_Fill_Image((ImageInfo *)ImagesNumber[j], BHE_NUMB_ORIGIN_X + j * STEP_BIG_HIDRO_CONTROL, BHE_NUMB_ORIGIN_Y);
       // show the arrows------
-   LCD_SetColorPixel(0xFF0A0C0B);
+   LCD_SetColorPixel(0xFF0A0C0B); // select transparent color
    if(!(PoolOfExits.EditShow && j == PoolOfExits.EntireSelect)){
       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));
    }
      //----------------------
-}
+ }
 }
 return;
 }
@@ -1055,7 +1128,8 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
     if(Condition.activity ) {
       LCD_Fill_Image(&IMAGES.ImgArray[214], 0, 394); 
 
-      if(Condition.butt_selected)         LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], 
+      if(Condition.butt_selected)         
+                        LCD_Fill_Image(ButtonImages.Address[Condition.butt_selected-1], 
                         ButtonImages.Coords[Condition.butt_selected-1].X,
                         ButtonImages.Coords[Condition.butt_selected-1].Y);
       if(Condition.blink_button)          
