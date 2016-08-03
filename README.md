@@ -1,4 +1,17 @@
 Version History
+
+v.0.1.8  update PTZ user interface
+
+v.0.1.7  update PTZ user interface
+
+v.0.1.6  update PTZ user interface
+
+v.0.1.5  update PTZ user interface
+
+v.0.1.4  update PTZ user interface the time setting up for hydrocylinders has been added
+
+v.0.1.3  update PTZ user interface
+
 v.0.1.2  improved the zones structure
 
 v.0.1.1  added new user control 

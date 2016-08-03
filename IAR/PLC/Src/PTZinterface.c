@@ -154,14 +154,17 @@ struct{ // this is a (penetration/rising) condition
 Condition={
   5,1,0,0,0,1,0,0,0,0}; 
 
+
+#define MAX_PSEUDO_TIME_VAL     1000
 struct{
   uint8_t EntireSelect    :       3; // select THIS complex exit
   uint8_t SelectedSide    :       1; // A or B side
-  uint8_t EditShow        :       1; //edit or just show condition...which of them is edit
-  uint8_t TimeEdit        :       1; // are we modefying the Time, right? 
-  uint8_t EntranceToEdit  :       2; // we went to edit
+  uint8_t EditShow        :       2; //edit or just show condition...which of them is edit
+  uint8_t TimeEdit        :       2; // are we modefying the Time, right? 
+//  uint8_t EntranceToEdit  :       2; // we went to edit
   uint8_t TempA;                     // we should store temporarily variable value of Extits intensity of the flow
   uint8_t TempB;
+  uint16_t PseudoTime;               // multiplied by 10 for easily ++ and -- operations implements
  } PoolOfExits = {0,0,0,0,0,0,0};
 
 static void actions(uint8_t deal);
@@ -307,27 +310,32 @@ void Run_GUI(void){
     case 14: 
       PoolOfExits.EntireSelect = 0;
       PoolOfExits.EditShow = 0;
-      PoolOfExits.EntranceToEdit = 0;
+      PoolOfExits.TimeEdit = 0; 
+ //     PoolOfExits.EntranceToEdit = 0;
       break;  
     case 15: 
       PoolOfExits.EntireSelect = 1;
       PoolOfExits.EditShow = 0;
-      PoolOfExits.EntranceToEdit = 0;
+      PoolOfExits.TimeEdit = 0;
+ //     PoolOfExits.EntranceToEdit = 0;
       break; 
     case 16:
       PoolOfExits.EntireSelect = 2;
       PoolOfExits.EditShow = 0;
-      PoolOfExits.EntranceToEdit = 0;
+      PoolOfExits.TimeEdit = 0;
+//      PoolOfExits.EntranceToEdit = 0;
       break;  
     case 17: 
       PoolOfExits.EntireSelect = 3;
       PoolOfExits.EditShow = 0;
-      PoolOfExits.EntranceToEdit = 0;
+      PoolOfExits.TimeEdit = 0;
+//      PoolOfExits.EntranceToEdit = 0;
       break;      
     case 18: 
       PoolOfExits.EntireSelect = 4;
       PoolOfExits.EditShow = 0;
-      PoolOfExits.EntranceToEdit = 0; // loose the changes
+      PoolOfExits.TimeEdit = 0;
+//      PoolOfExits.EntranceToEdit = 0; // loose the changes
       break;         
 
     }
@@ -485,6 +493,21 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
         break;                   
       }
       break;
+    case 3: 
+      switch(code){
+ 
+      case 0x31:
+      case 0x32:
+      case 0x33:
+      case 0x34:
+      case 0x35:
+      case 0x36:
+      case 0x37:
+      case 0x38:
+        actions(code - 0x31); 
+        break;                   
+      }
+      break;      
     }
 
 
@@ -692,7 +715,14 @@ uint8_t WriteGo :
     break;
   case 3: 
     if(DISP.Screen == 3){
-      if(!PoolOfExits.EditShow)PoolOfExits.EditShow = 1;
+      if(!PoolOfExits.EditShow){
+        
+        if(PoolOfExits.TimeEdit){
+           if(PoolOfExits.PseudoTime < MAX_PSEUDO_TIME_VAL) PoolOfExits.PseudoTime++;
+           }
+        else
+          PoolOfExits.EditShow = 1;
+      }
       else{
         if(!PoolOfExits.SelectedSide){
          if(PoolOfExits.TempA < 100) PoolOfExits.TempA++;
@@ -715,6 +745,23 @@ uint8_t WriteGo :
      
     break;
   case 4:
+   if(DISP.Screen == 3){
+      if(!PoolOfExits.TimeEdit)PoolOfExits.TimeEdit = 1;
+      else{
+        if(PoolOfExits.EditShow){ 
+        if(!PoolOfExits.SelectedSide){
+         if(PoolOfExits.TempA > 0) PoolOfExits.TempA--;
+        }
+        else{
+         if(PoolOfExits.TempB > 0) PoolOfExits.TempB--;
+        } 
+        }
+      
+       else{
+           if(PoolOfExits.PseudoTime > 0) PoolOfExits.PseudoTime--;
+         }
+       }
+    }
     if(DISP.Screen == 2){
       if(Condition.activity){
         Condition.blink_button = Condition.butt_selected;
@@ -740,9 +787,10 @@ uint8_t WriteGo :
     }
     else{
       if(DISP.Screen == 3){
-        if(PoolOfExits.EditShow && PoolOfExits.EntranceToEdit)
-               PoolOfExits.EntranceToEdit = 2; 
-      
+        if(PoolOfExits.EditShow == 2)
+               PoolOfExits.EditShow = 3; 
+        if(PoolOfExits.TimeEdit == 2)
+               PoolOfExits.TimeEdit = 3; 
       }
      // DISP.Screen = deal;
     }
@@ -754,10 +802,10 @@ uint8_t WriteGo :
     }
     else
     if(DISP.Screen == 3){
-        if(!PoolOfExits.EditShow) DISP.Screen = 0; //if we in the edit mode
+        if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit) DISP.Screen = 0; //if we in the edit mode
         else{
          PoolOfExits.EditShow = 0; //else go from Edit mode and discard changes
-         PoolOfExits.EntranceToEdit = 0;
+         PoolOfExits.TimeEdit = 0; //and time edit mode too...
            } 
       }
     else{
@@ -883,7 +931,8 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 #define BHE_ARR_MOVE_SCALE              1.65f //the scale factor
 #define BHE_STRA_X_GAP                  60 // the string A x gap  
 #define BHE_STRB_X_GAP                  122 // the string B x gap  
-#define BHE_STRAB_Y_GAP                 254    // the string A x gap         
+#define BHE_STRAB_Y_GAP                 254    // the string A x gap    
+#define BHR_STRTIME_X_GAP               88 // the x padding of the Time stroke position
 //
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex controls based on images, figures, texts 
                                                       // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
@@ -920,16 +969,16 @@ if(!Number && !Parm){ // inside the show level
       else 
        LCD_Fill_Image(&IMAGES.ImgArray[235], Coords[j].X + GAP_EditPictureX, Coords[j].Y + GAP_EditPictureY);
       
-      if(!PoolOfExits.EntranceToEdit){
-        PoolOfExits.EntranceToEdit = 1; /// turn the flag ON once
+      if(PoolOfExits.EditShow == 1){
+        PoolOfExits.EditShow = 2; ///enter to the next stage
         PoolOfExits.TempA = PTZ.Hidroexits[j].A; // and load values to the temp variables
         PoolOfExits.TempB = PTZ.Hidroexits[j].B; // 
       }
       else{
-        if(PoolOfExits.EntranceToEdit == 2) {
+        if(PoolOfExits.EditShow == 3) {
           PTZ.Hidroexits[j].A = PoolOfExits.TempA;
           PTZ.Hidroexits[j].B = PoolOfExits.TempB;
-          PoolOfExits.EntranceToEdit = 0; 
+          PoolOfExits.TimeEdit = 0; 
           PoolOfExits.EditShow = 0;
         }
       }
@@ -937,14 +986,48 @@ if(!Number && !Parm){ // inside the show level
        LCD_Fill_Image(&IMAGES.ImgArray[269], 301, 394); // "+" 
        LCD_Fill_Image(&IMAGES.ImgArray[42],  597, 394); // "Enter" 
        
-       LCD_InitParams(0, 0, 0xFF0000FF, &RIAD_16pt);
+       LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);
        Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempA);
        LCD_DisplayStringAt(Coords[j].X + BHE_STRA_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
        Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempB);
        LCD_DisplayStringAt(Coords[j].X + BHE_STRB_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
      }
    }
-   
+   ///////////the Time manipulations/////////////
+   if(!PoolOfExits.EditShow){
+     if(j == PoolOfExits.EntireSelect && PoolOfExits.TimeEdit){   
+       LCD_Fill_Image(&IMAGES.ImgArray[247], Coords[j].X + 20, Coords[j].Y + 250); // laying the time by image
+       LCD_Fill_Image(&IMAGES.ImgArray[34], 400, 394);          // "-"     //and three addition buttons in the edit mode
+       LCD_Fill_Image(&IMAGES.ImgArray[269], 301, 394);         // "+" 
+       LCD_Fill_Image(&IMAGES.ImgArray[42],  597, 394);         // "Enter"
+       LCD_Fill_Image(&IMAGES.ImgArray[92],  498, 394);         // the pencil button
+       LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);            // set font
+       Ftoa_R(StrRightView, sizeof(StrRightView), ((float)PoolOfExits.PseudoTime/10.0f)); // calculate the time in modefied mode
+       LCD_DisplayStringAt(Coords[j].X + BHR_STRTIME_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
+        // ant add this staff
+    if(PoolOfExits.TimeEdit == 1){
+        PoolOfExits.TimeEdit = 2; ///enter to the next stage
+        PoolOfExits.PseudoTime = (int16_t)(PTZ.Hidroexits[j].Time * 10.0f);
+      }
+      else{
+        if(PoolOfExits.TimeEdit == 3) {
+          PTZ.Hidroexits[j].Time = (float)PoolOfExits.PseudoTime/10.0f;
+          PoolOfExits.TimeEdit = 0; 
+          PoolOfExits.EditShow = 0;
+        }
+      }   
+     
+     }
+     else{
+       LCD_Fill_Image(&IMAGES.ImgArray[248], Coords[j].X + 20, Coords[j].Y + 250); // laying the time by image 
+       LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);            // set font
+       Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hidroexits[j].Time); // calculate the time in modyfied mode
+       LCD_DisplayStringAt(Coords[j].X + BHR_STRTIME_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1); //put in on the screen
+     }
+   }
+//   show the times
+     //PTZ.Hidroexits[j].Time;
+   ///////////////////////
    for(i = 0; i < 10; i++ ){
   if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
    if ((PoolOfExits.TempA + 5) / (100 - i*10)){ //math.round :) TempA instead of PTZ.Hidroexits[j].A
@@ -980,7 +1063,7 @@ if(!Number && !Parm){ // inside the show level
    //show the numbers at the top 1,2,3,4,5
    LCD_Fill_Image((ImageInfo *)ImagesNumber[j], BHE_NUMB_ORIGIN_X + j * STEP_BIG_HIDRO_CONTROL, BHE_NUMB_ORIGIN_Y);
       // show the arrows------
-   LCD_SetColorPixel(0xFF0A0C0B); // select transparent color
+   LCD_SetColorPixel(0xFF0A0C0B); // choose the color for transparency
    if(!(PoolOfExits.EditShow && j == PoolOfExits.EntireSelect)){
       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));

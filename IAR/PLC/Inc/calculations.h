@@ -53,4 +53,5 @@ inline void RestorePoly(Point* pToPoints, uint8_t NumbOfPoints) //and restore it
   }
 }
 uint8_t * Itoa(uint8_t * StrDst, int16_t Number);
+uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF);
 #endif

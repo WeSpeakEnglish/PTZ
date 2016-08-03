@@ -86,11 +86,7 @@ Point RotatePoint(Point Coord, Point Coord0, uint16_t angle){ //angle max is 2pi
   static float32_t Yo;
   static float32_t X;
   static float32_t Y;
-  static float32_t oldX;
-  static float32_t oldY;
-
-
-  // angle*= 0.017453292f;
+  // angle*= 0.017453292f; Go faster by Look table usage
   cosV = ((float)(FastCos((uint16_t) angle)))*1.52587890625e-5;// arm_cos_f32(angle);
   sinV = ((float)(FastSin((uint16_t) angle)))*1.52587890625e-5;// arm_sin_f32(angle);
 
@@ -101,12 +97,49 @@ Point RotatePoint(Point Coord, Point Coord0, uint16_t angle){ //angle max is 2pi
 
   Coord.X = (uint16_t)(Xo + (((X - Xo)*cosV)) + (((Yo - Y)*sinV)));
   Coord.Y = (uint16_t)(Yo + (((X - Xo)*sinV)) + (((Y - Yo)*cosV)));
-//if(oldX > Coord.X + 20)
-//  return Coord0;
 
-  oldX = Coord.X;
-  oldY = Coord.Y;
   return Coord;
+}
+
+uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF){ // right aligment version of Ftoa with one sign after the point range (-3276...+3276, NO more)
+  uint8_t * pStrDst = &StrDst[SizeOfStr - 2]; // index of SizeOfStr is out of range. [SizeOfStr-1] in range, but eq '\0', thus [SizeOfStr-2] is OK :)
+    int16_t Tmp;
+    uint8_t i; // just the index
+    uint8_t Sign = 0;
+    int16_t Number = (int16_t)(NumberF * 10.0f);
+    
+    if(Number < 0 )Sign = 1;
+    Number = (Number < 0) ? -Number : Number;
+   
+    if(!Number){
+      i = 4; 
+      *pStrDst-- = '0';
+      *pStrDst-- = '.';
+      *pStrDst-- = '0';
+    } 
+    else
+     for(i = 1; i < SizeOfStr && Number;   i++){ 
+      Tmp = Number%10;
+      *pStrDst-- = Tmp + 0x30;
+      if(i == 1){
+        i++; 
+        *pStrDst-- = '.';
+        if(Number < 10){
+          *pStrDst-- = '0';
+          i++;
+        }
+      }
+      Number /= 10;
+       }
+  if (Sign){  
+    *pStrDst-- ='-'; 
+    i++;
+  }
+  while(i < SizeOfStr){
+    *pStrDst-- = ' ';
+    i++;
+  }
+return StrDst;
 }
 
 uint8_t * Itoa_R(uint8_t * StrDst, uint8_t SizeOfStr, int16_t Number){ // right aligment version of Itoa
@@ -138,8 +171,8 @@ uint8_t * Itoa_R(uint8_t * StrDst, uint8_t SizeOfStr, int16_t Number){ // right 
 return StrDst;
 }
 
-uint8_t * Itoa(uint8_t * StrDst, int16_t Number){ // convert int into string
-  uint8_t * pStrDst = StrDst;
+uint8_t * Itoa(uint8_t * StrDst, int16_t Number){ // convert int into string 
+  uint8_t * pStrDst = StrDst;                     // please be be aware, that length of your array is inougth to store your number in the stroke notation
   int16_t Tmp;
   uint8_t Iliminate = 1;
   
