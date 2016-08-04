@@ -30,9 +30,10 @@ struct{
   struct{
     uint8_t A;
     uint8_t B;
+    uint8_t Lock : 1; // is it LOCK?
     float Time;
   }
-  Hidroexits[5];
+  Hydroexits[5];
 
 }
 PTZ;
@@ -161,10 +162,11 @@ struct{
   uint8_t SelectedSide    :       1; // A or B side
   uint8_t EditShow        :       2; //edit or just show condition...which of them is edit
   uint8_t TimeEdit        :       2; // are we modefying the Time, right? 
-//  uint8_t EntranceToEdit  :       2; // we went to edit
+  uint8_t LockToken       :       1; // we go to change lock field of the "hydroexit" instance
   uint8_t TempA;                     // we should store temporarily variable value of Extits intensity of the flow
   uint8_t TempB;
   uint16_t PseudoTime;               // multiplied by 10 for easily ++ and -- operations implements
+  
  } PoolOfExits = {0,0,0,0,0,0,0};
 
 static void actions(uint8_t deal);
@@ -308,34 +310,29 @@ void Run_GUI(void){
        if (!Condition.activity)actions(6);
       break;   
     case 14: 
+      if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 0;
-      PoolOfExits.EditShow = 0;
-      PoolOfExits.TimeEdit = 0; 
- //     PoolOfExits.EntranceToEdit = 0;
+      }
       break;  
     case 15: 
+      if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 1;
-      PoolOfExits.EditShow = 0;
-      PoolOfExits.TimeEdit = 0;
- //     PoolOfExits.EntranceToEdit = 0;
+      }
       break; 
     case 16:
+      if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 2;
-      PoolOfExits.EditShow = 0;
-      PoolOfExits.TimeEdit = 0;
-//      PoolOfExits.EntranceToEdit = 0;
+      }
       break;  
     case 17: 
+      if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 3;
-      PoolOfExits.EditShow = 0;
-      PoolOfExits.TimeEdit = 0;
-//      PoolOfExits.EntranceToEdit = 0;
+      }
       break;      
     case 18: 
+      if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 4;
-      PoolOfExits.EditShow = 0;
-      PoolOfExits.TimeEdit = 0;
-//      PoolOfExits.EntranceToEdit = 0; // loose the changes
+      }
       break;         
 
     }
@@ -715,6 +712,7 @@ uint8_t WriteGo :
     break;
   case 3: 
     if(DISP.Screen == 3){
+      if(!PTZ.Hydroexits[PoolOfExits.EntireSelect].Lock)
       if(!PoolOfExits.EditShow){
         
         if(PoolOfExits.TimeEdit){
@@ -746,6 +744,7 @@ uint8_t WriteGo :
     break;
   case 4:
    if(DISP.Screen == 3){
+     if(!PTZ.Hydroexits[PoolOfExits.EntireSelect].Lock)
       if(!PoolOfExits.TimeEdit)PoolOfExits.TimeEdit = 1;
       else{
         if(PoolOfExits.EditShow){ 
@@ -787,12 +786,17 @@ uint8_t WriteGo :
     }
     else{
       if(DISP.Screen == 3){
+        if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
+         if(!PoolOfExits.LockToken)
+           PoolOfExits.LockToken = 1;
+
+        }
+        else
         if(PoolOfExits.EditShow == 2)
                PoolOfExits.EditShow = 3; 
         if(PoolOfExits.TimeEdit == 2)
                PoolOfExits.TimeEdit = 3; 
       }
-     // DISP.Screen = deal;
     }
     break;
   case 7:
@@ -870,8 +874,6 @@ void Tests(void ){
   }
 
 }
-///!------------------------------------------- Do Not Modify ------------------------------(c)RA3TVD-----
-
 ///!-- here is the our controls
 void BIG_Arrow(uint16_t SetValue) // in the parts of 0.1 kmph
 {
@@ -905,8 +907,6 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
   return;
 }
 
-
-///------------------------------------------------------------------------------------------------------------------------------------------------------------
 ///-------------USER CONTROL -------------------
 #define STEP_BIG_HIDRO_CONTROL          153 // means on the X direction
 #define ORIGIN_BIG_HIDRO_CONTROL        18
@@ -957,8 +957,9 @@ const ImageInfo* ImagesNumber[] = { // the pool of images at the top of this big
 
 if(!Number && !Parm){ // inside the show level
 
- for(j = 0; j < 5; j++){
-   if(PoolOfExits.EntireSelect != j){
+ for(j = 0; j < 5; j++){   
+   
+ if(PoolOfExits.EntireSelect != j){
      LCD_Fill_Image(&IMAGES.ImgArray[218], Coords[j].X, Coords[j].Y);
    }
    else {
@@ -971,13 +972,13 @@ if(!Number && !Parm){ // inside the show level
       
       if(PoolOfExits.EditShow == 1){
         PoolOfExits.EditShow = 2; ///enter to the next stage
-        PoolOfExits.TempA = PTZ.Hidroexits[j].A; // and load values to the temp variables
-        PoolOfExits.TempB = PTZ.Hidroexits[j].B; // 
+        PoolOfExits.TempA = PTZ.Hydroexits[j].A; // and load values to the temp variables
+        PoolOfExits.TempB = PTZ.Hydroexits[j].B; // 
       }
       else{
         if(PoolOfExits.EditShow == 3) {
-          PTZ.Hidroexits[j].A = PoolOfExits.TempA;
-          PTZ.Hidroexits[j].B = PoolOfExits.TempB;
+          PTZ.Hydroexits[j].A = PoolOfExits.TempA;
+          PTZ.Hydroexits[j].B = PoolOfExits.TempB;
           PoolOfExits.TimeEdit = 0; 
           PoolOfExits.EditShow = 0;
         }
@@ -991,6 +992,11 @@ if(!Number && !Parm){ // inside the show level
        LCD_DisplayStringAt(Coords[j].X + BHE_STRA_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
        Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempB);
        LCD_DisplayStringAt(Coords[j].X + BHE_STRB_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
+     }
+     else {
+       if(PoolOfExits.LockToken)
+         if(PTZ.Hydroexits[j].Lock)PTZ.Hydroexits[j].Lock = 0;
+         else PTZ.Hydroexits[j].Lock = 1;
      }
    }
    ///////////the Time manipulations/////////////
@@ -1007,11 +1013,11 @@ if(!Number && !Parm){ // inside the show level
         // ant add this staff
     if(PoolOfExits.TimeEdit == 1){
         PoolOfExits.TimeEdit = 2; ///enter to the next stage
-        PoolOfExits.PseudoTime = (int16_t)(PTZ.Hidroexits[j].Time * 10.0f);
+        PoolOfExits.PseudoTime = (int16_t)(PTZ.Hydroexits[j].Time * 10.0f);
       }
       else{
         if(PoolOfExits.TimeEdit == 3) {
-          PTZ.Hidroexits[j].Time = (float)PoolOfExits.PseudoTime/10.0f;
+          PTZ.Hydroexits[j].Time = (float)PoolOfExits.PseudoTime / 10.0f;
           PoolOfExits.TimeEdit = 0; 
           PoolOfExits.EditShow = 0;
         }
@@ -1019,18 +1025,23 @@ if(!Number && !Parm){ // inside the show level
      
      }
      else{
+       if(!PTZ.Hydroexits[j].Lock){
        LCD_Fill_Image(&IMAGES.ImgArray[248], Coords[j].X + 20, Coords[j].Y + 250); // laying the time by image 
        LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);            // set font
-       Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hidroexits[j].Time); // calculate the time in modyfied mode
+       Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
        LCD_DisplayStringAt(Coords[j].X + BHR_STRTIME_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1); //put in on the screen
+       }
+       else
+       {
+       LCD_SetColorPixel(0xFF0A0C0B); //set the transparence colour  
+       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[237], Coords[j].X + 64, Coords[j].Y + 250); // laying the time by image 
+       }
      }
    }
-//   show the times
-     //PTZ.Hidroexits[j].Time;
    ///////////////////////
    for(i = 0; i < 10; i++ ){
   if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
-   if ((PoolOfExits.TempA + 5) / (100 - i*10)){ //math.round :) TempA instead of PTZ.Hidroexits[j].A
+   if ((PoolOfExits.TempA + 5) / (100 - i*10)){ //math.round :) TempA instead of PTZ.Hydroexits[j].A
         LCD_SetColorPixel(BHE_active_color);
       }
       else{
@@ -1041,7 +1052,7 @@ if(!Number && !Parm){ // inside the show level
                    Coords[j].X + EditStrokePaddingX_A + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
 
-      if ((PoolOfExits.TempB + 5) / (100 - i*10)){ //math.round :) TempB instead of PTZ.Hidroexits[j].B
+      if ((PoolOfExits.TempB + 5) / (100 - i*10)){ //math.round :) TempB instead of PTZ.Hydroexits[j].B
         LCD_SetColorPixel(BHE_active_color);
       }
       else{
@@ -1065,11 +1076,12 @@ if(!Number && !Parm){ // inside the show level
       // show the arrows------
    LCD_SetColorPixel(0xFF0A0C0B); // choose the color for transparency
    if(!(PoolOfExits.EditShow && j == PoolOfExits.EntireSelect)){
-      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].A * BHE_ARR_MOVE_SCALE));
-      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hidroexits[j].B * BHE_ARR_MOVE_SCALE));
+      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[288], Coords[j].X + BHE_LEFT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hydroexits[j].A * BHE_ARR_MOVE_SCALE));
+      LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[289], Coords[j].X + BHE_RIGHT_ARR_GAP_X, Coords[j].Y + BHE_ARR_GAP_Y-(uint16_t)((float)PTZ.Hydroexits[j].B * BHE_ARR_MOVE_SCALE));
    }
-     //----------------------
+     //---------put ignored parameters back -------------
  }
+ if(PoolOfExits.LockToken)PoolOfExits.LockToken = 0; //erase Tocken
 }
 return;
 }
@@ -1087,11 +1099,11 @@ return;
 
 void LittleHidroExitsShow(void){
   uint16_t i,j;
-  PTZ.Hidroexits[0].A = 100;
-  PTZ.Hidroexits[2].B = 0;
+  PTZ.Hydroexits[0].A = 100;
+  PTZ.Hydroexits[2].B = 0;
   for(i = 0; i < 10; i++ ){ 
     for(j = 0; j < 5; j++){
-      if ((PTZ.Hidroexits[j].A + 5) / (100 - i*10)){ //math.round :)
+      if ((PTZ.Hydroexits[j].A + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFF3366FF);
       }
       else{
@@ -1099,7 +1111,7 @@ void LittleHidroExitsShow(void){
       }
       LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
 
-      if ((PTZ.Hidroexits[j].B + 5) / (100 - i*10)){ //math.round :)
+      if ((PTZ.Hydroexits[j].B + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFFFF3333);
       }
       else{
