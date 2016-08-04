@@ -121,7 +121,7 @@ const Zone ZonesTS_0[]={
   {{211,405},{292,477},         ob11111111},  //2 BIG BOTTOM BTN#2 
   {{310,405},{391,477},         ob11111111},  //3 BIG BOTTOM BTN#3  
   {{409,405},{490,477},         ob11111111},  //4 BIG BOTTOM BTN#4 
-  {{508,405},{589,477},         ob11110111},  //5 BIG BOTTOM BTN#5 
+  {{508,405},{589,477},         ob11111111},  //5 BIG BOTTOM BTN#5 
   {{607,405},{688,477},         ob11111111},  //6 BIG BOTTOM BTN#6  
   {{706,405},{787,477},         ob11111111},  //7 BIG BOTTOM BTN#7 
   {{688,141},{756,202},         ob00000100},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
@@ -163,6 +163,7 @@ struct{
   uint8_t EditShow        :       2; //edit or just show condition...which of them is edit
   uint8_t TimeEdit        :       2; // are we modefying the Time, right? 
   uint8_t LockToken       :       1; // we go to change lock field of the "hydroexit" instance
+  uint8_t TimeEraseToken  :       1; // this token to erase time field to 0.0 in time edit mode
   uint8_t TempA;                     // we should store temporarily variable value of Extits intensity of the flow
   uint8_t TempB;
   uint16_t PseudoTime;               // multiplied by 10 for easily ++ and -- operations implements
@@ -779,6 +780,9 @@ uint8_t WriteGo :
       Flags.WriteGo = !Flags.WriteGo;
       Images[5] ->z_index = Flags.WriteGo;
     }
+    if(DISP.Screen == 3){
+      if(PoolOfExits.TimeEdit) PoolOfExits.TimeEraseToken = 1;
+    }
     break;
   case 6:      
     if(DISP.Screen == 2){
@@ -994,9 +998,15 @@ if(!Number && !Parm){ // inside the show level
        LCD_DisplayStringAt(Coords[j].X + BHE_STRB_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
      }
      else {
-       if(PoolOfExits.LockToken)
+       if(PoolOfExits.LockToken){
          if(PTZ.Hydroexits[j].Lock)PTZ.Hydroexits[j].Lock = 0;
          else PTZ.Hydroexits[j].Lock = 1;
+       }
+       if(PoolOfExits.TimeEraseToken){
+         PoolOfExits.TimeEraseToken = 0; 
+         PoolOfExits.PseudoTime = 0;
+       }
+         
      }
    }
    ///////////the Time manipulations/////////////
@@ -1020,24 +1030,24 @@ if(!Number && !Parm){ // inside the show level
           PTZ.Hydroexits[j].Time = (float)PoolOfExits.PseudoTime / 10.0f;
           PoolOfExits.TimeEdit = 0; 
           PoolOfExits.EditShow = 0;
-        }
+       }
       }   
-     
      }
-     else{
-       if(!PTZ.Hydroexits[j].Lock){
-       LCD_Fill_Image(&IMAGES.ImgArray[248], Coords[j].X + 20, Coords[j].Y + 250); // laying the time by image 
-       LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);            // set font
-       Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
-       LCD_DisplayStringAt(Coords[j].X + BHR_STRTIME_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1); //put in on the screen
+    }
+ if(!(PoolOfExits.EntireSelect == j &&  (PoolOfExits.EditShow || PoolOfExits.TimeEdit))){
+ 
+         if(!PTZ.Hydroexits[j].Lock){
+         LCD_Fill_Image(&IMAGES.ImgArray[248], Coords[j].X + 20, Coords[j].Y + 250); // laying the time by image 
+         LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);            // set font
+         Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
+         LCD_DisplayStringAt(Coords[j].X + BHR_STRTIME_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1); //put in on the screen
        }
        else
        {
-       LCD_SetColorPixel(0xFF0A0C0B); //set the transparence colour  
-       LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[237], Coords[j].X + 64, Coords[j].Y + 250); // laying the time by image 
+         LCD_SetColorPixel(0xFF0A0C0B); //set the transparence colour  
+         LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[237], Coords[j].X + 64, Coords[j].Y + 250); // laying the time by image 
        }
-     }
-   }
+ }
    ///////////////////////
    for(i = 0; i < 10; i++ ){
   if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
