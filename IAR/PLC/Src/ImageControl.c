@@ -8,9 +8,6 @@
 
 
 /*
-//=============================================================================
-//		uint8_t ChangeDecoderContrast(void)
-//=============================================================================
 uint8_t ChangeDecoderContrast(void)
 {
     uint16_t	val;
@@ -21,9 +18,6 @@ uint8_t ChangeDecoderContrast(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t GetDecoderContrast(void)
-//=============================================================================
 uint16_t GetDecoderContrast(void)
 {
     uint16_t	val;
@@ -36,9 +30,6 @@ uint16_t GetDecoderContrast(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t SetDecoderContrast(uint16_t val)
-//=============================================================================
 uint16_t SetDecoderContrast(uint16_t val)
 {
 	Printf("\nContrast: %d", val );
@@ -56,9 +47,6 @@ uint16_t SetDecoderContrast(uint16_t val)
 	return (val);
 }
 
-//=============================================================================
-//		uint8_t ChangeDecoderBright(void)
-//=============================================================================
 uint8_t ChangeDecoderBright(void)
 {
     uint16_t	val;
@@ -69,9 +57,6 @@ uint8_t ChangeDecoderBright(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t GetDecoderBright(void)
-//=============================================================================
 uint16_t GetDecoderBright(void)
 {
     uint16_t	val;
@@ -86,9 +71,6 @@ uint16_t GetDecoderBright(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t SetDecoderBright(uint16_t val)
-//=============================================================================
 uint16_t SetDecoderBright(uint16_t val)
 {
 	WriteTW88( 0xff, DECODER_PAGE );
@@ -105,9 +87,6 @@ uint16_t SetDecoderBright(uint16_t val)
 	return (val);
 }
 
-//=============================================================================
-//		uint8_t ChangeDecoderSaturation(void)
-//=============================================================================
 uint8_t ChangeDecoderSaturation(void)
 {
     uint16_t	val;
@@ -118,9 +97,6 @@ uint8_t ChangeDecoderSaturation(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t GetDecoderSaturation(void)
-//=============================================================================
 uint16_t GetDecoderSaturation(void)
 {
     uint16_t	val;
@@ -133,9 +109,6 @@ uint16_t GetDecoderSaturation(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t SetDecoderSaturation(uint16_t val)
-//=============================================================================
 uint16_t SetDecoderSaturation(uint16_t val)
 {
 	WriteTW88( 0xff, PAGE1_DECODER );
@@ -151,9 +124,6 @@ uint16_t SetDecoderSaturation(uint16_t val)
 	return (val);
 }
 
-//=============================================================================
-//		uint8_t ChangeDecoderHUE(void)
-//=============================================================================
 uint8_t ChangeDecoderHUE(void)
 {
     uint16_t	val;
@@ -164,9 +134,6 @@ uint8_t ChangeDecoderHUE(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t GetDecoderHUE(void)
-//=============================================================================
 uint16_t GetDecoderHUE(void)
 {
     uint16_t	val;
@@ -181,9 +148,6 @@ uint16_t GetDecoderHUE(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t SetDecoderHUE(uint16_t val)
-//=============================================================================
 uint16_t SetDecoderHUE(uint16_t val)
 {
 	WriteTW88( 0xff, PAGE1_DECODER );
@@ -202,9 +166,6 @@ uint16_t SetDecoderHUE(uint16_t val)
 	return (val);
 }
 
-//=============================================================================
-//		uint8_t ChangeDecoderSharp(void)
-//=============================================================================
 uint8_t ChangeDecoderSharp(void)
 {
     uint16_t	val;
@@ -215,9 +176,6 @@ uint8_t ChangeDecoderSharp(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t GetDecoderSharp(void)
-//=============================================================================
 uint16_t GetDecoderSharp(void)
 {
     uint16_t	val;
@@ -227,9 +185,6 @@ uint16_t GetDecoderSharp(void)
 	return (val);
 }
 
-//=============================================================================
-//		uint16_t SetDecoderSharp(uint16_t val)
-//=============================================================================
 uint16_t SetDecoderSharp(uint16_t val)
 {
 uint8_t	i;
@@ -260,9 +215,6 @@ uint8_t	i;
 #define		SaturationY		0x85
 #define		SharpnessY		0x8B
 
-//=============================================================================
-//		uint8_t SetYCbCrSharpReg(uint8_t val)
-//=============================================================================
 uint8_t SetYCbCrSharpReg(uint8_t regv)
 {
 uint8_t	val;
@@ -276,14 +228,10 @@ uint8_t	val;
 
 #ifndef TW8820
 
-//==============================================================================
 #define		ContrastR		0x81
 #define		BrightnessR		0x87
 #define		Sharpness		0x8B
 
-//=============================================================================
-//		uint16_t SetRGBContrast(uint16_t val)
-//=============================================================================
 uint16_t SetRGBContrast(uint16_t val)
 {
 	WriteTW88( 0xff, PAGE2_IMAGE );
@@ -301,9 +249,6 @@ uint16_t SetRGBContrast(uint16_t val)
 }
 
 
-//=============================================================================
-//		uint16_t SetRGBContrast(uint16_t val)
-//=============================================================================
 uint16_t SetRGBBright(uint16_t val)
 {
 	WriteTW88Page( PAGE2_IMAGE );
@@ -320,9 +265,6 @@ uint16_t SetRGBBright(uint16_t val)
 	return (val);
 }
 
-//=============================================================================
-//		void ResetRGBSharp( void )
-//=============================================================================
 void ResetRGBSharp( void )
 {
 	WriteTW88Page( PAGE2_IMAGE );

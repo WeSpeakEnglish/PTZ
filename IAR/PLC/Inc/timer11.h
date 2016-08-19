@@ -4,8 +4,8 @@
 #include "variables.h"
 
 
+extern uint32_t Counter_TIM11; // base for 13+ years overflow timer with 0.1 sec tick
 
-//extern uint32_t CounterUPD;
 void Timer11_Init(void);
 void TIM11_IRQHandler(void);
 

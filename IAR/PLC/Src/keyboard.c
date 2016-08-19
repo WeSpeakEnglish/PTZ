@@ -83,7 +83,7 @@ uint8_t GenerateKbdMessages(uint8_t XORedKeyBits){ // receve XOR of Old and New 
   static uint8_t Event;
   static uint8_t i;
   const uint8_t CharNames[8] = {
-    0x38, 0x37, 0x36, 0x35, 0x34, 0x33, 0x32, 0x31  };   
+    0x38, 0x37, 0x36, 0x35, 0x34, 0x33, 0x32, 0x31};   
 
 
   for(i=0;i<8;i++){

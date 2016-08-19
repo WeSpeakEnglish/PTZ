@@ -1,12 +1,9 @@
 #include "PTZinterface.h"
 #include "video.h"
 #include "calculations.h"
-#include "core.h"
 #include "keyboard.h"
 
 #include "fonts.h"
-#include "timer14.h"
-#include "timer13.h"
 
 
 #include "initial.h"
@@ -34,9 +31,8 @@ struct{
     float Time;
   }
   Hydroexits[5];
-
-}
-PTZ;
+} 
+ PTZ;
 
 static uint8_t StrTransmiss[] =           "     0.0";
 static uint8_t StrPneumosys[] =           "     0.0";
@@ -649,6 +645,7 @@ void ReleaseFunction(void){
   case 2 :
     break;        
   case 3 : 
+    exAddition(0,0,0,0,0); // reset exAddition Function
     break;
   } 
 
@@ -724,10 +721,10 @@ uint8_t WriteGo :
       }
       else{
         if(!PoolOfExits.SelectedSide){
-         if(PoolOfExits.TempA < 100) PoolOfExits.TempA++;
+         PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, 1, 10);///PoolOfExits.TempA++;
         }
         else{
-         if(PoolOfExits.TempB < 100) PoolOfExits.TempB++;
+         PoolOfExits.TempB = exAddition(PoolOfExits.TempB, 0, 100, 1, 10);
         } 
       }
     }
@@ -740,7 +737,7 @@ uint8_t WriteGo :
       }
    }
  
-   else ;; //plus button
+  //plus button
      
     break;
   case 4:
@@ -750,10 +747,10 @@ uint8_t WriteGo :
       else{
         if(PoolOfExits.EditShow){ 
         if(!PoolOfExits.SelectedSide){
-         if(PoolOfExits.TempA > 0) PoolOfExits.TempA--;
+         PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, -1, 10);
         }
         else{
-         if(PoolOfExits.TempB > 0) PoolOfExits.TempB--;
+         PoolOfExits.TempB = exAddition(PoolOfExits.TempB, 0, 100, -1, 10);
         } 
         }
       
@@ -1387,6 +1384,7 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
 
   return address;
 }
+//-- SUBCONTROL functions
 
 uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  const uint16_t Y) //solve triangle zones [/] and [\] types 
 {
@@ -1401,5 +1399,53 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
   else Ys = y2 - k*(X - x1);
   if((uint16_t)Ys > Y) return 1; 
   return 0;
+}
+
+///------- Extended addition
+// inValue is an input value
+// minStep is a start value of a step
+// maxStep is a end value of a step
+// Step is an initial step
+// predPeriod is treshold period to start of updating the step
+
+// AN ADDITION MODE USAGE:
+// ex:: the borders between 0 and 100:
+// PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, 1, 5 );
+
+//A SUBSTRUCTION mode usage^
+// ex:: the borders between 0 and 100:
+// PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, -1, 5 );
+
+//to reset use like this:  exAddition(0, 0, 0, 0, 0 );
+
+#define STEPS_OF_ADD            40
+#define ADD_TRESH               3
+int32_t exAddition(int32_t inValue, int16_t minVal, int16_t maxVal, int16_t Step, uint16_t padPeriod){
+static uint32_t   OLD_Counter; // we'll calculate the difference
+static int16_t    OLD_Step = 0;
+register int32_t ReturnValue;
+static int16_t   step = 0;
+static uint8_t   indexImp = 0;
+
+if(     (OLD_Step == Step) 
+     && (Counter_TIM11 - OLD_Counter < padPeriod )
+    ){
+  ReturnValue = inValue + step;
+  if(!(indexImp++ % ADD_TRESH))
+        if(Step > 0)
+            step += (maxVal - minVal)/STEPS_OF_ADD;
+        else 
+            step -= (maxVal - minVal)/STEPS_OF_ADD;
+ }
+else{
+   step = Step;
+   ReturnValue = inValue + Step;
+}
+
+OLD_Counter =  Counter_TIM11;  
+OLD_Step = Step;
+if(ReturnValue > maxVal) ReturnValue = maxVal;
+if(ReturnValue < minVal) ReturnValue = minVal;
+return ReturnValue;
 }
 

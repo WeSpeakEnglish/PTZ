@@ -9,6 +9,8 @@
 #include "sound.h"
 #include "initial.h"
 
+uint32_t Counter_TIM11 = 0; // base for 13+ years overflow timer with 0.1 sec tick
+
 void Timer11_Init(void){
  TIM11->PSC = 21600;
  TIM11->ARR = 1000; //10 times in one second
@@ -20,7 +22,7 @@ void Timer11_Init(void){
 
 void TIM11_IRQHandler(void){
  TIM11->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
- 
+ Counter_TIM11++;
  //F_push(Run_GUI);
 // F_push(Show_GUI);
  UpdateScreen = 1;

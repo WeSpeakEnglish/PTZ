@@ -50,6 +50,7 @@ void TEMP_Arrow(uint16_t SetValue);
 void LittleHidroExitsShow(void);
 void UserControlsShow(void);
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm);
+int32_t exAddition(int32_t inValue, int16_t minValue, int16_t maxVal, int16_t Step, uint16_t padPeriod);
 void Tests(void);
 void Test1(void);
 void Test2(void);

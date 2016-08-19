@@ -3,10 +3,11 @@
 #include <stdint.h>
 
 typedef struct {
-  unsigned PRESSED :  1;
-  unsigned EVENT :    1;
-  unsigned ENTER :    1; // means enter to handle delayed (pending)
-  unsigned code :     6;
+  unsigned PRESSED      :  1;
+  unsigned EVENT        :  1;
+  unsigned ENTER        :  1; // means enter to handle delayed (pending)
+  unsigned REPEAT       :  1;
+  unsigned code         :  6;
 } KB_status;
 
 extern KB_status KB_Status;

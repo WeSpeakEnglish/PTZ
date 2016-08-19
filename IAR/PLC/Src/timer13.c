@@ -3,8 +3,8 @@
 #include "keyboard.h"
 
 void Timer13_Init(void){
-  TIM13->PSC = 20;
-  TIM13->ARR = 1759; //one second
+  TIM13->PSC = 10;
+  TIM13->ARR = 1759;   //
   TIM13->DIER |= TIM_DIER_UIE; //
   TIM13->CR1 |= TIM_CR1_CEN; // 
   NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn); // TIM6_DAC_IRQn 
@@ -15,7 +15,7 @@ void TIM13_IRQHandler(void){
   static uint32_t Counter = 0;
   static uint32_t CounterUPD = 0;
 
-  static uint8_t FlagKBD_Repeat = 0;
+ // static uint8_t Repeat = 0;
   TIM13->SR &= ~TIM_SR_UIF; // UIF
 
   switch (Counter){
@@ -59,15 +59,15 @@ void TIM13_IRQHandler(void){
     }
     if((KB_Status.EVENT && KB_Status.PRESSED) &&((CounterUPD % 20) == 18))    { 
         KB_Status.ENTER = 1;  
-        FlagKBD_Repeat =1;
+        KB_Status.REPEAT =1;
         CounterUPD = 0;
       }
     if((!KB_Status.PRESSED) && (Touch_Data.status == TOUCH_RELEASED)){
       CounterUPD = 0;
     }
-    if(KB_Status.EVENT && !KB_Status.PRESSED && FlagKBD_Repeat)      {
+    if(KB_Status.EVENT && !KB_Status.PRESSED && KB_Status.REPEAT)      {
         KB_Status.ENTER = 1;
-        FlagKBD_Repeat =0;
+        KB_Status.REPEAT =0;
       }
     if((CounterUPD % 20) == 18){
       CounterUPD = 0; 
