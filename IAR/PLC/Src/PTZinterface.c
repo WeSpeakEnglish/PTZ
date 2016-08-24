@@ -2,7 +2,7 @@
 #include "video.h"
 #include "calculations.h"
 #include "keyboard.h"
-
+#include "visual_kbd.h"
 #include "fonts.h"
 
 
@@ -120,7 +120,7 @@ const Zone ZonesTS_0[]={
   {{508,405},{589,477},         ob11111111},  //5 BIG BOTTOM BTN#5 
   {{607,405},{688,477},         ob11111111},  //6 BIG BOTTOM BTN#6  
   {{706,405},{787,477},         ob11111111},  //7 BIG BOTTOM BTN#7 
-  {{688,141},{756,202},         ob00000100},  //8 ---| theese three buttons is active only on the second page and if the Condition.activity is setted up
+  {{688,141},{756,202},         ob00000100},  //8 ---| these three buttons is active only on the second page and if the Condition.activity is setted up
   {{688,218},{756,280},         ob00000100},  //9    |
   {{688,296},{756,358},         ob00000100},  //10---| 
   {{310,172},{367,227},         ob00000100},  //11 //alternative penetration button 
@@ -131,6 +131,7 @@ const Zone ZonesTS_0[]={
   {{324,77}, {477,384},         ob00001000},  //16 // alternative arm button 
   {{477,77}, {630,384},         ob00001000},  //17 // alternative arm button 
   {{630,77}, {783,384},         ob00001000},  //18 // alternative arm button 
+  {{76,211}, {140,271},         ob00010000},  //19 // alternative arm button 
 };   
 
 struct{ // this is a (penetration/rising) condition
@@ -330,9 +331,12 @@ void Run_GUI(void){
       if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
       PoolOfExits.EntireSelect = 4;
       }
-      break;         
+    //------------- test
+    case 19:
+      V_KBD_Fill_button = DISP.TS_ZoneNumber;
+      break;
 
-    }
+   }
     switch(DISP.Screen){
     case 0:
       switch(DISP.TS_ZoneNumber){
@@ -399,7 +403,7 @@ void Run_GUI(void){
       break; 
     }
 
-    DISP.TS_ZoneNumber = -1; 
+
     DISP.Event = 0;
   }
 
@@ -416,7 +420,7 @@ void PreLoadImages(void){
 
   IMAGES.Number = 0;
   // just simply load images into the memory 
-  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   290);
+  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   291);
 
   //image 006.bmp like base  
   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
@@ -520,6 +524,10 @@ void KBD_Handle(uint8_t code){ //the handle of KBD
       break;
     case 3:
       DISP.ReleaseTask = 3;
+      DISP.ReleaseFlag = 1;
+      break;  
+    case 4:
+      DISP.ReleaseTask = 4;
       DISP.ReleaseFlag = 1;
       break;  
     }
@@ -632,14 +640,21 @@ void ViewScreen(void){
     case 3:
       Images[0]->z_index = 0;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[239].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
-      break;          
+      break;   
+    
+    case 4:
+      Images[0]->z_index = 0;
+      
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
+      break;
+      
     }
     OldScreen = DISP.Screen;
   }
 }
 
 void ReleaseFunction(void){
-  switch(DISP.ReleaseTask){
+  switch(DISP.Screen){
   case 1 :
     break;  
   case 2 :
@@ -647,6 +662,10 @@ void ReleaseFunction(void){
   case 3 : 
     exAddition(0,0,0,0,0); // reset exAddition Function
     break;
+  case 4:
+    V_KBD_Fill_button = 0;
+    break;
+    
   } 
 
   DISP.ReleaseTask = 0;
@@ -741,6 +760,10 @@ uint8_t WriteGo :
      
     break;
   case 4:
+   if(DISP.Screen < 2){
+     DISP.Screen = 4;
+    } 
+    
    if(DISP.Screen == 3){
      if(!PTZ.Hydroexits[PoolOfExits.EntireSelect].Lock)
       if(!PoolOfExits.TimeEdit)PoolOfExits.TimeEdit = 1;
@@ -857,6 +880,7 @@ void Test1(void){
   else{ 
     Toggle1 = 1;
   }
+  if(DISP.Screen < 4){
   Images[8]->z_index =  Toggle1;
   Images[9]->z_index =  Toggle1;
   Images[10]->z_index = Toggle1;
@@ -864,6 +888,17 @@ void Test1(void){
   Images[12]->z_index = Toggle1;
   Images[13]->z_index = Toggle1;
   Images[14]->z_index = Toggle1;
+  }
+  else
+  {
+  Images[8]->z_index =  0;
+  Images[9]->z_index =  0;
+  Images[10]->z_index = 0;
+  Images[11]->z_index = 0;
+  Images[12]->z_index = 0;
+  Images[13]->z_index = 0;
+  Images[14]->z_index = 0;
+  }
   Counter++;
 }
 void Tests(void ){
@@ -1344,7 +1379,12 @@ void UserControlsShow(void){
   case 3:
     BigHidroExitsShow(0, 0);
     break;
-  }
+  case 4:
+    // LCD_Fill_Image(&IMAGES.ImgArray[291], 0, 90); 
+     if(V_KBD_Fill_button)ChangeColor(0xFF595959, 0xFF222222, &ZonesTS_0[V_KBD_Fill_button]);
+     break;
+      }
+   DISP.TS_ZoneNumber = -1; 
   return;
 }
 ////-----------------------------------------------------------------------------------------------------

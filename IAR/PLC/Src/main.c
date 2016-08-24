@@ -29,7 +29,7 @@ void MX_USB_HOST_Process(void);
 
 /* USER CODE END 0 */
 
- int main(void)
+ kint main(void)
 {
   /* USER CODE BEGIN 1 */
   /* USER CODE END 1 */

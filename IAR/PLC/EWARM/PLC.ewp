@@ -1152,6 +1152,9 @@
       <file>
         <name>$PROJ_DIR$\..\Src\video.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\Src\visual_kbd.c</name>
+      </file>
     </group>
   </group>
   <group>

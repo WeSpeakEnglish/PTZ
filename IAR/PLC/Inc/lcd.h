@@ -45,9 +45,7 @@ typedef struct {
   uint16_t ysize;
   uint32_t address;
 }ImageInfo;   
-/** 
-  * @brief  Line mode structures definition  
-  */ 
+
 typedef enum
 {
   CENTER_MODE             = 0x01,    /* Center mode */
@@ -55,13 +53,28 @@ typedef enum
   LEFT_MODE               = 0x03     /* Left mode   */
 }Text_AlignModeTypdef;
 
-/**
-  * @}
-  */ 
+// define zones for Touh Screen pressing detection
+typedef struct { 
+  Point LeftTop;   // the left top corner coords of zone
+  Point RightBottom; //the right bottom one
+  uint8_t PagesActivities; // on which pages this zone is active like 0b00010101 - means, that it is active on 0-th AND 2-nd AND 4-th pages
+} Zone; 
 
-/** @defgroup STM32746G_DISCOVERY_LCD_Exported_Constants STM32746G_DISCOVERY_LCD Exported Constants
-  * @{
-  */ 
+// DISP BASIS PARAMS
+#define LAYERS_SIZE             0x00177000
+#define LAYER_1_OFFSET          0x00000000
+#define LAYER_2_OFFSET          LAYER_1_OFFSET + LAYERS_SIZE            // 800x480x4 layer 1536000 offset
+#define FB_565_1                LAYER_2_OFFSET + LAYERS_SIZE           // 800x480x2 layer
+#define FB_565_2                FB_565_1 + LAYERS_SIZE/2            // 800x480x2 layer
+#define LAYER_BACK_OFFSET       FB_565_2  + LAYERS_SIZE/2            // BACKGROUND
+#define IMAGE_1_OFFSET          LAYER_BACK_OFFSET + LAYERS_SIZE         // big image 1   
+#define IMAGE_2_OFFSET          IMAGE_1_OFFSET + LAYERS_SIZE            //big image 2
+
+#define DisplayHEIGHT           480 // pixels
+#define DisplayWIDTH            800 // pixels
+#define PixelWIDTH              4   // bytes
+
+
 #define MAX_LAYER_NUMBER       ((uint32_t)2)
 
 #define LCD_LayerCfgTypeDef    LTDC_LayerCfgTypeDef
