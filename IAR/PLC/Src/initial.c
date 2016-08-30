@@ -26,7 +26,7 @@ void InitPeriph(void){
   SDRAM_free();
   MX_LTDC_Init();
   LCD_Init();
-  LCD_SetLight(2);
+  LCD_SetLight(10);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
   LED_control(1);
 }

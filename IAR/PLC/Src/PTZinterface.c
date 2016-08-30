@@ -31,6 +31,28 @@ struct{
     float Time;
   }
   Hydroexits[5];
+  //sensors: P means pressure and T means temperature
+  
+  struct{
+   uint8_t T_CoolingLiquid             : 1;
+   uint8_t P_Engine                    : 1;
+   uint8_t ImpurityPressureFilter      : 1;
+   uint8_t T_HydroSystem               : 1;
+   uint8_t Engine_Malfunction          : 1;
+   uint8_t ImpurityAirFilter           : 1;
+   uint8_t T_Engine                    : 1;
+   uint8_t ImpurityAttachments         : 1;
+   uint8_t P_First_Contour             : 1;
+   uint8_t EngineOilLevel              : 1;
+   uint8_t CoolingLiquidLevel          : 1;
+   uint8_t ImpurityEngineFilter        : 1;
+   uint8_t ImpurityDrainFilter         : 1;
+   uint8_t P_Second_Contour            : 1;
+   uint8_t ImpurityCoolingLiquid       : 1;
+   uint8_t ImpurityRudderFilter        : 1;
+   uint8_t HydrotankLevel              : 1;
+   uint8_t AccumulatorDischarge        : 1;
+  }Errors; 
 } 
  PTZ;
 
@@ -131,7 +153,7 @@ const Zone ZonesTS_0[]={
   {{324,77}, {477,384},         ob00001000},  //16 // alternative arm button 
   {{477,77}, {630,384},         ob00001000},  //17 // alternative arm button 
   {{630,77}, {783,384},         ob00001000},  //18 // alternative arm button 
-  {{76,211}, {140,271},         ob00010000},  //19 // alternative arm button 
+  {{76,211}, {140,271},         ob01000000},  //19 // alternative arm button 
 };   
 
 struct{ // this is a (penetration/rising) condition
@@ -277,7 +299,7 @@ void Run_GUI(void){
     GetTimeToStr(StrTime, &dt);
     TimeIsReady = 0;
   }
-  if(DISP.Event){ 
+  if(DISP.Event && Touch_Data.status == TOUCH_PRESSED){ 
     switch(DISP.TS_ZoneNumber){
     case 0:  //toggle index of button
     case 1:  //toggle index of button
@@ -574,6 +596,8 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
   return;
 }
 
+#define SENSORS_CONDITIONS_IMG_Y 44
+
 void ViewScreen(void){
   uint16_t i;
   static uint8_t OldScreen = 0;
@@ -645,9 +669,15 @@ void ViewScreen(void){
     case 4:
       Images[0]->z_index = 0;
       
-      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //change the background
+      // API fill IMAGE into background
+      _HW_Fill_Image(IMAGES.ImgArray[251].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
+      //_HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[251].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //modify the background by IMAGE
       break;
       
+    case 6:
+      Images[0]->z_index = 0;
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      break; 
     }
     OldScreen = DISP.Screen;
   }
@@ -662,7 +692,8 @@ void ReleaseFunction(void){
   case 3 : 
     exAddition(0,0,0,0,0); // reset exAddition Function
     break;
-  case 4:
+    
+  case 6:
     V_KBD_Fill_button = 0;
     break;
     
@@ -679,11 +710,9 @@ void KBD_Repeat_Handle(void){
 
 void actions(uint8_t deal){
   static  struct {
-uint8_t WriteGo : 
-    1; 
+   uint8_t WriteGo : 1; 
   }
-  Flags={
-    0  };
+  Flags={0};
 
   switch(deal) {
   case 0: 
@@ -809,6 +838,10 @@ uint8_t WriteGo :
       PenetrationRising(3, 1);
     }
     else{
+      if(DISP.Screen < 2){
+      DISP.Screen = 6;
+    }
+    else
       if(DISP.Screen == 3){
         if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit){
          if(!PoolOfExits.LockToken)
@@ -821,6 +854,7 @@ uint8_t WriteGo :
         if(PoolOfExits.TimeEdit == 2)
                PoolOfExits.TimeEdit = 3; 
       }
+
     }
     break;
   case 7:
@@ -901,10 +935,76 @@ void Test1(void){
   }
   Counter++;
 }
+void Test3(void){
+  static uint8_t TestVar = 0;
+  if(DISP.Screen == 4){
+    PTZ.Errors.AccumulatorDischarge  = 0;
+    PTZ.Errors.CoolingLiquidLevel = 0;
+    PTZ.Errors.EngineOilLevel = 0;
+    PTZ.Errors.Engine_Malfunction = 0;
+    PTZ.Errors.HydrotankLevel = 0;
+    PTZ.Errors.ImpurityAirFilter = 0;
+    PTZ.Errors.ImpurityAttachments = 0;
+    PTZ.Errors.ImpurityCoolingLiquid = 0;
+    PTZ.Errors.ImpurityDrainFilter = 0;
+    PTZ.Errors.ImpurityEngineFilter = 0;
+    PTZ.Errors.ImpurityPressureFilter = 0;
+    PTZ.Errors.ImpurityRudderFilter = 0;
+    PTZ.Errors.P_Engine = 0;
+    PTZ.Errors.P_First_Contour = 0;
+    PTZ.Errors.P_Second_Contour = 0;
+    PTZ.Errors.T_CoolingLiquid = 0;
+    PTZ.Errors.T_Engine = 0;
+    PTZ.Errors.T_HydroSystem = 0;
+    
+    switch(TestVar){
+    case 1:   PTZ.Errors.T_CoolingLiquid = 1;
+            break;
+    case 2:   PTZ.Errors.P_Engine = 1;
+            break;
+    case 3:   PTZ.Errors.ImpurityPressureFilter = 1;
+            break;
+    case 4:   PTZ.Errors.T_HydroSystem = 1;
+            break;     
+    case 5:   PTZ.Errors.Engine_Malfunction = 1;
+            break;     
+    case 6:   PTZ.Errors.ImpurityAirFilter = 1;
+            break;  
+    case 7:   PTZ.Errors.T_Engine = 1;
+            break;       
+    case 8:   PTZ.Errors.ImpurityAttachments = 1;
+            break;            
+    case 9:   PTZ.Errors.P_First_Contour = 1;
+            break;                
+    case 10:   PTZ.Errors.EngineOilLevel = 1;
+            break;                
+    case 11:  PTZ.Errors.CoolingLiquidLevel = 1;
+            break;  
+    case 12:  PTZ.Errors.ImpurityEngineFilter = 1;
+            break;
+    case 13:  PTZ.Errors.ImpurityDrainFilter = 1;
+            break;     
+    case 14:  PTZ.Errors.P_Second_Contour = 1;
+            break; 
+    case 15:  PTZ.Errors.ImpurityCoolingLiquid = 1;
+            break;  
+    case 16:  PTZ.Errors.ImpurityRudderFilter = 1;
+            break;         
+    case 17:  PTZ.Errors.HydrotankLevel = 1;
+            break;    
+    case 18:  PTZ.Errors.AccumulatorDischarge = 1;
+            break;    
+    }
+
+  }
+  TestVar++;
+  TestVar%= 19;
+}
 void Tests(void ){
   static uint32_t Counter = 0;
   if(StartTestFlag){
     if(Counter%8 == 0) Test1();
+    if(! (Counter%16) )Test3();
     Test2();
     Counter++; 
   }
@@ -941,6 +1041,46 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
     else                  Images[32]->z_index = 0;
   }
   return;
+}
+
+void ErrorsShow(void){
+  // the test area
+    if(PTZ.Errors.T_CoolingLiquid) 
+      LCD_Fill_Image(&IMAGES.ImgArray[121], 30, 93);
+    if(PTZ.Errors.P_Engine) 
+      LCD_Fill_Image(&IMAGES.ImgArray[134], 30, 149);
+    if(PTZ.Errors.ImpurityPressureFilter) 
+      LCD_Fill_Image(&IMAGES.ImgArray[138], 30, 207);
+    if(PTZ.Errors.T_HydroSystem)
+      LCD_Fill_Image(&IMAGES.ImgArray[125], 30, 266);
+    if(PTZ.Errors.Engine_Malfunction)
+      LCD_Fill_Image(&IMAGES.ImgArray[129], 30, 324);
+    if(PTZ.Errors.ImpurityAirFilter)
+      LCD_Fill_Image(&IMAGES.ImgArray[131], 217, 91);
+    if(PTZ.Errors.T_Engine)
+      LCD_Fill_Image(&IMAGES.ImgArray[135], 217, 149);
+    if(PTZ.Errors.ImpurityAttachments)
+      LCD_Fill_Image(&IMAGES.ImgArray[122], 217, 207);
+    if(PTZ.Errors.P_First_Contour)
+      LCD_Fill_Image(&IMAGES.ImgArray[126], 217, 266);
+    if(PTZ.Errors.EngineOilLevel)
+      LCD_Fill_Image(&IMAGES.ImgArray[130], 217, 324);
+    if(PTZ.Errors.CoolingLiquidLevel)
+      LCD_Fill_Image(&IMAGES.ImgArray[132], 403, 91);
+    if(PTZ.Errors.ImpurityEngineFilter)
+      LCD_Fill_Image(&IMAGES.ImgArray[136], 403, 149);
+    if(PTZ.Errors.ImpurityDrainFilter)
+      LCD_Fill_Image(&IMAGES.ImgArray[123], 403, 207);
+    if(PTZ.Errors.P_Second_Contour)
+      LCD_Fill_Image(&IMAGES.ImgArray[127], 403, 266);
+    if(PTZ.Errors.ImpurityCoolingLiquid)
+      LCD_Fill_Image(&IMAGES.ImgArray[133], 589, 91);
+    if(PTZ.Errors.ImpurityRudderFilter)
+      LCD_Fill_Image(&IMAGES.ImgArray[137], 589, 149);
+    if(PTZ.Errors.HydrotankLevel)
+      LCD_Fill_Image(&IMAGES.ImgArray[124], 589, 207);
+    if(PTZ.Errors.AccumulatorDischarge)
+      LCD_Fill_Image(&IMAGES.ImgArray[128], 589, 266);
 }
 
 ///-------------USER CONTROL -------------------
@@ -1381,7 +1521,11 @@ void UserControlsShow(void){
     break;
   case 4:
     // LCD_Fill_Image(&IMAGES.ImgArray[291], 0, 90); 
-     if(V_KBD_Fill_button)ChangeColor(0xFF595959, 0xFF222222, &ZonesTS_0[V_KBD_Fill_button]);
+    ErrorsShow();
+     break;
+  case 6:
+    if(V_KBD_Fill_button)
+       ChangeColor(0xFF595959, 0xFF222222, &ZonesTS_0[V_KBD_Fill_button]);
      break;
       }
    DISP.TS_ZoneNumber = -1; 

@@ -164,13 +164,7 @@ void Show_GUI(void){
     GUI_Release(); 
     UserControlsShow();
    
-
-
-
-    
-
-    
-    if(!LayerOfView){
+   if(!LayerOfView){
       _HW_Fill_Display_From_Mem_565(SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + FB_565_1);
                WaitWhileDMA2D(MAXDELAY_DMA2D); 
                while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 

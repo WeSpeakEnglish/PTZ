@@ -47,6 +47,10 @@
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
+extern CanRxMsgTypeDef RxMessageCAN1;
+extern CanRxMsgTypeDef RxMessageCAN2;
+extern CanTxMsgTypeDef TxMessageCAN1;
+extern CanTxMsgTypeDef TxMessageCAN2;
 
 /* USER CODE BEGIN Private defines */
 
