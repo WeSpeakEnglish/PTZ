@@ -33,12 +33,6 @@ typedef struct
   sFONT    *pFont;
 }LCD_DrawPropTypeDef;   
    
-typedef struct 
-{
-  int16_t X;
-  int16_t Y;
-}Point, * pPoint; 
-
 typedef struct {
   uint16_t index;
   uint16_t xsize;
@@ -52,13 +46,6 @@ typedef enum
   RIGHT_MODE              = 0x02,    /* Right mode  */
   LEFT_MODE               = 0x03     /* Left mode   */
 }Text_AlignModeTypdef;
-
-// define zones for Touh Screen pressing detection
-typedef struct { 
-  Point LeftTop;   // the left top corner coords of zone
-  Point RightBottom; //the right bottom one
-  uint8_t PagesActivities; // on which pages this zone is active like 0b00010101 - means, that it is active on 0-th AND 2-nd AND 4-th pages
-} Zone; 
 
 // DISP BASIS PARAMS
 #define LAYERS_SIZE             0x00177000

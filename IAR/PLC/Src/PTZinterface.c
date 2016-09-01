@@ -153,7 +153,7 @@ const Zone ZonesTS_0[]={
   {{324,77}, {477,384},         ob00001000},  //16 // alternative arm button 
   {{477,77}, {630,384},         ob00001000},  //17 // alternative arm button 
   {{630,77}, {783,384},         ob00001000},  //18 // alternative arm button 
-  {{76,211}, {140,271},         ob01000000},  //19 // alternative arm button 
+  {{76,211}, {777,459},         ob01000000},  //19 // zone on KBD
 };   
 
 struct{ // this is a (penetration/rising) condition
@@ -442,7 +442,7 @@ void PreLoadImages(void){
 
   IMAGES.Number = 0;
   // just simply load images into the memory 
-  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   291);
+  FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   295);
 
   //image 006.bmp like base  
   FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
@@ -1525,7 +1525,7 @@ void UserControlsShow(void){
      break;
   case 6:
     if(V_KBD_Fill_button)
-       ChangeColor(0xFF595959, 0xFF222222, &ZonesTS_0[V_KBD_Fill_button]);
+       ChangeColorKBD();
      break;
       }
    DISP.TS_ZoneNumber = -1; 
