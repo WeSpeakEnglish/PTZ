@@ -5,7 +5,10 @@
 #include "stmpe811.h"
 
 uint8_t V_KBD_Fill_button = 0;
-uint8_t KBD_Screen = 0;
+
+VKBD VisualKBD;
+
+
 
 //the 
 // 0 - lower english
@@ -37,7 +40,7 @@ const ZoneKBD ZonesKBD[]={
     {{599,272},{658,329},           ob00010011, 'l', '@'}, // #19
     {{668,272},{776,329},           ob00010011, 13,  '&'},  // #20 ENTER 
     {{18,336},{78,393},             ob00010011, 15,  '*'},  // #21 SHIFT IN / OUT (UP case or Down case)  
-    {{87,336},{145,392},            ob00010011, 'z', '+'}, // #22 SHIFT IN / OUT (UP case or Down case)  
+    {{87,336},{145,392},            ob00010011, 'z', '+'}, // #22 
     {{155,336},{214,392},           ob00010011, 'x', '_'}, // #23 
     {{222,336},{282,392},           ob00010011, 'c', '.'}, // #24   
     {{290,336},{349,392},           ob00010011, 'v', ','}, // #25  
@@ -78,21 +81,22 @@ const ZoneKBD ZonesKBD[]={
     {{655,272},{708,329},           ob00001100, 'ý' , 0x00}, // #59
     {{716,272},{777,329},           ob00001100, 13 , 0x00},  // #60  // ENTER 
     {{18,336},{71,393},             ob00001100, 15 , 0x00},  // #61  // shift set up/down case    
-    {{80,272},{132,329},            ob00001100, 'ÿ' , 0x00}, // #62    
-    {{142,272},{195,329},           ob00001100, '÷' , 0x00}, // #63     
-    {{203,272},{256,329},           ob00001100, 'ñ' , 0x00}, // #64
-    {{265,272},{318,329},           ob00001100, 'ì' , 0x00}, // #65  //
-    {{327,272},{380,329},           ob00001100, 'è' , 0x00}, // #66
-    {{389,272},{442,329},           ob00001100, 'ò' , 0x00}, // #67   
-    {{450,272},{503,329},           ob00001100, 'ü' , 0x00}, // #68 
-    {{512,272},{565,329},           ob00001100, 'á' , 0x00}, // #69   
-    {{574,272},{627,329},           ob00001100, 'þ' , 0x00}, // #70      
-    {{636,272},{689,329},           ob00001100, 'ú' , 0x00}, // #71      
+    {{80,336},{132,393},            ob00001100, 'ÿ' , 0x00}, // #62    
+    {{142,336},{195,393},           ob00001100, '÷' , 0x00}, // #63     
+    {{203,336},{256,393},           ob00001100, 'ñ' , 0x00}, // #64
+    {{265,336},{318,393},           ob00001100, 'ì' , 0x00}, // #65  //
+    {{327,336},{380,393},           ob00001100, 'è' , 0x00}, // #66
+    {{389,336},{442,393},           ob00001100, 'ò' , 0x00}, // #67   
+    {{450,336},{503,393},           ob00001100, 'ü' , 0x00}, // #68 
+    {{512,336},{565,393},           ob00001100, 'á' , 0x00}, // #69   
+    {{574,336},{627,393},           ob00001100, 'þ' , 0x00}, // #70      
+    {{636,336},{689,393},           ob00001100, 'ú' , 0x00}, // #71  
+    {{697,336},{775,393},           ob00001100, 15 , 0x00},  // #72   
 };
 
 #define ChangeColorMAIN        0xFFCCCCCC
 #define ChangeColorADDITION    0xFF676766
-#define DestColor              0xFF333333
+#define DestColor              0xFFEEEEEE
 
 void ChangeColorKBD(void){
 // register uint32_t StartAddress; 
@@ -101,27 +105,32 @@ void ChangeColorKBD(void){
  ZoneKBD * InsideZone;
  uint32_t ColorToChange;
  
- i = solveReturnCodeVisualKBD();
- InsideZone = (ZoneKBD *) &ZonesKBD[i];
+ solveReturnCodeVisualKBD();
+ InsideZone = (ZoneKBD *) &ZonesKBD[VisualKBD.ReturnZone];
    
  Offset = DisplayWIDTH - (InsideZone->RightBottom.X - InsideZone->LeftTop.X);
 
  pChange = (volatile uint32_t *)(ProjectionLayerAddress[LayerOfView] + 4 * InsideZone->LeftTop.X + 4 * DisplayWIDTH * InsideZone->LeftTop.Y);
  
- if(i != 10 &&
-    i != 20 &&
-    i != 21 &&  
-    ((i != 31) && (KBD_Screen != 4)) &&   
-    i != 32 &&    
-    i != 33 &&     
-    i != 35 &&  
-    i != 36 &&
-    i != 48 &&     
-    i != 60 &&  
-    i != 61    
-   )ColorToChange = ChangeColorMAIN;
+ if(VisualKBD.ReturnZone != 10 &&
+    VisualKBD.ReturnZone != 20 &&
+    VisualKBD.ReturnZone != 21 &&  
+    VisualKBD.ReturnZone != 31 &&   
+    VisualKBD.ReturnZone != 32 &&    
+    VisualKBD.ReturnZone != 33 &&     
+    VisualKBD.ReturnZone != 35 &&  
+    VisualKBD.ReturnZone != 36 &&
+    VisualKBD.ReturnZone != 48 &&     
+    VisualKBD.ReturnZone != 60 &&  
+    VisualKBD.ReturnZone != 61    
+   )
+   ColorToChange = ChangeColorMAIN;
  else
-    ColorToChange = ChangeColorADDITION;
+   ColorToChange = ChangeColorADDITION;
+ 
+ if(VisualKBD.Screen == 4) 
+   if (VisualKBD.ReturnZone == 31 || VisualKBD.ReturnZone == 21)
+     ColorToChange = ChangeColorMAIN;
  
  for(j = InsideZone->RightBottom.Y - InsideZone->LeftTop.Y; j > 0; j--){
    for(i = InsideZone->RightBottom.X - InsideZone->LeftTop.X; i > 0; i-- ){
@@ -132,7 +141,7 @@ void ChangeColorKBD(void){
    }
    pChange += Offset;
  }
- 
+ VisualKBD.Pressed = 1;
  return;
 }
 
@@ -142,13 +151,20 @@ uint8_t solveReturnCodeVisualKBD(void){ //the handle of Touch Screen
   uint16_t y = Touch_Data.yp;
 
     for(Index = 0; Index < sizeof(ZonesKBD)/12; Index++){
-      if(ZonesKBD[Index].PagesActivities & (1<<KBD_Screen)) // are we allowed here?
+      if(ZonesKBD[Index].PagesActivities & (1<<VisualKBD.Screen)) // are we allowed here?
       if((x > ZonesKBD[Index].LeftTop.X  && x < ZonesKBD[Index].RightBottom.X)&&
             (y > ZonesKBD[Index].LeftTop.Y  && y < ZonesKBD[Index].RightBottom.Y)){
                 break;
       }
     } 
-
+  VisualKBD.ReturnZone = Index;
   return Index;
 }
 
+
+
+void EraseStringVisualKBD(void){
+  uint8_t i;
+  for(i = 0; i< sizeof(VisualKBD.Symbols); i++)
+   VisualKBD.Symbols[i] = '\0'; 
+}

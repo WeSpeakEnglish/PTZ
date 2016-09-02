@@ -47,6 +47,8 @@ int32_t exAddition(int32_t inValue, int16_t minValue, int16_t maxVal, int16_t St
 void Tests(void);
 void Test1(void);
 void Test2(void);
+void RunVisualKBD(void);
+void ShowVisualKbdString(void); 
 #endif
 
 

@@ -14,7 +14,7 @@ stlinkserialNo=48341187
 stlinkfoundProbes=
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=891405709
+Checksum=501985677
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -63,29 +63,31 @@ Fmt0=GUI_Object-color	4	0
 Fmt1=ImageInfo-address	4	0
 Fmt2=KB_status-code	4	0
 Fmt3=LCD_DrawPropTypeDef-TextColor	4	0
-Fmt4=date_time_t-day	3	0
-Fmt5=date_time_t-hours	3	0
-Fmt6=date_time_t-minutes	3	0
-Fmt7=date_time_t-month	3	0
-Fmt8=date_time_t-seconds	3	0
-Fmt9=date_time_t-weekday	3	0
-Fmt10=date_time_t-year	3	0
-Fmt11=struct ImageInfo-address	4	0
+Fmt4=VKBD-ReturnZone	3	0
+Fmt5=date_time_t-day	3	0
+Fmt6=date_time_t-hours	3	0
+Fmt7=date_time_t-minutes	3	0
+Fmt8=date_time_t-month	3	0
+Fmt9=date_time_t-seconds	3	0
+Fmt10=date_time_t-weekday	3	0
+Fmt11=date_time_t-year	3	0
+Fmt12=struct ImageInfo-address	4	0
 [array_types]
 Fmt0=u32[8388608]	4	0
 [watch_formats]
 Fmt0={W}1:' '	4	0
-Fmt1={W}1:DISP.TS_ZoneNumber	3	0
-Fmt2={W}1:PositionOfFile	4	0
-Fmt3={W}1:RGB_Code	4	0
-Fmt4={W}1:SignWide	3	0
-Fmt5={W}1:TextColor	4	0
-Fmt6={W}1:V_KBD_Fill_button	3	0
-Fmt7={W}1:address	4	0
-Fmt8={W}1:data	4	0
-Fmt9={W}1:line2	1	0
-Fmt10={W}1:stmpe_id	4	0
-Fmt11={W}1:x_address	4	0
+Fmt1={W}1:ColorToChange	4	0
+Fmt2={W}1:DISP.TS_ZoneNumber	3	0
+Fmt3={W}1:PositionOfFile	4	0
+Fmt4={W}1:RGB_Code	4	0
+Fmt5={W}1:SignWide	3	0
+Fmt6={W}1:TextColor	4	0
+Fmt7={W}1:V_KBD_Fill_button	3	0
+Fmt8={W}1:address	4	0
+Fmt9={W}1:data	4	0
+Fmt10={W}1:line2	1	0
+Fmt11={W}1:stmpe_id	4	0
+Fmt12={W}1:x_address	4	0
 [Trace2]
 Enabled=0
 ShowSource=0
@@ -126,15 +128,6 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=1
-[Breakpoints2]
-Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
-Bp1=_ 0 "EMUL_CODE" "0x08028E50" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\visual_kbd.c}.145.7" 0 0 1 "" 0 "" 0
-Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\PTZinterface.c}.358.7" 0 0 1 "" 0 "" 0
-Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\PTZinterface.c}.303.5" 0 0 1 "" 0 "" 0
-Count=5
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -142,12 +135,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-A0=_ "E:\CODE\PLC\Drivers\CMSIS\Include\core_cm7.h" ""
-A1=_ "E:\CODE\PLC\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c" ""
-A2=_ "E:\CODE\PLC\Src\main.c" ""
-Count=3
-SuppressDialog=0
 [DriverProfiling]
 Enabled=0
 Mode=3
@@ -158,3 +145,15 @@ Exclusions=
 Enabled=0
 [CallStackStripe]
 ShowTiming=1
+[Disassemble mode]
+mode=1
+[Breakpoints2]
+Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
+Bp1=_ 0 "EMUL_CODE" "0x08028E50" 0 0 1 "" 0 "" 0
+Count=2
+[Aliases]
+A0=_ "E:\CODE\PLC\Drivers\CMSIS\Include\core_cm7.h" ""
+A1=_ "E:\CODE\PLC\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c" ""
+A2=_ "E:\CODE\PLC\Src\main.c" ""
+Count=3
+SuppressDialog=0

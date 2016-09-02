@@ -134,14 +134,14 @@ IMAGES;
 
 
 const Zone ZonesTS_0[]={
-  {{13,405},{94,477},           ob11111111},  //0 BIG BOTTOM BTN#0  valid on  all the pages
-  {{112,405},{193,477},         ob11111111},  //1 BIG BOTTOM BTN#1  
-  {{211,405},{292,477},         ob11111111},  //2 BIG BOTTOM BTN#2 
-  {{310,405},{391,477},         ob11111111},  //3 BIG BOTTOM BTN#3  
-  {{409,405},{490,477},         ob11111111},  //4 BIG BOTTOM BTN#4 
-  {{508,405},{589,477},         ob11111111},  //5 BIG BOTTOM BTN#5 
-  {{607,405},{688,477},         ob11111111},  //6 BIG BOTTOM BTN#6  
-  {{706,405},{787,477},         ob11111111},  //7 BIG BOTTOM BTN#7 
+  {{13,405},{94,477},           ob10111111},  //0 BIG BOTTOM BTN#0  valid on  all the pages
+  {{112,405},{193,477},         ob10111111},  //1 BIG BOTTOM BTN#1  
+  {{211,405},{292,477},         ob10111111},  //2 BIG BOTTOM BTN#2 
+  {{310,405},{391,477},         ob10111111},  //3 BIG BOTTOM BTN#3  
+  {{409,405},{490,477},         ob10111111},  //4 BIG BOTTOM BTN#4 
+  {{508,405},{589,477},         ob10111111},  //5 BIG BOTTOM BTN#5 
+  {{607,405},{688,477},         ob10111111},  //6 BIG BOTTOM BTN#6  
+  {{706,405},{787,477},         ob10111111},  //7 BIG BOTTOM BTN#7 
   {{688,141},{756,202},         ob00000100},  //8 ---| these three buttons is active only on the second page and if the Condition.activity is setted up
   {{688,218},{756,280},         ob00000100},  //9    |
   {{688,296},{756,358},         ob00000100},  //10---| 
@@ -153,7 +153,7 @@ const Zone ZonesTS_0[]={
   {{324,77}, {477,384},         ob00001000},  //16 // alternative arm button 
   {{477,77}, {630,384},         ob00001000},  //17 // alternative arm button 
   {{630,77}, {783,384},         ob00001000},  //18 // alternative arm button 
-  {{76,211}, {777,459},         ob01000000},  //19 // zone on KBD
+  {{15,205}, {777,459},         ob01000000},  //19 // zone on KBD
 };   
 
 struct{ // this is a (penetration/rising) condition
@@ -359,78 +359,16 @@ void Run_GUI(void){
       break;
 
    }
-    switch(DISP.Screen){
-    case 0:
-      switch(DISP.TS_ZoneNumber){
-      case 10:  ////toggle rectangles
-
-        break;
-      case 11:  //toggle rectangles
-
-        break;   
-      }
-      break;
-    case 1:
-      DISP.SelectedField = 0; 
-      switch(DISP.TS_ZoneNumber){
-      case 16:  ////toggle rectangles
-        break;
-      case 17:  //toggle rectangles
-        break; 
-      case 22:  //toggle rectangles LEFT PRESSED
-        break;
-      case 20:  // SW pressed
-        break;
-      case 18:  // NE
-        break;
-      case 21:  //toggle rectangles
-        break;   
-      case 19:  //toggle rectangles
-        break; 
-      case 23:  //toggle rectangles
-        break;   
-      }
-      break;
-    case 2:  
-      switch(DISP.TS_ZoneNumber){ 
-      case 16: 
-        break;  
-      case 17:                   
-        break;  
-      case 22:
-        break; 
-      case 20:
-        break;  
-      case 18: //NE
-        break;
-      case 21:  //SE
-        break;    
-      case 19:  //toggle rectangles
-        break; 
-      case 23:  //RIGHT
-        break;        
-      }
-      break;
-    case 3:
-      switch(DISP.TS_ZoneNumber){ 
-      case 24: //TOP BRUSH
-        break;
-      case 25: //BOTTOM BRUSH
-        break;  
-      case 26: //TOP RATE
-        break;
-      case 27: //BOTTOM RATE
-        break;      
-      }
-      break; 
-    }
-
 
     DISP.Event = 0;
   }
 
   if(KB_Status.ENTER)KBD_Handle(KB_Status.code);
-
+ 
+  if(DISP.Screen == 6){
+       ShowVisualKbdString(); 
+  }
+  
   if(DISP.ReleaseFlag){
     if((Touch_Data.status != TOUCH_PRESSED) && (!KB_Status.PRESSED))       ReleaseFunction();
     DISP.ReleaseFlag = 0;
@@ -567,13 +505,6 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
     DISP.TS_ZoneNumber = -1;
 
     for(Index = 0; Index < sizeof(ZonesTS_0)/8; Index++){
-      if(DISP.Screen == 0) {
-
-      }
-
-      if(DISP.Screen == 3) {
-
-      }  
       if(ZonesTS_0[Index].PagesActivities & (1<<DISP.Screen)) // are we allowed here?
       if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
             (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
@@ -695,6 +626,7 @@ void ReleaseFunction(void){
     
   case 6:
     V_KBD_Fill_button = 0;
+
     break;
     
   } 
@@ -734,6 +666,7 @@ void actions(uint8_t deal){
        if(PoolOfExits.EntireSelect)PoolOfExits.EntireSelect--;
       }
     }
+    if(DISP.Screen == 4) DISP.Screen = 1;
     break;
   case 2: 
     if(DISP.Screen == 3){
@@ -754,7 +687,7 @@ void actions(uint8_t deal){
       DISP.Screen = deal;
       PenetrationRising(4, 0);
     }
-
+   if(DISP.Screen == 4) DISP.Screen = 2;
     break;
   case 3: 
     if(DISP.Screen == 3){
@@ -776,7 +709,9 @@ void actions(uint8_t deal){
         } 
       }
     }
-   if((DISP.Screen == 0)||(DISP.Screen == 1))DISP.Screen = 3;
+   if((DISP.Screen < 2))DISP.Screen = 3;
+   if(DISP.Screen == 4) DISP.Screen = 3;
+   
    if(DISP.Screen == 2){
       if(Condition.activity){
         Condition.blink_button = Condition.butt_selected;
@@ -854,7 +789,7 @@ void actions(uint8_t deal){
         if(PoolOfExits.TimeEdit == 2)
                PoolOfExits.TimeEdit = 3; 
       }
-
+    if(DISP.Screen == 4) DISP.Screen = 6;
     }
     break;
   case 7:
@@ -1042,6 +977,167 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
   }
   return;
 }
+
+//////////////// Virtual KBD Mechanica ---------------------------------------------------
+
+void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - eq  LANGUAGE EXCANGE; 2 - numberous/literals exchange
+ 
+  switch(cmd){
+   case 0: 
+    switch(VisualKBD.Screen){
+     case 0: 
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[292].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 1;
+         break;
+     case 1: 
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 0;
+         break;     
+     case 2: 
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[294].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 3;
+         break;      
+     case 3: 
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 2;
+         break;              
+     }
+    break;
+   case 1:
+    switch(VisualKBD.Screen){
+     case 0:
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+       VisualKBD.Screen = 2; 
+       VisualKBD.Lang = 1;
+       break;
+     case 1:
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[294].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+       VisualKBD.Screen = 3; 
+       VisualKBD.Lang = 1;
+       break;  
+     case 2:
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 0; 
+      VisualKBD.Lang = 0;
+       break;       
+     case 3:
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[292].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+      VisualKBD.Screen = 1; 
+      VisualKBD.Lang = 0;
+        break;                
+     }
+    break; 
+   case 2:
+    switch(VisualKBD.Screen){
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[295].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+       VisualKBD.Screen = 4; 
+        break;
+      case 4:  
+        if(VisualKBD.Lang){
+         _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+         VisualKBD.Screen = 0;
+        }
+        else{
+         _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+         VisualKBD.Screen = 2;
+        } 
+        break;
+        
+    }
+    break;
+  }
+  
+}
+
+#define KBD_STR_X       39
+#define KBD_STR0_Y      112
+#define KBD_STR1_Y      164
+
+void ShowVisualKbdString(void){
+  uint8_t i;
+  for(i = 0; i < sizeof(VisualKBD.Symbols); i++){
+   if(VisualKBD.Symbols[i] == '\0') break;
+  }
+  LCD_InitParams(0, 0, 0xFFFFFFFF, &RIAD_30pt);
+  LCD_DisplayStringAt(KBD_STR_X, KBD_STR0_Y, VisualKBD.Symbols, LEFT_MODE, 3);
+
+}
+
+void RunVisualKBD(void){
+  uint8_t i;
+  for(i = 0; i < sizeof(VisualKBD.Symbols); i++){
+   if(VisualKBD.Symbols[i] == '\0') break;
+  }
+  switch (VisualKBD.ReturnZone){
+      case 10:
+        if(i)
+         VisualKBD.Symbols[i-1] = '\0';
+          break;
+      case 20:
+          break;
+      case 21:
+         if(VisualKBD.Screen == 4){
+           if(i<sizeof(VisualKBD.Symbols))
+             VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode2;
+        }
+        else
+         ExchangeScreensVisualKBD(0);
+          break;
+      case 31:
+        if(VisualKBD.Screen == 4) 
+          VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode2;
+        else{
+          ExchangeScreensVisualKBD(0);
+        }
+          break;
+      case 32:
+          ExchangeScreensVisualKBD(2);
+          break;     
+      case 33:
+          ExchangeScreensVisualKBD(1);
+          break;        
+      case 35: 
+          ExchangeScreensVisualKBD(2);
+          break;
+      case 36:
+          DISP.Screen = 0;
+          break;
+      case 48:
+         if(i)
+          VisualKBD.Symbols[i-1] = '\0';
+          break;
+      case 60:
+          break;
+      case 61:
+        ExchangeScreensVisualKBD(0);
+          break;
+      case 72:
+        ExchangeScreensVisualKBD(0);        
+          break;
+      default:
+        if(VisualKBD.Screen == 4){
+           if(i<sizeof(VisualKBD.Symbols))
+             VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode2;
+        }
+        else
+        {
+          if(i<sizeof(VisualKBD.Symbols)){ 
+            if(!((VisualKBD.Screen == 1 )||(VisualKBD.Screen == 3))) 
+             VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1;
+            else
+             VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1 - 0x20;
+          }
+        }
+        break;
+  }
+
+return;
+}
+
 
 void ErrorsShow(void){
   // the test area
@@ -1526,6 +1622,12 @@ void UserControlsShow(void){
   case 6:
     if(V_KBD_Fill_button)
        ChangeColorKBD();
+    else{
+      if(VisualKBD.Pressed){ 
+        VisualKBD.Pressed = 0;
+        RunVisualKBD();
+      }
+    }
      break;
       }
    DISP.TS_ZoneNumber = -1; 

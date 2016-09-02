@@ -2,7 +2,7 @@
 
 
 void InitPeriph(void){
-//  date_time_t dt;
+  date_time_t dt;
   SDRAM_Initialization_Sequence(&hsdram1);
 
   pMediumQueueIni();            // fill the medium queue by Zero functions
@@ -14,14 +14,14 @@ void InitPeriph(void){
   Timer11_Init();
   UB_Touch_Init();
   
-//  dt.weekday = 5;
- // dt.day = 15;
- // dt.month = 07;
- // dt.year = 16;
- // dt.hours = 17;
- // dt.minutes = 03;
- // dt.seconds = 0;
-  // PCF8563_set_datetime(&dt);
+  dt.weekday = 5;
+  dt.day = 2;
+  dt.month = 9;
+  dt.year = 16;
+  dt.hours = 15;
+  dt.minutes = 21;
+  dt.seconds = 0;
+  PCF8563_set_datetime(&dt);
 
   SDRAM_free();
   MX_LTDC_Init();
