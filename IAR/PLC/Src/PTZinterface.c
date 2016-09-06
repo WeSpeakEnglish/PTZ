@@ -387,7 +387,7 @@ void PreLoadImages(void){
   return;
 }
 
-void KBD_Handle(uint8_t code){ //the handle of KBD
+void KBD_Handle(uint8_t code){ //the handle of the keyboard
   KB_Status.ENTER = 0;
   //up flags
   if(KB_Status.PRESSED){
@@ -1104,6 +1104,7 @@ void RunVisualKBD(void){
           ExchangeScreensVisualKBD(2);
           break;
       case 36:
+          VisualKBD.Screen = 0;
           DISP.Screen = 0;
           break;
       case 48:
@@ -1129,12 +1130,16 @@ void RunVisualKBD(void){
             if(!((VisualKBD.Screen == 1 )||(VisualKBD.Screen == 3))) 
              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1;
             else
-             VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1 - 0x20;
+             if (ZonesKBD[VisualKBD.ReturnZone].kbdCode1 != ',' &&
+                 ZonesKBD[VisualKBD.ReturnZone].kbdCode1 != '.')
+              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1 - 0x20;
+            else 
+              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1;
           }
         }
         break;
   }
-
+ if( VisualKBD.Symbols[i] == 0x3C)VisualKBD.Symbols[i] ='\0';
 return;
 }
 

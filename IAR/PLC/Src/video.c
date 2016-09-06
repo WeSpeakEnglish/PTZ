@@ -390,6 +390,7 @@ void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
     RESmutex_1 = 1;
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);  
+    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_SET); 
     I2CDeviceInitialize(InitCVBSAll);
     FOSDDownloadFont(1);
     Switch_Camera(NumbCam);
@@ -401,6 +402,7 @@ void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
   else {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_RESET);
     LCD_Video_GPIO_Init();
   }
 }
