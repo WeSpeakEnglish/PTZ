@@ -58,7 +58,9 @@ extern CanTxMsgTypeDef TxMessageCAN2;
 
 void MX_CAN1_Init(void);
 void MX_CAN2_Init(void);
-
+void InitCANFilters(CAN_HandleTypeDef* hcan);
+void CAN1_ON_OFF(uint8_t cmd);
+void CAN2_ON_OFF(uint8_t cmd);
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

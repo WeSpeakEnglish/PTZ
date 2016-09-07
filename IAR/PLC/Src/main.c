@@ -31,6 +31,7 @@ void MX_USB_HOST_Process(void);
 
  int main(void)
 {
+  HAL_StatusTypeDef  A;
   /* USER CODE BEGIN 1 */
   /* USER CODE END 1 */
   /* Enable I-Cache-------------------------------------------------------------*/
@@ -69,7 +70,9 @@ void MX_USB_HOST_Process(void);
   /* USER CODE BEGIN 2 */
   InitPeriph();
   Load_GUI_0();  
- 
+  InitCANFilters(&hcan1);
+  CAN1_ON_OFF(1);
+  CAN2_ON_OFF(1);
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -81,6 +84,17 @@ void MX_USB_HOST_Process(void);
   // RoutineFast(); // get and run deals from medium queue 
     Run_GUI();
     Show_GUI();
+    
+    hcan1.pTxMsg->Data[0] = 0x00;
+    hcan1.pTxMsg->Data[1] = 0xAD;
+      /*##-3- Start the Transmission process ###############################*/
+    A = HAL_CAN_Transmit(&hcan1, 10);
+     if (A != HAL_OK)
+        {
+          /* Transmission Error */
+          Error_Handler();
+        }
+        HAL_Delay(10); 
   }
   /* USER CODE END 3 */
 
