@@ -14,6 +14,8 @@ CanRxMsgTypeDef RxMessageCAN1;
 CanRxMsgTypeDef RxMessageCAN2;
 CanTxMsgTypeDef TxMessageCAN1;
 CanTxMsgTypeDef TxMessageCAN2;
+uint8_t FlagCAN1_Transmit;
+uint8_t FlagCAN2_Transmit;
 uint8_t TransmitResultMailbox = 0;
 
 void InitCAN1Filter(CAN_HandleTypeDef* hcan);
@@ -34,8 +36,10 @@ void MX_CAN1_Init(void)
   hcan1.Init.NART = DISABLE; // non-automatic retransmission mode
   hcan1.Init.RFLM = DISABLE; // receive FIFO Locked mode 
   hcan1.Init.TXFP = DISABLE; // transmit FIFO priority
+  hcan1.pTxMsg = &TxMessageCAN1;
+  hcan1.pRxMsg = &RxMessageCAN1;
   HAL_CAN_Init(&hcan1);
-  InitCANFilters(&hcan1);
+
 
 }
 /* CAN2 init function */
@@ -43,7 +47,7 @@ void MX_CAN2_Init(void)
 {
 
   hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 4;
+  hcan2.Init.Prescaler = 27;
   hcan2.Init.Mode = CAN_MODE_NORMAL;
   hcan2.Init.SJW = CAN_SJW_1TQ;
   hcan2.Init.BS1 = CAN_BS1_6TQ;
@@ -54,8 +58,10 @@ void MX_CAN2_Init(void)
   hcan2.Init.NART = DISABLE;  // non-automatic retransmission mode
   hcan2.Init.RFLM = DISABLE;  // receive FIFO Locked mode
   hcan2.Init.TXFP = DISABLE;  // transmit FIFO priority
+  hcan2.pTxMsg = &TxMessageCAN2;
+  hcan2.pRxMsg = &RxMessageCAN2;
   HAL_CAN_Init(&hcan2);
-
+  InitCANFilters(&hcan1);
 }
 
 static int HAL_RCC_CAN1_CLK_ENABLED=0;
@@ -121,7 +127,12 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN CAN2_MspInit 1 */
-
+    HAL_NVIC_SetPriority(CAN2_TX_IRQn, 0, 2);
+    HAL_NVIC_EnableIRQ(CAN2_TX_IRQn);
+    HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 0, 2);
+    HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
+    HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 2);
+    HAL_NVIC_EnableIRQ(CAN2_RX1_IRQn);
   /* USER CODE END CAN2_MspInit 1 */
   }
 }
@@ -200,7 +211,7 @@ void InitCANFilters(CAN_HandleTypeDef* hcan){
   sFilterConfig.FilterNumber = 0; // CAN1 [ 0..13]
   HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig);
   sFilterConfig.FilterNumber = 14;  // CAN2 [14..27]
-  HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig);
+  HAL_CAN_ConfigFilter(&hcan2, &sFilterConfig);
   
   if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
   {
@@ -213,23 +224,46 @@ void InitCANFilters(CAN_HandleTypeDef* hcan){
   hcan1.pTxMsg->ExtId = 0x01;
   hcan1.pTxMsg->RTR = CAN_RTR_DATA;
   hcan1.pTxMsg->IDE = CAN_ID_STD;
-  hcan1.pTxMsg->DLC = 2;
+  hcan1.pTxMsg->DLC = 8;
+  /////////////////////////////
+  hcan2.pTxMsg->StdId = 0x321;
+  hcan2.pTxMsg->ExtId = 0x01;
+  hcan2.pTxMsg->RTR = CAN_RTR_DATA;
+  hcan2.pTxMsg->IDE = CAN_ID_STD;
+  hcan2.pTxMsg->DLC = 8;
 
 }
 
 
 void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle) {
-    if ((CanHandle->pRxMsg->StdId == 0x321) && (CanHandle->pRxMsg->IDE == CAN_ID_STD) && (CanHandle->pRxMsg->DLC == 2)) {
+  if(CanHandle == &hcan1){
+    if ((CanHandle->pRxMsg->StdId == 0x321) && (CanHandle->pRxMsg->IDE == CAN_ID_STD) && (CanHandle->pRxMsg->DLC == 8)) {
         if (CanHandle->pRxMsg->Data[0]) {
+        FlagCAN1_Transmit = 1;  
+         }
+    }
+ // CAN1 -> RF0R |= CAN_RF0R_RFOM0; /* Release FIFO 0 Output Mailbox */
+   if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO0) != HAL_OK) {
+  //       /* Reception Error */
+    }
+  }
+  else{
+   if(CanHandle == &hcan2){
+    if ((CanHandle->pRxMsg->StdId == 0x321) && (CanHandle->pRxMsg->IDE == CAN_ID_STD) && (CanHandle->pRxMsg->DLC == 2)) {
+    if (CanHandle->pRxMsg->Data[0]) {
+              
 
+         HAL_CAN_Transmit_IT(&hcan2);
         }
     }
-
-    /* Receive */
-    if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO0) != HAL_OK) {
+   if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO1) != HAL_OK) {
         /* Reception Error */
+   }
+  // CAN1 -> RF0R |= CAN_RF1R_RFOM1; /* Release FIFO 0 Output Mailbox */
+   }
+  }
 
-    }
+
 }
 
 void CAN1_ON_OFF(uint8_t cmd){

@@ -51,7 +51,8 @@ extern CanRxMsgTypeDef RxMessageCAN1;
 extern CanRxMsgTypeDef RxMessageCAN2;
 extern CanTxMsgTypeDef TxMessageCAN1;
 extern CanTxMsgTypeDef TxMessageCAN2;
-
+extern uint8_t FlagCAN1_Transmit;
+extern uint8_t FlagCAN2_Transmit;
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

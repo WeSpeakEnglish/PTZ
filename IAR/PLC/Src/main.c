@@ -76,6 +76,21 @@ void MX_USB_HOST_Process(void);
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+    A=  HAL_CAN_Receive_IT(&hcan1, CAN_FIFO0); // start interrupts on RX
+    
+     if (A != HAL_OK)
+        {
+          /* Transmission Error */
+          Error_Handler();
+        }
+        HAL_Delay(10); 
+     A=  HAL_CAN_Receive_IT(&hcan2, CAN_FIFO1); // start interrupts on RX
+               if (A != HAL_OK)
+        {
+          /* Transmission Error */
+          Error_Handler();
+        }
+        HAL_Delay(10); 
   while(1){
   /* USER CODE END WHILE */
     MX_USB_HOST_Process();
@@ -84,17 +99,34 @@ void MX_USB_HOST_Process(void);
   // RoutineFast(); // get and run deals from medium queue 
     Run_GUI();
     Show_GUI();
-    
-    hcan1.pTxMsg->Data[0] = 0x00;
-    hcan1.pTxMsg->Data[1] = 0xAD;
+    if(FlagCAN1_Transmit){
+      FlagCAN1_Transmit = 0; 
+       hcan1.pTxMsg->Data[0] = 0x10;
+       hcan1.pTxMsg->Data[1] = 0x11;
+       hcan1.pTxMsg->Data[2] = 0x12;
+       hcan1.pTxMsg->Data[3] = 0x13;
+       hcan1.pTxMsg->Data[4] = 0x14;
+       hcan1.pTxMsg->Data[5] = 0x10;
+       hcan1.pTxMsg->Data[6] = 0x11;
+       hcan1.pTxMsg->Data[7] = 0x12;
+       HAL_CAN_Transmit_IT(&hcan1);
+    }
+    if(FlagCAN2_Transmit){
+      FlagCAN2_Transmit = 0; 
+       hcan2.pTxMsg->Data[0] = 0x20;
+       hcan2.pTxMsg->Data[1] = 0x21;
+       hcan2.pTxMsg->Data[2] = 0x22;
+       hcan2.pTxMsg->Data[3] = 0x23;
+       hcan2.pTxMsg->Data[4] = 0x24;
+       hcan2.pTxMsg->Data[5] = 0x20;
+       hcan2.pTxMsg->Data[6] = 0x21;
+       hcan2.pTxMsg->Data[7] = 0x22;
+       HAL_CAN_Transmit_IT(&hcan2);
+    }
       /*##-3- Start the Transmission process ###############################*/
-    A = HAL_CAN_Transmit(&hcan1, 10);
-     if (A != HAL_OK)
-        {
-          /* Transmission Error */
-          Error_Handler();
-        }
-        HAL_Delay(10); 
+
+
+
   }
   /* USER CODE END 3 */
 
