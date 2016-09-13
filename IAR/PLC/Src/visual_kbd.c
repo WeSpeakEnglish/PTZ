@@ -92,6 +92,7 @@ const ZoneKBD ZonesKBD[]={
     {{574,336},{627,393},           ob00001100, 'þ' , 0x00}, // #70      
     {{636,336},{689,393},           ob00001100, 'ú' , 0x00}, // #71  
     {{697,336},{775,393},           ob00001100, 15 , 0x00},  // #72   
+    {{0,0},{0,0},                   ob00011111, 0  , 0},     // #73 //the terminal zone  
 };
 
 #define ChangeColorMAIN        0xFFCCCCCC
@@ -150,7 +151,7 @@ uint8_t solveReturnCodeVisualKBD(void){ //the handle of Touch Screen
   uint16_t x = Touch_Data.xp;
   uint16_t y = Touch_Data.yp;
 
-    for(Index = 0; Index < sizeof(ZonesKBD)/12; Index++){
+    for(Index = 0; Index < (sizeof(ZonesKBD)/12) - 1; Index++){ //except the terminal zone
       if(ZonesKBD[Index].PagesActivities & (1<<VisualKBD.Screen)) // are we allowed here?
       if((x > ZonesKBD[Index].LeftTop.X  && x < ZonesKBD[Index].RightBottom.X)&&
             (y > ZonesKBD[Index].LeftTop.Y  && y < ZonesKBD[Index].RightBottom.Y)){

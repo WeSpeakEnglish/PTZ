@@ -1059,12 +1059,21 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
 
 void ShowVisualKbdString(void){
   uint8_t i;
-  for(i = 0; i < sizeof(VisualKBD.Symbols); i++){
+  static uint8_t Counter = 0;
+  
+  for(i = 0; i < sizeof(VisualKBD.Symbols)-1; i++){
    if(VisualKBD.Symbols[i] == '\0') break;
   }
-  LCD_InitParams(0, 0, 0xFFFFFFFF, &RIAD_30pt);
-  LCD_DisplayStringAt(KBD_STR_X, KBD_STR0_Y, VisualKBD.Symbols, LEFT_MODE, 3);
 
+  if(Counter%16 < 8){
+    VisualKBD.Symbols[i] = '}' - 1;
+     VisualKBD.Symbols[i + 1] = '\0'; 
+  };  
+  LCD_InitParams(0, 0, 0xFFFF0000, &RIAD_30pt);
+  LCD_DisplayStringAt(KBD_STR_X, KBD_STR0_Y, VisualKBD.Symbols, LEFT_MODE, 3);
+  if(Counter%16 < 8)
+    VisualKBD.Symbols[i] = '\0';
+  Counter++;
 }
 
 void RunVisualKBD(void){
@@ -1081,7 +1090,7 @@ void RunVisualKBD(void){
           break;
       case 21:
          if(VisualKBD.Screen == 4){
-           if(i<sizeof(VisualKBD.Symbols))
+           if(i<sizeof(VisualKBD.Symbols)- 1)
              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode2;
         }
         else
@@ -1121,12 +1130,12 @@ void RunVisualKBD(void){
           break;
       default:
         if(VisualKBD.Screen == 4){
-           if(i<sizeof(VisualKBD.Symbols))
+           if(i<sizeof(VisualKBD.Symbols )- 1)
              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode2;
         }
         else
         {
-          if(i<sizeof(VisualKBD.Symbols)){ 
+          if(i<sizeof(VisualKBD.Symbols )- 1){ 
             if(!((VisualKBD.Screen == 1 )||(VisualKBD.Screen == 3))) 
              VisualKBD.Symbols[i] = ZonesKBD[VisualKBD.ReturnZone].kbdCode1;
             else
@@ -1139,7 +1148,6 @@ void RunVisualKBD(void){
         }
         break;
   }
- if( VisualKBD.Symbols[i] == 0x3C)VisualKBD.Symbols[i] ='\0';
 return;
 }
 
@@ -1215,7 +1223,6 @@ void BigHidroExitsShow(uint8_t Number, uint8_t Parm){ // we have 5 complex contr
                                                       // the number and addition parameter inside the demand for drive inside parms and parms of the array of stuctures; if all zero - just show
 uint8_t i,j; // indexes for increment, plain usage 
 uint8_t StrRightView[]  =        "      0"; //in the LEFT mode
-
 const Point Coords[5] = 
 {{ORIGIN_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
 {ORIGIN_BIG_HIDRO_CONTROL + STEP_BIG_HIDRO_CONTROL, Y_BIG_HIDRO_CONTROL},
@@ -1263,7 +1270,6 @@ if(!Number && !Parm){ // inside the show level
        LCD_Fill_Image(&IMAGES.ImgArray[34], 400, 394); // "-"     //and three addition buttons in the edit mode
        LCD_Fill_Image(&IMAGES.ImgArray[269], 301, 394); // "+" 
        LCD_Fill_Image(&IMAGES.ImgArray[42],  597, 394); // "Enter" 
-       
        LCD_InitParams(0, 0, 0xFF000000, &RIAD_16pt);
        Itoa_R(StrRightView, sizeof(StrRightView), (int16_t)PoolOfExits.TempA);
        LCD_DisplayStringAt(Coords[j].X + BHE_STRA_X_GAP, Coords[j].Y + BHE_STRAB_Y_GAP, StrRightView, RIGHT_MODE, 1);
@@ -1279,7 +1285,6 @@ if(!Number && !Parm){ // inside the show level
          PoolOfExits.TimeEraseToken = 0; 
          PoolOfExits.PseudoTime = 0;
        }
-         
      }
    }
    ///////////the Time manipulations/////////////
@@ -1458,7 +1463,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
       if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY)||Condition.set_penetration) {
         if(!Condition.activity ) {
           LineColours[0] = 0xFFFF0000;
-          LCD_Fill_Image(&IMAGES.ImgArray[9], 203, 394);
+          LCD_Fill_Image(&IMAGES.ImgArray[9], 200, 394);
         } 
         LCD_Fill_Image(&IMAGES.ImgArray[241], 301, 162);
       }
@@ -1468,7 +1473,7 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
       if(((Condition.BlinkCounter % BLINKPERIOD) < BLINKDUTY) || Condition.set_stop) {
         if(!Condition.activity ) { 
           LineColours[1] = 0xFFFF0000;
-          LCD_Fill_Image(&IMAGES.ImgArray[16], 400, 394);
+          LCD_Fill_Image(&IMAGES.ImgArray[16], 397, 394);
         }
 
         LCD_Fill_Image(&IMAGES.ImgArray[243], 412, 273);
@@ -1644,7 +1649,7 @@ uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex
   static uint8_t Name[]="000.bmp";
   ImgSize SizesIMG;
   if (SD_mount(1)  == FR_OK){ //mount SD card in 4-bit mode
-    for(i = startIndex; i < stopIndex+1; i++){
+    for(i = startIndex; i < stopIndex + 1; i++){
       Name[0] = (i/100) + 0x30;
       Name[1] = (i/10 - 10*(i/100))  + 0x30;
       Name[2] = (i%10)  + 0x30;

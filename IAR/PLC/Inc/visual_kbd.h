@@ -9,7 +9,7 @@ typedef struct {
   uint8_t Lang          : 1; // here a two languages for switching
 //  uint8_t Upper         : 1; // lower or upper case
   uint8_t ReturnZone;
-  uint8_t Symbols[25];
+  uint8_t Symbols[31];
 }VKBD;
 
 extern uint8_t V_KBD_Fill_button; // the filling button flag
