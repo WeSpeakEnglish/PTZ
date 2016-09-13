@@ -217,7 +217,7 @@ void Switch_Camera(uint8_t type){
 
   if(type==0)  {
 
-      DelayOnMediumQ(10);
+      DelayOnFastQ(10);
       LCD_Video_GPIO_Init();    
     }
   else if(type==1)  {
@@ -264,7 +264,7 @@ uint8_t CheckDecoderVDLOSS( uint8_t n ){
   while (n--)   {
       mode = ReadTW88(REG101);
       if (( mode & 0x80 ) == 0 )       return ( 0 );
-      DelayOnMediumQ(10);
+      DelayOnFastQ(10);
     }
   return ( 1 );
 }
@@ -276,7 +276,7 @@ uint8_t CheckDecoderSTD( uint8_t n ){
   while (n--)   {
       mode = ReadTW88(REG11C);
       if (( mode & 0x80 ) == 0 ) return ( mode );
-      DelayOnMediumQ(10); 
+      DelayOnFastQ(10); 
     }
   return ( 0x80 );
 }
@@ -476,7 +476,7 @@ uint8_t ChangeCVBS( void ){
 
   // Get Image control register value
 
-  DelayOnMediumQ(10);
+  DelayOnFastQ(10);
 
   ReadTW88(0xFF);
   ReadTW88(0x01);

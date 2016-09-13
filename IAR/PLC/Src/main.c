@@ -96,9 +96,11 @@ void MX_USB_HOST_Process(void);
     MX_USB_HOST_Process();
 
   /* USER CODE BEGIN 3 */
-  // RoutineFast(); // get and run deals from medium queue 
+   RoutineMedium(); // get and run deals from medium queue 
+  
     Run_GUI();
     Show_GUI();
+    
     if(FlagCAN1_Transmit){
       FlagCAN1_Transmit = 0; 
        hcan1.pTxMsg->Data[0] = 0x10;
@@ -124,9 +126,6 @@ void MX_USB_HOST_Process(void);
        HAL_CAN_Transmit_IT(&hcan2);
     }
       /*##-3- Start the Transmission process ###############################*/
-
-
-
   }
   /* USER CODE END 3 */
 

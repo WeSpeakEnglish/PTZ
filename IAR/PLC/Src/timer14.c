@@ -30,26 +30,27 @@ void TIM14_IRQHandler(void){
   case 0: 
     break;
   case 1: 
-    if (RESmutex_1){
-      Timer14_Init_Deal(100,1); 
-      return;
-    } 
-    RESmutex_1 = 1;
+ //   if (RESmutex_1){
+ //     Timer14_Init_Deal(100,1); 
+ //     return;
+ //   } 
+   // RESmutex_1 = 1;
     P_Touch_FreeIRQ();
-    MX_Touch_Read();
-    RESmutex_1 = 0;
-    Timer14_Init_Deal(50,2);
+  //  MX_Touch_Read();
+ //   RESmutex_1 = 0;
+
+    Timer14_Init_Deal(200,2);
     break;
 
   case 2: 
-    if (RESmutex_1){
-      Timer14_Init_Deal(50,2); 
-      return;
-    }
-    RESmutex_1 = 1;
-    MX_Touch_Read();
-    RESmutex_1 = 0;
-    TouchScreen_Handle();       
+ //   if (RESmutex_1){
+ //     Timer14_Init_Deal(100,2); 
+ //     return;
+ //   }
+ //  M_push(P_Touch_FreeIRQ);
+   M_push(MX_Touch_Read); 
+   M_push(TouchScreen_Handle);
+   M_push(P_Touch_FreeIRQ);     
     break;
   case 3: 
     // ReleaseFunction();

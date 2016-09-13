@@ -11,18 +11,18 @@
 
 #define	LM75_TEMP_CORR    	(float)(0.5)		//LM75
 
+float Temperature1;
 
-
-float GetTempLM75(void){
+void GetTempLM75(void){
  _TwoBytesS Result; 
- float RetRes;
+ 
  uint8_t LM75Data[2]; 
  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)LM75_ADDR, (uint16_t)LM75_TEMP, I2C_MEMADD_SIZE_8BIT, LM75Data, 2, 10);
  Result.Bytes[1] = LM75Data[0];
  Result.Bytes[0] = LM75Data[1];
  Result.Word /= 128;
  
- RetRes = (float)(Result.Word)* LM75_TEMP_CORR;
+ Temperature1 = (float)(Result.Word)* LM75_TEMP_CORR;
 
- return RetRes; 
+ return ;
 }

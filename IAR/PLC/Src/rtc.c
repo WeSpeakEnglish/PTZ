@@ -66,6 +66,8 @@
 #define Timer_INT_Pulse_on         0x10
 #define Timer_INT_Pulse_off        0x00
 
+volatile date_time_t dt;
+
 char const weekday_names[7][10] =
 {
 {"Sunday"},
@@ -226,6 +228,11 @@ PCF8563_write_byte(PCF8563_CTRL_STATUS_REG1,PCF8563_START_COUNTING);
 // all of them are loaded into "capture" registers.
 // All further reading within that cycle is done from
 // those registers.
+
+//for queue edition
+void PCF8583_read_by_Q(void){
+ PCF8563_read_datetime(&dt);
+}
 
 void PCF8563_read_datetime(date_time_t volatile *dt)
 {

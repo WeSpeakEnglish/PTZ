@@ -3,6 +3,7 @@
 #include "stm32f7xx_hal.h"
 #include "delays.h"
 #include "memory.h"
+#include "PTZinterface.h"
 
 volatile int8_t Semaphore = 0; // that semaphore for queues and routines control if you need :)
 volatile uint32_t TicksGlobal_mS = 0; //US ticking timer // in the timer interrupt handle needs just ++ operation

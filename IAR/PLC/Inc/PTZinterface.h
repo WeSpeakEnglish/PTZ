@@ -20,7 +20,7 @@ typedef struct{
 extern volatile uint8_t UpdateScreen;
 
 extern volatile Disp DISP;
-extern volatile date_time_t dt;
+
 extern volatile uint8_t CAM_flag;
 extern uint8_t RateChange;
 void Load_GUI_0(void);
@@ -49,6 +49,7 @@ void Test1(void);
 void Test2(void);
 void RunVisualKBD(void);
 void ShowVisualKbdString(void); 
+void CAM_ON_OFF(void);
 #endif
 
 

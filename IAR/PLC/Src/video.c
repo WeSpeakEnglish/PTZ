@@ -27,6 +27,7 @@ uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c
         WaitWhileDMA2D(MAXDELAY_DMA2D);
         while(PLC_DMA2D_Status.Ready == 0){ 
           //    M_pull()();
+           DelayOnMediumQ(1);
           if(!WaitWhileDMA2D(0)) return 1;
         }
       }  
@@ -51,6 +52,7 @@ uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
             //    M_pull()();
+             DelayOnMediumQ(1);
             if(!WaitWhileDMA2D(0)) return 1;
           }
         } 
@@ -85,6 +87,7 @@ void _HW_Fill_Finite_Color(uint32_t StartAddress, uint32_t color){
         WaitWhileDMA2D(MAXDELAY_DMA2D);
         while(PLC_DMA2D_Status.Ready == 0){ 
           //   M_pull()();
+           DelayOnMediumQ(1);
           if(!WaitWhileDMA2D(0)) return;
         }
       }  
@@ -118,6 +121,7 @@ void _HW_Fill_Display_From_Mem(uint32_t SourceAddress, uint32_t DstAddress){
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
             //    M_pull()();
+             DelayOnMediumQ(1);
             if(!WaitWhileDMA2D(0)) return;
           }
         }  
@@ -152,6 +156,7 @@ void _HW_Fill_Display_From_Mem_565(uint32_t SourceAddress, uint32_t DstAddress){
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
             //    M_pull()();
+            DelayOnMediumQ(1);
             if(!WaitWhileDMA2D(0)) return;
           }
         }  
@@ -185,7 +190,7 @@ void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
           == HAL_OK)    {
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
-                 M_pull()();
+            DelayOnMediumQ(1);
             if(!WaitWhileDMA2D(0)) return;
           }
         }  
@@ -210,7 +215,7 @@ void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32
 
         WaitWhileDMA2D(MAXDELAY_DMA2D);
         while(PLC_DMA2D_Status.Ready == 0){ 
-          //  M_pull()();
+          DelayOnMediumQ(1);
           if(!WaitWhileDMA2D(0)) return;
         }
 
@@ -244,7 +249,7 @@ void _HW_Fill_Image(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSize, ui
           == HAL_OK)    {
           WaitWhileDMA2D(MAXDELAY_DMA2D);
           while(PLC_DMA2D_Status.Ready == 0){ 
-                 M_pull()();
+            DelayOnMediumQ(1);
             if(!WaitWhileDMA2D(0)) return;
           }
         }  
@@ -264,7 +269,7 @@ void _HW_Fill_ImageToRAM(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSiz
     if (HAL_DMA2D_Start_IT(&hdma2d, SrcAddress, DstAddress, xSize, ySize) == HAL_OK)      {
       WaitWhileDMA2D(MAXDELAY_DMA2D);
       while(PLC_DMA2D_Status.Ready == 0){ 
-        //    M_pull()();
+        DelayOnMediumQ(1);
         if(!WaitWhileDMA2D(0)) return;
       }
     }
@@ -277,14 +282,14 @@ void LCD_Layers_Init(void){
   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_1_OFFSET);
   WaitWhileDMA2D(MAXDELAY_DMA2D);
   while(PLC_DMA2D_Status.Ready == 0){ 
-    //   M_pull()();
+     DelayOnMediumQ(1);
     if(!WaitWhileDMA2D(0)) return;
   }
   //fill the second layer
   _HW_Fill_Display_From_Mem(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, SDRAM_BANK_ADDR + LAYER_2_OFFSET);
   WaitWhileDMA2D(MAXDELAY_DMA2D);
   while(PLC_DMA2D_Status.Ready == 0){ 
-    //    M_pull()();
+    DelayOnMediumQ(1);
     if(!WaitWhileDMA2D(0)) return;
   } 
 }
@@ -385,12 +390,12 @@ void TwoDigitsToChars(uint8_t * Src){
 void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
   uint8_t DispCamN[]="KAM 1";
   if(On){
-    LCD_Video_GPIO_Deinit();
+     LCD_Video_GPIO_Deinit();
     while (RESmutex_1) ;
     RESmutex_1 = 1;
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);  
-    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_SET); 
+     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);  
+     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_SET); 
     I2CDeviceInitialize(InitCVBSAll);
     FOSDDownloadFont(1);
     Switch_Camera(NumbCam);
@@ -400,10 +405,11 @@ void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
     RESmutex_1 = 0;
   }
   else {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_RESET);
-    LCD_Video_GPIO_Init();
+     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_RESET);
+     HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_RESET);
+     LCD_Video_GPIO_Init();
   }
+
 }
 

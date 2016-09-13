@@ -122,8 +122,6 @@ uint8_t StartTestFlag = 1;
 
 uint8_t RateChange = 0;
 
-volatile date_time_t dt;  
-
 volatile Disp DISP;
 
 struct{
@@ -187,12 +185,12 @@ struct{
   uint8_t TempB;
   uint16_t PseudoTime;               // multiplied by 10 for easily ++ and -- operations implements
   
- } PoolOfExits = {0,0,0,0,0,0,0};
+ } PoolOfExits = {0,0,0,0,0,0,0}; 
 
 static void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
 
-void CAM_ON_OFF(){
+void CAM_ON_OFF(void){
   if(!CAM_flag) {
     CAM_flag = 1;
     VideoCAMOnOff(4, 1); //number four on
@@ -292,7 +290,8 @@ void Run_GUI(void){
   if(TimeIsReady){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
-    PCF8563_read_datetime(&dt);
+    PCF8583_read_by_Q();
+    //PCF8563_read_datetime(&dt);
     RESmutex_1 = 0;
 
     GetDateToStr(StrDate, &dt);
@@ -415,7 +414,7 @@ void KBD_Handle(uint8_t code){ //the handle of the keyboard
         actions(code - 0x31);
         break; 
       case 0x38:
-        CAM_ON_OFF();
+        M_push(CAM_ON_OFF);
         break;
       }
       break;
@@ -432,7 +431,7 @@ void KBD_Handle(uint8_t code){ //the handle of the keyboard
         actions(code - 0x31); 
         break;
       case 0x38:
-        CAM_ON_OFF();
+        M_push(CAM_ON_OFF);
         break;                   
       }
       break;
@@ -795,9 +794,9 @@ void actions(uint8_t deal){
   case 7:
     if(DISP.Screen == 2){
       if(Condition.activity != 0)PenetrationRising(4,0);
-      else CAM_ON_OFF();
+      else M_push(CAM_ON_OFF);
     }
-    else
+    else{
     if(DISP.Screen == 3){
         if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit) DISP.Screen = 0; //if we in the edit mode
         else{
@@ -806,8 +805,9 @@ void actions(uint8_t deal){
            } 
       }
     else{
-      CAM_ON_OFF();
+      M_push(CAM_ON_OFF);
     }
+  }
     break;
   case 8:
     break;
