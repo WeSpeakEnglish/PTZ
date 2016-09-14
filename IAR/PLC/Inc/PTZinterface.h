@@ -36,6 +36,7 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
 void KBD_Repeat_Handle(void);
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex);
 
+
 void BIG_Arrow(uint16_t SetValue);
 void RPM_Arrow(uint16_t SetValue);
 void FUEL_Arrow(uint16_t SetValue);
@@ -43,6 +44,8 @@ void TEMP_Arrow(uint16_t SetValue);
 void LittleHidroExitsShow(void);
 void UserControlsShow(void);
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm);
+void UserParamsExchangeScreens(uint8_t ControlVar);
+void UserParamsShow(void);
 int32_t exAddition(int32_t inValue, int16_t minValue, int16_t maxVal, int16_t Step, uint16_t padPeriod);
 void Tests(void);
 void Test1(void);

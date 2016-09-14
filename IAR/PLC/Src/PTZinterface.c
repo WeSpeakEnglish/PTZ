@@ -10,17 +10,53 @@
 // (c) RA3TVD code, 2016
 
 struct{
+  uint8_t TractorModel[MAXSTRINGLENGTH];
+  uint8_t Language[MAXSTRINGLENGTH];        // the language of UI
+  uint8_t TractorNumb[MAXSTRINGLENGTH];     // the number of Tractor
+  uint8_t Version[MAXSTRINGLENGTH];         // Software version
+  uint16_t SpecialParam;                    // special parameter
+  uint8_t ManufactureDate[MAXSTRINGLENGTH]; // like "12.09.2016"
+  float Generator;                          // the current of generator
+  float FuelTank;                           // the tank of gas
+  float WorkHours;                          // the time of work
+  uint16_t SpeeedSensor;                    // the speed sensor here
+  float TotalPatch;                         // the total patch of proceed
+}SaveParams;
+
+struct{
+  uint32_t Machinist; // a motorman
+  float Width;
+}PreparatingSquare;
+
+struct{
+ uint8_t Screen           : 3;      // we show the calculation square screen
+                                    // or we show the addition parameters screen
+                                    // or show current ones
+ uint8_t AddActiveStr     : 4; // activated string
+ uint8_t GoesFromVirtuaKB : 1; // if we go from the KB the behaviour is different
+}UserParamsCond={0}; // conditions of the user control of showing parameters
+
+struct{
   uint8_t PressTransmiss; // pressure in the transmission
   uint8_t PressPneumosys; // pressuse in the pneumo system
   uint8_t PressEngineOil; // the pressure of oil
-  uint8_t Speed;       //  the speed
-  uint8_t RateEngine; // the RPM
-  float Square;     // the square, which have been prepared
-  float TimeOfRun;  // the total time of pass
-  uint16_t Passes;  // number of passes
-  float SquarePerHour;   // (100m)^2 per hour
-  float PetrolPerHour;   // litres per hour
-  float PetrolPerSquare; // litres per (100m)^2
+  uint8_t Speed;          //  the speed
+  uint8_t RateEngine;     // the RPM
+  float Square;           // the square, which have been prepared
+  float TimeOfRun;        // the total time of pass
+  uint16_t Passes;        // number of passes
+  float SquarePerHour;    // (100m)^2 per hour
+  float PetrolPerHour;    // litres per hour
+  float PetrolPerSquare;  // litres per (100m)^2
+  float TempEngine;       // the temperature of engine
+  float PressOilEngine;   // the pressure in engine oil tubes
+  float VolumeFuel;       // volume of gas in liters 
+  float Voltage;          // voltage in volts
+  float PressOilGearbox;  // the pressure in the gearbox 
+  float TempOilGearbox;   // the temperature in the gearbox (transmission)
+  float PressAir;         // the temperature of air in the ...
+  uint16_t Mileage;       // mileage in km
+  
   uint8_t Slip; // slipping
   int8_t Rising; // rasing/penetration(-)
   int8_t Calibration; //in centimeters
@@ -527,6 +563,16 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 }
 
 #define SENSORS_CONDITIONS_IMG_Y 44
+#define TRACTOR_PARAMETERS_IMG_Y 44
+
+const Point ImagesParamsLocations[]={
+  {2,394}, // field button dashed
+  {101,394}, // the ham and skrudriver
+  {696,394}, // croux
+  {200,394}, // empty button 
+  {398,394}, // empty button
+  {597,394}, // empty button
+};
 
 void ViewScreen(void){
   uint16_t i;
@@ -600,10 +646,37 @@ void ViewScreen(void){
       Images[0]->z_index = 0;
       
       // API fill IMAGE into background
-      _HW_Fill_Image(IMAGES.ImgArray[251].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
+      _HW_Fill_Image(IMAGES.ImgArray[251].address, 4 * TRACTOR_PARAMETERS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
       //_HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[251].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);  //modify the background by IMAGE
       break;
+    case 5: 
+      Images[0]->z_index = 0;
+      //prepare the screen for display on this properties position    
+      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
       
+      if (!UserParamsCond.GoesFromVirtuaKB)    UserParamsCond.Screen = 0;
+   
+        switch(UserParamsCond.Screen){
+          case 0: // form the page of params
+           _HW_Fill_Image(IMAGES.ImgArray[271].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[195].address, 4 * ImagesParamsLocations[0].Y * DisplayWIDTH + 4 * ImagesParamsLocations[0].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[195].xsize, IMAGES.ImgArray[195].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[192].address, 4 * ImagesParamsLocations[1].Y * DisplayWIDTH + 4 * ImagesParamsLocations[1].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[191].xsize, IMAGES.ImgArray[191].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[60].address, 4 * ImagesParamsLocations[2].Y * DisplayWIDTH +  4 * ImagesParamsLocations[2].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[60].xsize, IMAGES.ImgArray[60].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[3].Y * DisplayWIDTH + 4 * ImagesParamsLocations[3].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[4].Y * DisplayWIDTH + 4 * ImagesParamsLocations[4].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
+           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[5].Y * DisplayWIDTH + 4 * ImagesParamsLocations[5].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
+
+           
+           break; 
+          case 1:
+           _HW_Fill_Image(IMAGES.ImgArray[271].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
+          break; 
+      
+
+           
+      }
+     // SaveParams.TractorModel = StrToArray("Kirovec"
+      break;
     case 6:
       Images[0]->z_index = 0;
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
@@ -622,7 +695,7 @@ void ReleaseFunction(void){
   case 3 : 
     exAddition(0,0,0,0,0); // reset exAddition Function
     break;
-    
+   
   case 6:
     V_KBD_Fill_button = 0;
 
@@ -647,10 +720,18 @@ void actions(uint8_t deal){
 
   switch(deal) {
   case 0: 
+    if(DISP.Screen == 5) {
+      UserParamsExchangeScreens(0);
+      
+    }
+    else
     if(!((DISP.Screen == 2)&&(Condition.activity)))DISP.Screen = 0;
     if(DISP.Screen == 2 && Condition.activity)Condition.butt_selected = 1;
     break;
   case 1: 
+    if(DISP.Screen == 5) {
+      UserParamsExchangeScreens(1);
+    }
     if(DISP.Screen == 0) DISP.Screen = 1;
     if(DISP.Screen == 2){
       if(Condition.activity)Condition.butt_selected = 2;
@@ -773,7 +854,7 @@ void actions(uint8_t deal){
     }
     else{
       if(DISP.Screen < 2){
-      DISP.Screen = 6;
+      DISP.Screen = 5;
     }
     else
       if(DISP.Screen == 3){
@@ -788,7 +869,7 @@ void actions(uint8_t deal){
         if(PoolOfExits.TimeEdit == 2)
                PoolOfExits.TimeEdit = 3; 
       }
-    if(DISP.Screen == 4) DISP.Screen = 6;
+    if(DISP.Screen == 4) DISP.Screen = 5;
     }
     break;
   case 7:
@@ -1326,7 +1407,6 @@ if(!Number && !Parm){ // inside the show level
          LCD_Fill_ImageTRANSP(&IMAGES.ImgArray[237], Coords[j].X + 64, Coords[j].Y + 250); // laying the time by image 
        }
  }
-   ///////////////////////
    for(i = 0; i < 10; i++ ){
   if(PoolOfExits.EditShow && PoolOfExits.EntireSelect == j) { 
    if ((PoolOfExits.TempA + 5) / (100 - i*10)){ //math.round :) TempA instead of PTZ.Hydroexits[j].A
@@ -1613,7 +1693,40 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
   }
 
 }
+// exchange parameters screens
+#define USERCONTROLSTRINGS 10 // how much strings we have here on screen 1 of our control 
 
+void UserParamsExchangeScreens(uint8_t ControlVar){
+       switch(UserParamsCond.Screen){
+          case 0:    
+              if(!ControlVar) UserParamsCond.Screen = 1;
+              if(ControlVar == 1) UserParamsCond.Screen = 2;
+            break;      
+          case 1:
+            switch(ControlVar){
+              case 0:
+                  UserParamsCond.AddActiveStr++; 
+                  UserParamsCond.AddActiveStr %= USERCONTROLSTRINGS;
+                  if(!UserParamsCond.AddActiveStr)
+                                    UserParamsCond.AddActiveStr = 1;
+                break;
+              case 1:
+                  if(UserParamsCond.AddActiveStr > 1) 
+                    UserParamsCond.AddActiveStr--; 
+                  else 
+                    UserParamsCond.AddActiveStr = USERCONTROLSTRINGS - 1;
+                break;  
+            }
+            break;
+      }
+    
+  return;
+}
+
+void UserParamsShow(void){
+  return;
+}
+///!---------------------------------------------------------------------------
 void UserControlsShow(void){
   switch(DISP.Screen){
   case 1:
@@ -1629,6 +1742,10 @@ void UserControlsShow(void){
     // LCD_Fill_Image(&IMAGES.ImgArray[291], 0, 90); 
     ErrorsShow();
      break;
+  case 5:
+    UserParamsShow();
+     break;
+     
   case 6:
     if(V_KBD_Fill_button)
        ChangeColorKBD();
