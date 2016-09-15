@@ -54,9 +54,9 @@ GUI_Object*  GUI_SetObject(uint32_t typeObj, uint32_t colorObj, uint32_t z_Index
 
 
 void GUI_Release(){  // create GUI 
-  static int i, j;       //indexes
+  static int i, j;   //indexes
 
-  //if z-index == 0 eq hide
+  // z-index == 0 eq hide
   for(j = 1; j < MAX_Z_INDEX; j++ ){
 
     for(i = 0; i < MAX_OBJECTS_Q; i++){
@@ -116,15 +116,10 @@ void GUI_Release(){  // create GUI
             RestorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1]));
             break;
           case ROTATING_FILLED_POLY_TYPE_FAST: 
-           // HAL_Delay(3);
             StorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1])); 
-          //  HAL_Delay(3);
             RotatePoly((pPoint)(GUI_Objects[i].params[0]),  (uint16_t)(GUI_Objects[i].params[1]),(pPoint)GUI_Objects[i].params[2], GUI_Objects[i].params[3]);
-          //  HAL_Delay(3);
             LCD_FillPolygon((pPoint)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1],1); 
-          //  HAL_Delay(3);
             RestorePoly((pPoint)(GUI_Objects[i].params[0]),(uint16_t)(GUI_Objects[i].params[1]));
-          //  HAL_Delay(10);
             break;
           case FILLED_TRIANGLE_FAST :
             LCD_FillTriangleFAST((pPoint)GUI_Objects[i].params[0]);

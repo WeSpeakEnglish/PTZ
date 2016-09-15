@@ -223,7 +223,7 @@ struct{
   
  } PoolOfExits = {0,0,0,0,0,0,0}; 
 
-static void actions(uint8_t deal);
+void actions(uint8_t deal);
 void PenetrationRising(uint8_t Parm, uint8_t set); //we can set the parameters of this control
 
 void CAM_ON_OFF(void){
@@ -565,15 +565,6 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
 #define SENSORS_CONDITIONS_IMG_Y 44
 #define TRACTOR_PARAMETERS_IMG_Y 44
 
-const Point ImagesParamsLocations[]={
-  {2,394}, // field button dashed
-  {101,394}, // the ham and skrudriver
-  {696,394}, // croux
-  {200,394}, // empty button 
-  {398,394}, // empty button
-  {597,394}, // empty button
-};
-
 void ViewScreen(void){
   uint16_t i;
   static uint8_t OldScreen = 0;
@@ -658,20 +649,14 @@ void ViewScreen(void){
    
         switch(UserParamsCond.Screen){
           case 0: // form the page of params
-           _HW_Fill_Image(IMAGES.ImgArray[271].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[195].address, 4 * ImagesParamsLocations[0].Y * DisplayWIDTH + 4 * ImagesParamsLocations[0].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[195].xsize, IMAGES.ImgArray[195].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[192].address, 4 * ImagesParamsLocations[1].Y * DisplayWIDTH + 4 * ImagesParamsLocations[1].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[191].xsize, IMAGES.ImgArray[191].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[60].address, 4 * ImagesParamsLocations[2].Y * DisplayWIDTH +  4 * ImagesParamsLocations[2].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[60].xsize, IMAGES.ImgArray[60].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[3].Y * DisplayWIDTH + 4 * ImagesParamsLocations[3].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[4].Y * DisplayWIDTH + 4 * ImagesParamsLocations[4].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
-           _HW_Fill_Image(IMAGES.ImgArray[183].address, 4 * ImagesParamsLocations[5].Y * DisplayWIDTH + 4 * ImagesParamsLocations[5].X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[183].xsize, IMAGES.ImgArray[183].ysize);
-
-           
+            UserParamsPreparingScreens(0);
            break; 
           case 1:
-           _HW_Fill_Image(IMAGES.ImgArray[271].address, 4 * SENSORS_CONDITIONS_IMG_Y * DisplayWIDTH + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[251].xsize, IMAGES.ImgArray[251].ysize);
-          break; 
-      
+            UserParamsPreparingScreens(1);
+           break; 
+          case 2:
+            UserParamsPreparingScreens(2);
+           break;       
 
            
       }
@@ -721,7 +706,8 @@ void actions(uint8_t deal){
   switch(deal) {
   case 0: 
     if(DISP.Screen == 5) {
-      UserParamsExchangeScreens(0);
+    //  if(!UserParamsCond.Screen) 
+        UserParamsExchangeScreens(1);
       
     }
     else
@@ -730,7 +716,9 @@ void actions(uint8_t deal){
     break;
   case 1: 
     if(DISP.Screen == 5) {
-      UserParamsExchangeScreens(1);
+   //  if(!UserParamsCond.Screen) 
+       UserParamsExchangeScreens(2);
+     
     }
     if(DISP.Screen == 0) DISP.Screen = 1;
     if(DISP.Screen == 2){
@@ -877,18 +865,24 @@ void actions(uint8_t deal){
       if(Condition.activity != 0)PenetrationRising(4,0);
       else M_push(CAM_ON_OFF);
     }
-    else{
+
     if(DISP.Screen == 3){
         if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit) DISP.Screen = 0; //if we in the edit mode
         else{
          PoolOfExits.EditShow = 0; //else go from Edit mode and discard changes
          PoolOfExits.TimeEdit = 0; //and time edit mode too...
            } 
+        break;
       }
+    if(DISP.Screen == 5){
+      if(UserParamsCond.Screen){
+        UserParamsExchangeScreens(0);
+      }
+    }
     else{
       M_push(CAM_ON_OFF);
     }
-  }
+
     break;
   case 8:
     break;
@@ -1693,37 +1687,150 @@ void PenetrationRising(uint8_t Parm, uint8_t set){ //if Parm set as Zero (0) it 
   }
 
 }
+
+typedef struct{
+  uint16_t N;   // the number
+  Point Coords; // the coords
+} pointANDcoords;
+
+void UserParamsPreparingScreens(uint8_t Screen){ // preparing the background
+
+uint8_t Index;
+
+const pointANDcoords
+ImParamsLoc[]={
+  {271,{0,44}},    //0 the number in the image array and coords
+  {195,{2,394}},   //1 field button dashed
+  {192,{101,394}}, //2 the ham and skrudriver
+  {60,{696,394}},  //3 cross           // cross on all the pages, starts from zero ...(optimized)
+  {183,{200,394}}, //4 empty button 
+  {183,{398,394}}, //5 empty button
+  {183,{597,394}}, //6 empty button
+  ////----------------------------- screen 1
+  {270,{0,44}},    //7 square calculation
+  {45,{2,394}},    //8 up button
+  {44,{101,394}},  //9 down button
+  {193,{200,394}}, //10 a man name edition  
+  ////----------------------------- screen 0
+  {209,{0,44}},    //11 square calculation
+  {45,{2,394}},    //12up button
+  {44,{101,394}},  //13 down button
+};
+
+switch(Screen){
+ case 0:          
+   for(Index = 0; Index < 7; Index++)   
+           _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
+                          4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].ysize);
+           UserParamsCond.Screen = 0;
+    break;
+ case 1:
+     for(Index = 7; Index < 11; Index++)   
+           _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
+                          4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].ysize);
+     
+           UserParamsCond.Screen = 1;
+    break; 
+    
+  case 2:
+     for(Index = 11; Index < 14; Index++)   
+           _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
+                          4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
+                          IMAGES.ImgArray[ImParamsLoc[Index].N].ysize);
+     
+           UserParamsCond.Screen = 2;
+    break;    
+    
+} 
+  return;
+}
+
 // exchange parameters screens
 #define USERCONTROLSTRINGS 10 // how much strings we have here on screen 1 of our control 
-
 void UserParamsExchangeScreens(uint8_t ControlVar){
        switch(UserParamsCond.Screen){
-          case 0:    
-              if(!ControlVar) UserParamsCond.Screen = 1;
-              if(ControlVar == 1) UserParamsCond.Screen = 2;
-            break;      
-          case 1:
+          case 0:  
+            switch(ControlVar){
+              case 1: 
+                          UserParamsPreparingScreens(1);
+                          break;
+              case 2:
+                          UserParamsPreparingScreens(2);
+                          break;
+            }
+            break;  
+            
+         case 1:
             switch(ControlVar){
               case 0:
+                UserParamsPreparingScreens(0);
+                break;
+              case 1:
+                //to do:: put activities for first button on second screen of the user control right here :)
+                break;
+              case 2:
+                //to do:: put activities for first button on second screen of the user control right here :)
+                break;  
+            }   
+            break;  
+            
+          case 2:
+            switch(ControlVar){
+              case 0:
+                UserParamsPreparingScreens(0);
+                break;
+              case 1:
                   UserParamsCond.AddActiveStr++; 
                   UserParamsCond.AddActiveStr %= USERCONTROLSTRINGS;
                   if(!UserParamsCond.AddActiveStr)
                                     UserParamsCond.AddActiveStr = 1;
                 break;
-              case 1:
-                  if(UserParamsCond.AddActiveStr > 1) 
+              case 2:
+                  if(UserParamsCond.AddActiveStr) 
                     UserParamsCond.AddActiveStr--; 
                   else 
                     UserParamsCond.AddActiveStr = USERCONTROLSTRINGS - 1;
                 break;  
             }
             break;
+       
       }
-    
   return;
 }
 
 void UserParamsShow(void){
+  const pointANDcoords
+    ImParamsLoc[]={
+    {258,{33,91}},  // Language
+    {261,{33,116}},  // Time ajust    
+    {262,{33,141}},  // Tractor's number   
+    {263,{33,166}},  // Program Version
+    {264,{33,191}},  // special parameter
+    {265,{33,216}},  // manufacturing date
+    {266,{33,241}},  // generator
+    {267,{33,266}},  // fuel tank
+    {268,{33,291}},  // time of work
+    {259,{33,316}},  // speed sensor
+    {260,{33,341}},  // speed sensor
+    };
+  switch(UserParamsCond.Screen){
+    case 0:
+      
+          break;
+    case 1:
+      
+          break;
+    case 2:
+      LCD_Fill_Image(&IMAGES.ImgArray[ImParamsLoc[UserParamsCond.AddActiveStr].N], 
+                     ImParamsLoc[UserParamsCond.AddActiveStr].Coords.X, 
+                     ImParamsLoc[UserParamsCond.AddActiveStr].Coords.Y);
+          break;          
+  }
   return;
 }
 ///!---------------------------------------------------------------------------
