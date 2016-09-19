@@ -43,6 +43,7 @@ void FUEL_Arrow(uint16_t SetValue);
 void TEMP_Arrow(uint16_t SetValue);
 void LittleHidroExitsShow(void);
 void UserControlsShow(void);
+void UserParamsInit(void);
 void BigHidroExitsShow(uint8_t Number, uint8_t Parm);
 void UserParamsExchangeScreens(uint8_t ControlVar);
 void UserParamsShow(void);

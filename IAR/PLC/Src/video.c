@@ -391,8 +391,8 @@ void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
   uint8_t DispCamN[]="KAM 1";
   if(On){
      LCD_Video_GPIO_Deinit();
-    while (RESmutex_1) ;
-    RESmutex_1 = 1;
+//    while (RESmutex_1) ;
+//    RESmutex_1 = 1;
      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
      HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);  
      HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_SET); 
@@ -402,7 +402,7 @@ void VideoCAMOnOff(uint8_t NumbCam, uint8_t On){
     OSDSetDEDelay();
     DispCamN[4] = 0x30 + NumbCam;
     OSDDisplayInput((uint8_t * )DispCamN);
-    RESmutex_1 = 0;
+//   RESmutex_1 = 0;
   }
   else {
      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);

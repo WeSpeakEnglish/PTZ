@@ -52,6 +52,9 @@ inline void RestorePoly(Point* pToPoints, uint8_t NumbOfPoints) //and restore it
     }
   }
 }
-uint8_t * Itoa(uint8_t * StrDst, int16_t Number);
+
+uint8_t * Ftoa2(uint8_t * StrDst, float NumberF);
+uint8_t * Itoa(uint8_t * StrDst, int16_t Number);  // convert int16 into string 
+uint8_t * Utoa(uint8_t * StrDst, uint16_t Number); // convert unsigned int 16 into string 
 uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF);
 #endif

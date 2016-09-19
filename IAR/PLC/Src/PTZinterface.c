@@ -14,10 +14,10 @@ struct{
   uint8_t Language[MAXSTRINGLENGTH];        // the language of UI
   uint8_t TractorNumb[MAXSTRINGLENGTH];     // the number of Tractor
   uint8_t Version[MAXSTRINGLENGTH];         // Software version
-  uint16_t SpecialParam;                    // special parameter
+  int16_t SpecialParam;                    // special parameter
   uint8_t ManufactureDate[MAXSTRINGLENGTH]; // like "12.09.2016"
   float Generator;                          // the current of generator
-  float FuelTank;                           // the tank of gas
+  uint8_t FuelTank[MAXSTRINGLENGTH];        // the tank of gas
   float WorkHours;                          // the time of work
   uint16_t SpeeedSensor;                    // the speed sensor here
   float TotalPatch;                         // the total patch of proceed
@@ -51,7 +51,7 @@ struct{
   float TempEngine;       // the temperature of engine
   float PressOilEngine;   // the pressure in engine oil tubes
   float VolumeFuel;       // volume of gas in liters 
-  float Voltage;          // voltage in volts
+  float Voltage;          // voltage in the system (volts)
   float PressOilGearbox;  // the pressure in the gearbox 
   float TempOilGearbox;   // the temperature in the gearbox (transmission)
   float PressAir;         // the temperature of air in the ...
@@ -91,9 +91,9 @@ struct{
   }Errors; 
 } 
  PTZ;
-
-static uint8_t StrTransmiss[] =           "     0.0";
-static uint8_t StrPneumosys[] =           "     0.0";
+                                                         // in the RIGHT text implementation mode
+static uint8_t StrPressTransmiss[] =      "     0.0";
+static uint8_t StrPressPneumosys[] =      "     0.0";
 static uint8_t StrPressEngineOil[] =      "     0.0";
 static uint8_t StrSpeed[] =               "       0";
 static uint8_t StrRPM[] =                 "       0";
@@ -105,6 +105,14 @@ static uint8_t PetrolPerHour[] =          "     0.0";
 static uint8_t PetrolPerSquare[] =        "     0.0";
 static uint8_t StrSleep[]        =        "      0%";
 static uint8_t StrRising[]       =        "      0";
+//-----------------------------
+static uint8_t StrTempEngine[]   =        "     0.0"; // °C
+static uint8_t StrVolumeFuel[]   =        "     0.0"; // in liters
+static uint8_t StrVoltage[]      =        "     0.0"; // in Volts
+static uint8_t StrTempTransmiss[]=        "     0.0"; //
+static uint8_t StrTotalPatch[]=           "     400"; // the total patch 
+//-----------------------------
+
 static uint8_t StrCalibration[]  =        "0      "; //in the LEFT mode
 
 static GUI_Object* Images[90]; 
@@ -255,9 +263,9 @@ void Load_GUI_0(void){
   Text[2] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 40, 10, StrTime, LEFT_MODE, 1, &GOST_B_23_var,0);   // watch
   Text[3] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 700, 10, StrDate, LEFT_MODE, 1, &GOST_B_23_var,0);   // date
 
-  Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 100, StrTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
+  Text[4] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 100, StrPressTransmiss, RIGHT_MODE, 1, &RIAD_16pt,0);   // StrTransmiss
   Text[5] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 205, StrSquare, RIGHT_MODE, 1, &RIAD_20pt,0); //square
-  Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 155, StrPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[6] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 155, StrPressPneumosys, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[7] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 240, StrTIME, RIGHT_MODE, 1, &RIAD_20pt,0); // time
   Text[8] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 120, 210, StrPressEngineOil, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 275, StrPasses, RIGHT_MODE, 1, &RIAD_20pt,0);
@@ -699,7 +707,8 @@ void KBD_Repeat_Handle(void){
 
 void actions(uint8_t deal){
   static  struct {
-   uint8_t WriteGo : 1; 
+   uint8_t WriteGo      : 1; 
+   uint8_t EnterScreen  : 4;
   }
   Flags={0};
 
@@ -842,7 +851,9 @@ void actions(uint8_t deal){
     }
     else{
       if(DISP.Screen < 2){
+      Flags.EnterScreen = DISP.Screen;
       DISP.Screen = 5;
+      UserParamsInit();
     }
     else
       if(DISP.Screen == 3){
@@ -861,36 +872,30 @@ void actions(uint8_t deal){
     }
     break;
   case 7:
-    if(DISP.Screen == 2){
-      if(Condition.activity != 0)PenetrationRising(4,0);
-      else M_push(CAM_ON_OFF);
-    }
-
-    if(DISP.Screen == 3){
+    switch(DISP.Screen){
+      case 2:  
+        if(Condition.activity != 0)PenetrationRising(4,0);
+        else CAM_ON_OFF();
+          break;
+      case 3:
         if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit) DISP.Screen = 0; //if we in the edit mode
         else{
          PoolOfExits.EditShow = 0; //else go from Edit mode and discard changes
          PoolOfExits.TimeEdit = 0; //and time edit mode too...
            } 
         break;
-      }
-    if(DISP.Screen == 5){
-      if(UserParamsCond.Screen){
-        UserParamsExchangeScreens(0);
-      }
-    }
-    else{
-      M_push(CAM_ON_OFF);
-    }
+      case 5:
+        if(UserParamsCond.Screen){
+           UserParamsExchangeScreens(0);
+         }
+        else{
+          DISP.Screen = Flags.EnterScreen;
 
-    break;
-  case 8:
-    break;
-  case 9:
-    break;
-  case 10:
-    break;
-  case 11: 
+         }
+        break;
+      default:
+          CAM_ON_OFF();
+    }
     break;
   }
 }
@@ -1056,8 +1061,7 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 //////////////// Virtual KBD Mechanica ---------------------------------------------------
 
 void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - eq  LANGUAGE EXCANGE; 2 - numberous/literals exchange
- 
-  switch(cmd){
+   switch(cmd){
    case 0: 
     switch(VisualKBD.Screen){
      case 0: 
@@ -1121,11 +1125,9 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
          VisualKBD.Screen = 2;
         } 
         break;
-        
     }
     break;
   }
-  
 }
 
 #define KBD_STR_X       39
@@ -1751,7 +1753,7 @@ switch(Screen){
 }
 
 // exchange parameters screens
-#define USERCONTROLSTRINGS 10 // how much strings we have here on screen 1 of our control 
+#define USERCONTROLSTRINGS 11 // how much strings we have here on screen 1 of our control 
 void UserParamsExchangeScreens(uint8_t ControlVar){
        switch(UserParamsCond.Screen){
           case 0:  
@@ -1784,13 +1786,13 @@ void UserParamsExchangeScreens(uint8_t ControlVar){
               case 0:
                 UserParamsPreparingScreens(0);
                 break;
-              case 1:
+              case 2:
                   UserParamsCond.AddActiveStr++; 
                   UserParamsCond.AddActiveStr %= USERCONTROLSTRINGS;
-                  if(!UserParamsCond.AddActiveStr)
-                                    UserParamsCond.AddActiveStr = 1;
+                 // if(!UserParamsCond.AddActiveStr)
+                 //                   UserParamsCond.AddActiveStr = 1;
                 break;
-              case 2:
+              case 1:
                   if(UserParamsCond.AddActiveStr) 
                     UserParamsCond.AddActiveStr--; 
                   else 
@@ -1803,32 +1805,108 @@ void UserParamsExchangeScreens(uint8_t ControlVar){
   return;
 }
 
+//////////
+void FastStrCpy(const uint8_t * Src, uint8_t * Dst, uint8_t SizeOfDst, Text_AlignModeTypdef Direction){ // Direction is 0 = default(LEFT one), 1  = 
+// MAXSTRINGLENGTH is compare with max index
+uint8_t i = 0;
+uint8_t length = 0;
+
+  switch (Direction){
+    case LEFT_MODE: //
+      for(i = 0; i < SizeOfDst; i++){
+        if(*Src != '\0' ) *Dst++ = *Src++;
+        else break;
+     }
+      break;
+    case RIGHT_MODE:
+     while(Src[i++])length++;
+       for(i = 1; i < length+1 ; i++) // the lastest symbol is '\0'
+         Dst[SizeOfDst-i-1] = Src[length-i]; //:)
+      break; 
+       }  
+}
+
+void UserParamsInit(void){
+ FastStrCpy("Russian", SaveParams.Language, sizeof(SaveParams.Language), LEFT_MODE);
+ FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
+ FastStrCpy("σ567εν78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
+ FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
+ SaveParams.SpecialParam = -30000;
+ FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+ SaveParams.Generator = 0.17f;
+ FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+ SaveParams.WorkHours = 34.3f; 
+ SaveParams.SpeeedSensor = 30000;
+ SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
+}
+
+typedef struct{
+    Point Coords;   // the coords of the displaying string
+    uint8_t * pStr; // pointer to the String to display
+    Text_AlignModeTypdef  TextAlignment;
+} specMark;
+
 void UserParamsShow(void){
-  const pointANDcoords
-    ImParamsLoc[]={
+  uint8_t i;
+const specMark  ParamsCoordsANDStr_0[] = {
+    {{289,89}, SaveParams.TractorModel, LEFT_MODE},      //the model of the tractor
+    {{327,118}, StrRPM, RIGHT_MODE},                     //the RPM rate
+    {{327,146}, StrTempEngine, RIGHT_MODE},              //the temperature of engine    
+    {{327,173}, StrPressEngineOil, RIGHT_MODE},             //the pressure of oil in the engine
+    {{327,201}, StrVolumeFuel, RIGHT_MODE},              //how much of fuel we are have
+    {{327,228}, StrVoltage, RIGHT_MODE},                 // voltage
+    {{327,257}, StrPressTransmiss, RIGHT_MODE},          // oil pressure in the transmission 
+    {{327,284}, StrTempTransmiss, RIGHT_MODE},          // oil temerature in the transmission 
+    {{327,312}, StrPressPneumosys, RIGHT_MODE},          // oil temerature in the transmission 
+    {{327,340}, StrTotalPatch, RIGHT_MODE},              // the total patch
+  };
+
+const specMark  ParamsCoordsANDStr_2[] = {
+    {{285,89}, SaveParams.Language, LEFT_MODE},      //the language of the GUI
+    {{285,115}, StrTime, LEFT_MODE},      //time 
+    {{355,115}, StrDate, LEFT_MODE},      //date
+    {{285,140}, SaveParams.TractorNumb, LEFT_MODE},      //Tractor number
+    {{285,166}, SaveParams.Version, LEFT_MODE}, 
+    {{285,216}, StrDate, LEFT_MODE},    //DATE OF MADE
+  };
+
+const pointANDcoords   // the menu coords
+    ImParamsLoc[] = {
     {258,{33,91}},  // Language
     {261,{33,116}},  // Time ajust    
-    {262,{33,141}},  // Tractor's number   
-    {263,{33,166}},  // Program Version
-    {264,{33,191}},  // special parameter
-    {265,{33,216}},  // manufacturing date
-    {266,{33,241}},  // generator
-    {267,{33,266}},  // fuel tank
-    {268,{33,291}},  // time of work
-    {259,{33,316}},  // speed sensor
-    {260,{33,341}},  // speed sensor
+    {262,{33,142}},  // Tractor's number   
+    {263,{33,167}},  // Program Version
+    {264,{33,193}},  // special parameter
+    {265,{33,218}},  // manufacturing date
+    {266,{33,243}},  // generator
+    {267,{33,268}},  // fuel tank
+    {268,{33,294}},  // time of work
+    {259,{33,319}},  // speed sensor
+    {260,{33,345}},  // total patch
     };
+  
   switch(UserParamsCond.Screen){
     case 0:
-      
+         
+       //  Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
+      for(i = 0; i < sizeof(ParamsCoordsANDStr_0)/sizeof(specMark); i++)
+         LCD_DisplayStringAt(ParamsCoordsANDStr_0[i].Coords.X, ParamsCoordsANDStr_0[i].Coords.Y, ParamsCoordsANDStr_0[i].pStr, ParamsCoordsANDStr_0[i].TextAlignment, 1); //put in on the screen
           break;
     case 1:
       
           break;
-    case 2:
-      LCD_Fill_Image(&IMAGES.ImgArray[ImParamsLoc[UserParamsCond.AddActiveStr].N], 
+    case 2:   
+      LCD_Fill_Image(&IMAGES.ImgArray[ImParamsLoc[UserParamsCond.AddActiveStr].N], //show selected line
                      ImParamsLoc[UserParamsCond.AddActiveStr].Coords.X, 
                      ImParamsLoc[UserParamsCond.AddActiveStr].Coords.Y);
+      
+      for(i = 0; i < sizeof(ParamsCoordsANDStr_2)/sizeof(specMark); i++)
+          LCD_DisplayStringAt(ParamsCoordsANDStr_2[i].Coords.X, ParamsCoordsANDStr_2[i].Coords.Y, ParamsCoordsANDStr_2[i].pStr, ParamsCoordsANDStr_2[i].TextAlignment, 1); //put in on the screen
+         
+      Itoa(StrDATA[0], SaveParams.SpecialParam);               // special parameter conversion
+      LCD_DisplayStringAt(285, 193, StrDATA[0], LEFT_MODE, 1); // special parameter displayed
+      Ftoa2(StrDATA[0], SaveParams.Generator);                 // Generator ratio
+      LCD_DisplayStringAt(285, 193, StrDATA[0], LEFT_MODE, 1); // special parameter displayed
           break;          
   }
   return;

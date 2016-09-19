@@ -136,10 +136,48 @@ uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF){ // right a
     i++;
   }
   while(i < SizeOfStr){
-    *pStrDst-- = ' ';
+    *pStrDst-- = ' '; //filled with spaces, we need so? if not = comment it
     i++;
   }
 return StrDst;
+}
+
+uint8_t * Ftoa2(uint8_t * StrDst, float NumberF){  // 2 symbols after point implementation of Ftoa (left shifted) from -327.68 to 327.67
+  uint8_t * pStrDst = StrDst;                     // please be be aware, that length of your array is inougth to store your number in the stroke notation
+  int16_t Tmp;
+  uint8_t Iliminate = 1;
+  int16_t Number;
+  
+  Number = (int16_t)(NumberF * 100.0f);
+  
+    if(Number < 0 )*pStrDst++ = '-';
+    Number = (Number < 0) ? -Number : Number;
+    
+  Tmp = Number/10000;
+  if(Tmp)*pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  Number -= Tmp*10000;
+  Tmp = Number/1000;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Number -= Tmp*1000;
+  Tmp = Number/100;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+   *pStrDst++ = 0x30;  // zero point...
+  Number -= Tmp*100;
+  ///-------
+  *pStrDst++ = '.';
+  ///-------
+  Tmp = Number/10;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Tmp = Number%10;
+  *pStrDst++ = Tmp + 0x30;
+  *pStrDst = '\0';
+  return StrDst;
+
 }
 
 uint8_t * Itoa_R(uint8_t * StrDst, uint8_t SizeOfStr, int16_t Number){ // right aligment version of Itoa
@@ -202,3 +240,30 @@ uint8_t * Itoa(uint8_t * StrDst, int16_t Number){ // convert int into string
   return StrDst;
 }
 
+uint8_t * Utoa(uint8_t * StrDst, uint16_t Number){ // convert int into string 
+  uint8_t * pStrDst = StrDst;                     // please be be aware, that length of your array is inougth to store your number in the stroke notation
+  uint16_t Tmp;
+  uint8_t Iliminate = 1;
+      
+  Tmp = Number/10000;
+  if(Tmp)*pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  Number -= Tmp*10000;
+  Tmp = Number/1000;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Number -= Tmp*1000;
+  Tmp = Number/100;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Number -= Tmp*100;
+  Tmp = Number/10;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Tmp = Number%10;
+  *pStrDst++ = Tmp + 0x30;
+  *pStrDst = '\0';
+  return StrDst;
+}
