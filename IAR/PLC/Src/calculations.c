@@ -142,7 +142,46 @@ uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF){ // right a
 return StrDst;
 }
 
-uint8_t * Ftoa2(uint8_t * StrDst, float NumberF){  // 2 symbols after point implementation of Ftoa (left shifted) from -327.68 to 327.67
+uint8_t * Ftoa_1(uint8_t * StrDst, float NumberF){  // 2 symbols after point implementation of Ftoa (left shifted) from -3276.8 to 3276.7
+  uint8_t * pStrDst = StrDst;                     // please be be aware, that length of your array is inougth to store your number in the stroke notation
+  int16_t Tmp;
+  uint8_t Iliminate = 1;
+  int16_t Number;
+  
+  Number = (int16_t)(NumberF * 100.0f);
+  
+    if(Number < 0 )*pStrDst++ = '-';
+    Number = (Number < 0) ? -Number : Number;
+    
+  Tmp = Number/10000;
+  if(Tmp)*pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  Number -= Tmp*10000;
+  Tmp = Number/1000;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+    if (!Iliminate) *pStrDst++ = 0x30;
+  Number -= Tmp*1000;
+  Tmp = Number/100;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+   if (!Iliminate) *pStrDst++ = 0x30;  
+  Number -= Tmp*100;
+
+  Tmp = Number/10;
+  if(Tmp) *pStrDst++ = Tmp + 0x30, Iliminate = 0;
+  else 
+  *pStrDst++ = 0x30;// zero point...
+  Tmp = Number%10;
+    ///-------
+  *pStrDst++ = '.';
+  ///-------
+  *pStrDst++ = Tmp + 0x30;
+  *pStrDst = '\0';
+  return StrDst;
+
+}
+
+uint8_t * Ftoa_2(uint8_t * StrDst, float NumberF){  // 2 symbols after point implementation of Ftoa (left shifted) from -327.68 to 327.67
   uint8_t * pStrDst = StrDst;                     // please be be aware, that length of your array is inougth to store your number in the stroke notation
   int16_t Tmp;
   uint8_t Iliminate = 1;

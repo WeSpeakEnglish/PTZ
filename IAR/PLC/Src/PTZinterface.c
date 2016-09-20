@@ -32,8 +32,8 @@ struct{
  uint8_t Screen           : 3;      // we show the calculation square screen
                                     // or we show the addition parameters screen
                                     // or show current ones
- uint8_t AddActiveStr     : 4; // activated string
- uint8_t GoesFromVirtuaKB : 1; // if we go from the KB the behaviour is different
+ uint8_t AddActiveStr      : 4; // activated string
+ uint8_t GoesFromVirtualKB : 1; // if we go from the KB the behaviour is different
 }UserParamsCond={0}; // conditions of the user control of showing parameters
 
 struct{
@@ -653,8 +653,8 @@ void ViewScreen(void){
       //prepare the screen for display on this properties position    
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
       
-      if (!UserParamsCond.GoesFromVirtuaKB)    UserParamsCond.Screen = 0;
-   
+      if (!UserParamsCond.GoesFromVirtualKB)    UserParamsCond.Screen = 0;
+      
         switch(UserParamsCond.Screen){
           case 0: // form the page of params
             UserParamsPreparingScreens(0);
@@ -672,7 +672,24 @@ void ViewScreen(void){
       break;
     case 6:
       Images[0]->z_index = 0;
-      _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+          switch(VisualKBD.Type){
+      case KEYB_FULL:
+          _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+          break;
+      case KEYB_DATE:
+          ExchangeScreensVisualKBD(2);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 39 * 4 + 269 * 4* DisplayWIDTH, 142, 65, DisplayWIDTH - 142, 0xFF333333); // gray rectangles overheaded
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 248 * 4 + 269 * 4* DisplayWIDTH, 415, 65, DisplayWIDTH - 415, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 333 * 4* DisplayWIDTH, 203, 65, DisplayWIDTH - 203, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 354 * 4 + 333 * 4* DisplayWIDTH, 427, 65, DisplayWIDTH - 427, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 397 * 4* DisplayWIDTH, 694, 65, DisplayWIDTH - 694, 0xFF333333);
+         //    LCD_SetColorPixel(0xFF999999);
+        //  LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
+
+          break;
+      }
+
+          
       break; 
     }
     OldScreen = DISP.Screen;
@@ -804,33 +821,42 @@ void actions(uint8_t deal){
    if(DISP.Screen < 2){
      DISP.Screen = 4;
     } 
-    
-   if(DISP.Screen == 3){
-     if(!PTZ.Hydroexits[PoolOfExits.EntireSelect].Lock)
-      if(!PoolOfExits.TimeEdit)PoolOfExits.TimeEdit = 1;
-      else{
-        if(PoolOfExits.EditShow){ 
-        if(!PoolOfExits.SelectedSide){
-         PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, -1, 10);
-        }
-        else{
-         PoolOfExits.TempB = exAddition(PoolOfExits.TempB, 0, 100, -1, 10);
-        } 
-        }
-      
-       else{
-           if(PoolOfExits.PseudoTime > 0) PoolOfExits.PseudoTime--;
-         }
-       }
-    }
-    if(DISP.Screen == 2){
-      if(Condition.activity){
+   switch(DISP.Screen){
+     case 2:
+        if(Condition.activity){
         Condition.blink_button = Condition.butt_selected;
         Condition.BlinkCounter = 0;
         Condition.erase_flag = 0; // reset the erase token
-      }
-      else PenetrationRising(2, 1);
-    }
+        }
+        else PenetrationRising(2, 1);
+      break;
+     case 3:
+       if(!PTZ.Hydroexits[PoolOfExits.EntireSelect].Lock)
+       if(!PoolOfExits.TimeEdit)PoolOfExits.TimeEdit = 1;
+        else{
+         if(PoolOfExits.EditShow){ 
+          if(!PoolOfExits.SelectedSide){
+           PoolOfExits.TempA = exAddition(PoolOfExits.TempA, 0, 100, -1, 10);
+           }
+           else{
+            PoolOfExits.TempB = exAddition(PoolOfExits.TempB, 0, 100, -1, 10);
+          } 
+        }
+        else{
+           if(PoolOfExits.PseudoTime > 0) PoolOfExits.PseudoTime--;
+         }
+       }
+      break; 
+     case 5:
+       if( UserParamsCond.Screen == 2){ // we edit the params and switch to the visual kbd
+         switch(UserParamsCond.AddActiveStr)
+           case 1:
+             VisualKBD.Type = KEYB_DATE;
+             DISP.Screen = 6; 
+            break; 
+       }
+     break;
+   }
     break;  
   case 5:
     if(DISP.Screen == 0 || DISP.Screen == 1){
@@ -1155,6 +1181,7 @@ void ShowVisualKbdString(void){
 
 void RunVisualKBD(void){
   uint8_t i;
+
   for(i = 0; i < sizeof(VisualKBD.Symbols); i++){
    if(VisualKBD.Symbols[i] == '\0') break;
   }
@@ -1840,6 +1867,19 @@ void UserParamsInit(void){
  SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
 }
 
+
+uint8_t EditableStringsN[]={1,2,4,6,7,9};
+
+inline uint8_t CheckEditable(void){
+ uint8_t i; // just index
+ register uint8_t Result = 0;
+ 
+ for(i = 0; i < sizeof(EditableStringsN); i++)
+   if( UserParamsCond.AddActiveStr == EditableStringsN[i])
+     Result = 1;
+return Result;
+}
+
 typedef struct{
     Point Coords;   // the coords of the displaying string
     uint8_t * pStr; // pointer to the String to display
@@ -1862,13 +1902,15 @@ const specMark  ParamsCoordsANDStr_0[] = {
   };
 
 const specMark  ParamsCoordsANDStr_2[] = {
-    {{285,89}, SaveParams.Language, LEFT_MODE},      //the language of the GUI
-    {{285,115}, StrTime, LEFT_MODE},      //time 
-    {{355,115}, StrDate, LEFT_MODE},      //date
-    {{285,140}, SaveParams.TractorNumb, LEFT_MODE},      //Tractor number
-    {{285,166}, SaveParams.Version, LEFT_MODE}, 
-    {{285,216}, StrDate, LEFT_MODE},    //DATE OF MADE
+    {{285,89}, SaveParams.Language, LEFT_MODE},         //the language of the GUI
+    {{285,115}, StrTime, LEFT_MODE},                    //time 
+    {{355,115}, StrDate, LEFT_MODE},                    //date
+    {{285,140}, SaveParams.TractorNumb, LEFT_MODE},     //Tractor number
+    {{285,166}, SaveParams.Version, LEFT_MODE},         //version of Software
+    {{285,216}, SaveParams.ManufactureDate, LEFT_MODE}, //DATE OF MADE
+    {{285,269}, SaveParams.FuelTank, LEFT_MODE},        //type of the fuel tank
   };
+uint8_t AtiveStringParms[]={0,1,1,2,3,5,7};
 
 const pointANDcoords   // the menu coords
     ImParamsLoc[] = {
@@ -1900,13 +1942,44 @@ const pointANDcoords   // the menu coords
                      ImParamsLoc[UserParamsCond.AddActiveStr].Coords.X, 
                      ImParamsLoc[UserParamsCond.AddActiveStr].Coords.Y);
       
-      for(i = 0; i < sizeof(ParamsCoordsANDStr_2)/sizeof(specMark); i++)
-          LCD_DisplayStringAt(ParamsCoordsANDStr_2[i].Coords.X, ParamsCoordsANDStr_2[i].Coords.Y, ParamsCoordsANDStr_2[i].pStr, ParamsCoordsANDStr_2[i].TextAlignment, 1); //put in on the screen
-         
+      for(i = 0; i < sizeof(ParamsCoordsANDStr_2)/sizeof(specMark); i++){
+        if(UserParamsCond.AddActiveStr == AtiveStringParms[i]) LCD_SetColorPixel(0xFF00FF00);
+        else LCD_SetColorPixel(0xFFFFFFFF);
+       
+        LCD_DisplayStringAt(ParamsCoordsANDStr_2[i].Coords.X, ParamsCoordsANDStr_2[i].Coords.Y, ParamsCoordsANDStr_2[i].pStr, ParamsCoordsANDStr_2[i].TextAlignment, 1); //put in on the screen
+       } 
+      
+      if(UserParamsCond.AddActiveStr == 4) LCD_SetColorPixel(0xFF00FF00);
+      else LCD_SetColorPixel(0xFFFFFFFF);
       Itoa(StrDATA[0], SaveParams.SpecialParam);               // special parameter conversion
-      LCD_DisplayStringAt(285, 193, StrDATA[0], LEFT_MODE, 1); // special parameter displayed
-      Ftoa2(StrDATA[0], SaveParams.Generator);                 // Generator ratio
-      LCD_DisplayStringAt(285, 193, StrDATA[0], LEFT_MODE, 1); // special parameter displayed
+      LCD_DisplayStringAt(285, 193, StrDATA[0], LEFT_MODE, 1); // 
+      
+      if(UserParamsCond.AddActiveStr == 6) LCD_SetColorPixel(0xFF00FF00);
+      else LCD_SetColorPixel(0xFFFFFFFF); 
+      Ftoa_2(StrDATA[0], SaveParams.Generator);                 // Generator ratio
+      LCD_DisplayStringAt(285, 244, StrDATA[0], LEFT_MODE, 1); // put it on screen
+      
+      if(UserParamsCond.AddActiveStr == 8) LCD_SetColorPixel(0xFF00FF00);
+      else LCD_SetColorPixel(0xFFFFFFFF);  
+      Ftoa_1(StrDATA[0], SaveParams.WorkHours);                 // work hours
+      LCD_DisplayStringAt(285, 294, StrDATA[0], LEFT_MODE, 1); // 
+ 
+      if(UserParamsCond.AddActiveStr == 9) LCD_SetColorPixel(0xFF00FF00);
+      else LCD_SetColorPixel(0xFFFFFFFF); 
+      Utoa(StrDATA[0], SaveParams.SpeeedSensor);
+      LCD_DisplayStringAt(285, 320, StrDATA[0], LEFT_MODE, 1); // the speed sensor
+      
+      if(UserParamsCond.AddActiveStr == 10) LCD_SetColorPixel(0xFF00FF00);
+      else LCD_SetColorPixel(0xFFFFFFFF); 
+      Utoa(StrDATA[0], (uint16_t)SaveParams.TotalPatch);
+      LCD_DisplayStringAt(285, 344, StrDATA[0], LEFT_MODE, 1); // the total patch
+      
+      LCD_SetColorPixel(0xFFFFFFFF); //all the end !
+      
+      //show the especial picture with a pencil
+      if(CheckEditable()){
+                    LCD_Fill_Image(&IMAGES.ImgArray[8],398,394);
+      }
           break;          
   }
   return;

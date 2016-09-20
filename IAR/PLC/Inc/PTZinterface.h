@@ -53,6 +53,7 @@ void Test1(void);
 void Test2(void);
 void RunVisualKBD(void);
 void ShowVisualKbdString(void); 
+void ExchangeScreensVisualKBD(uint8_t cmd);
 void CAM_ON_OFF(void);
 #endif
 

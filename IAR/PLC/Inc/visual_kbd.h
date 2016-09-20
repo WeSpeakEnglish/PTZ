@@ -4,6 +4,7 @@
 #include "variables.h"
 
 #define MAXSTRINGLENGTH 30
+ 
 
 typedef struct {
   uint8_t Screen        : 3; // which screen is active
@@ -11,6 +12,7 @@ typedef struct {
   uint8_t Lang          : 1; // here a two languages for switching
 //  uint8_t Upper         : 1; // lower or upper case
   uint8_t ReturnZone;
+  enum {KEYB_FULL = 0, KEYB_DATE = 1} Type;
   uint8_t Symbols[MAXSTRINGLENGTH+1];
 }VKBD;
 
@@ -20,6 +22,6 @@ extern const ZoneKBD ZonesKBD[];
 //function for visualizing of key pressing
 void ChangeColorKBD(void); // just highlite thr button what we need
 uint8_t solveReturnCodeVisualKBD(void); // return the number of array position with pressed button 
-void EraseStringVisualKBD(void);
-
+void EraseStringVisualKBD(void);  // just string erasing
+uint8_t CheckAllowedZones(uint8_t IndexToCompare); //impose very filter
 #endif

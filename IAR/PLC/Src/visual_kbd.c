@@ -158,13 +158,31 @@ uint8_t solveReturnCodeVisualKBD(void){ //the handle of Touch Screen
                 break;
       }
     } 
-  VisualKBD.ReturnZone = Index;
+  if(CheckAllowedZones(Index))VisualKBD.ReturnZone = Index;       //return zone
+  else VisualKBD.ReturnZone = (sizeof(ZonesKBD)/12) - 1;   //there NO special zone has been found
   return Index;
 }
 
+inline uint8_t CheckAllowedZones(uint8_t IndexToCompare){
+uint8_t i; //just variable for cycles
+uint8_t Result = 0;
+const uint8_t AllowedZonesDate[]={0,1,2,3,4,5,6,7,8,9,10,20,36,13,24,25};
 
+switch(VisualKBD.Type){
+  case KEYB_FULL:
+        Result = 1;  
+        break;
+  case KEYB_DATE:
+          for(i = 0; i < sizeof(AllowedZonesDate); i++){
+            if(AllowedZonesDate[i] == IndexToCompare) Result = 1;
+          }
+         break;
+         
+ }
+return Result;
+}
 
-void EraseStringVisualKBD(void){
+inline void EraseStringVisualKBD(void){
   uint8_t i;
   for(i = 0; i< sizeof(VisualKBD.Symbols); i++)
    VisualKBD.Symbols[i] = '\0'; 
