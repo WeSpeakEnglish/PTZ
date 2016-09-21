@@ -199,11 +199,11 @@ void _HW_Fill_RGB888_To_ARGB8888(uint32_t SourceAddress, uint32_t DstAddress){
   }
 }
 
-void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t color) {
+void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32_t color) {
   /* Register to memory mode with ARGB8888 as color Mode */ 
   hdma2d.Init.Mode         = DMA2D_R2M;
   hdma2d.Init.ColorMode    = DMA2D_ARGB8888;
-  hdma2d.Init.OutputOffset = OffLine;      
+  hdma2d.Init.OutputOffset = DisplayWIDTH - xSize;      
   hdma2d.XferCpltCallback = Transfer_DMA2D_Completed;
 
   /* DMA2D Initialization */

@@ -1,8 +1,5 @@
 #include "visual_kbd.h"
-#include "video.h"
-//#include "lcd.h"
-#include "variables.h"
-#include "stmpe811.h"
+#include "initial.h"
 
 uint8_t V_KBD_Fill_button = 0;
 
@@ -176,6 +173,7 @@ switch(VisualKBD.Type){
           for(i = 0; i < sizeof(AllowedZonesDate); i++){
             if(AllowedZonesDate[i] == IndexToCompare) Result = 1;
           }
+          if(VisualKBD.ReturnZone == 20)ParseVisualKBD_Str();
          break;
          
  }

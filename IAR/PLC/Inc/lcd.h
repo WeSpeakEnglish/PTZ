@@ -168,6 +168,7 @@ void     LCD_DrawEllipse(int Xpos, int Ypos, int XRadius, int YRadius);
 void     LCD_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp);
 
 void     LCD_FillRect(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2);
+void     LCD_FillRectDMA(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2);
 void     LCD_FillCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);
 
 void     LCD_FillPolygon(pPoint Points, uint16_t PointCount, uint8_t FAST);

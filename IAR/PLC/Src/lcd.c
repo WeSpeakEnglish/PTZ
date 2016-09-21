@@ -186,7 +186,7 @@ void LCD_ClearStringLine(uint32_t Line){
   DrawProp[ActiveLayer].TextColor = DrawProp[ActiveLayer].BackColor;
 
   /* Draw rectangle with background color */
-  LCD_FillRect(0, (Line * DrawProp[ActiveLayer].pFont->Height), LCD_GetXSize(), DrawProp[ActiveLayer].pFont->Height);
+  LCD_FillRectDMA(0, (Line * DrawProp[ActiveLayer].pFont->Height), LCD_GetXSize(), DrawProp[ActiveLayer].pFont->Height);
 
   DrawProp[ActiveLayer].TextColor = color_backup;
   LCD_SetTextColor(DrawProp[ActiveLayer].TextColor);  
@@ -949,9 +949,14 @@ void LL_ConvertLineToARGB8888(void *pSrc, void *pDst, uint32_t xSize, uint32_t C
   /* DMA2D Initialization */
   if(HAL_DMA2D_Init(&hdma2d) == HAL_OK)   {
     if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK)     {
-      if (HAL_DMA2D_Start(&hdma2d, (uint32_t)pSrc, (uint32_t)pDst, xSize, 1) == HAL_OK)      {
+      if (HAL_DMA2D_Start_IT(&hdma2d, (uint32_t)pSrc, (uint32_t)pDst, xSize, 1) == HAL_OK)      {
         /* Polling For DMA transfer */  
-        HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+      //  HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+       WaitWhileDMA2D(MAXDELAY_DMA2D);
+        while(PLC_DMA2D_Status.Ready == 0){ 
+          DelayOnFastQ(1);
+          if(!WaitWhileDMA2D(0)) return;
+        }
       }
     }
   } 
@@ -1112,6 +1117,12 @@ void LCD_FillRect(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2){
 
 
   while(y1 <= y2)    DrawFastLineHorizontal(y1++, x1, x2);
+}
+
+void LCD_FillRectDMA(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2){
+
+  _HW_Fill_Region(ProjectionLayerAddress[LayerOfView] + x1 * 4 + y1 * 4* DisplayWIDTH, x2 - x1, y2 - y1, DrawProp[ActiveLayer].TextColor);
+
 }
 
 void LCD_Fill_Image(ImageInfo * Image, uint32_t x, uint32_t y){

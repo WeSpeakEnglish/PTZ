@@ -28,7 +28,7 @@ extern volatile uint8_t CAM_flag;
  void _HW_Fill_Finite_Color(uint32_t StartAddress, uint32_t color);
  void _HW_Fill_Display_From_Mem(uint32_t SourceAddress, uint32_t DstAddress);
  void LCD_Layers_Init(void);
- void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t color);
+ void _HW_Fill_Region(uint32_t DstAddress, uint32_t xSize, uint32_t ySize, uint32_t color);
  void _HW_Fill_Image(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSize, uint32_t  ySize); 
  void _HW_Fill_ImageToRAM(uint32_t SrcAddress, uint32_t DstAddress, uint32_t xSize, uint32_t  ySize); 
  ImgSize LoadBitmapFromSD(uint8_t *NameOfFile, uint32_t AddressOfImage);

@@ -12,6 +12,7 @@ typedef struct {
   uint8_t Lang          : 1; // here a two languages for switching
 //  uint8_t Upper         : 1; // lower or upper case
   uint8_t ReturnZone;
+  uint8_t EnteredFromDISP_Screen;
   enum {KEYB_FULL = 0, KEYB_DATE = 1} Type;
   uint8_t Symbols[MAXSTRINGLENGTH+1];
 }VKBD;

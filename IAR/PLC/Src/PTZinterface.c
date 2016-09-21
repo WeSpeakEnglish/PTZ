@@ -678,14 +678,11 @@ void ViewScreen(void){
           break;
       case KEYB_DATE:
           ExchangeScreensVisualKBD(2);
-         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 39 * 4 + 269 * 4* DisplayWIDTH, 142, 65, DisplayWIDTH - 142, 0xFF333333); // gray rectangles overheaded
-         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 248 * 4 + 269 * 4* DisplayWIDTH, 415, 65, DisplayWIDTH - 415, 0xFF333333);
-         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 333 * 4* DisplayWIDTH, 203, 65, DisplayWIDTH - 203, 0xFF333333);
-         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 354 * 4 + 333 * 4* DisplayWIDTH, 427, 65, DisplayWIDTH - 427, 0xFF333333);
-         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 397 * 4* DisplayWIDTH, 694, 65, DisplayWIDTH - 694, 0xFF333333);
-         //    LCD_SetColorPixel(0xFF999999);
-        //  LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
-
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 39 * 4 + 269 * 4* DisplayWIDTH, 142, 65, 0xFF333333); // gray rectangles overheaded backgroung image
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 248 * 4 + 269 * 4* DisplayWIDTH, 415, 65, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 333 * 4* DisplayWIDTH, 203, 65, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 354 * 4 + 333 * 4* DisplayWIDTH, 427, 65, 0xFF333333);
+         _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 397 * 4* DisplayWIDTH, 694, 65, 0xFF333333);
           break;
       }
 
@@ -849,6 +846,7 @@ void actions(uint8_t deal){
       break; 
      case 5:
        if( UserParamsCond.Screen == 2){ // we edit the params and switch to the visual kbd
+         VisualKBD.EnteredFromDISP_Screen = DISP.Screen;
          switch(UserParamsCond.AddActiveStr)
            case 1:
              VisualKBD.Type = KEYB_DATE;
@@ -1086,6 +1084,114 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 
 //////////////// Virtual KBD Mechanica ---------------------------------------------------
 
+
+typedef struct {
+  enum  {LESS = 0, MORE, EQUAL}Sign; // border of threshold
+  uint8_t Value; // comparing value
+  uint8_t Index; // index in symbols array to apply the rule
+} parseRules;
+
+uint8_t TakeDayFromDate(date_time_t Date){
+uint16_t t1, t2, t2r, t3;
+const uint16_t m[12] = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
+ t1 = Date.year;
+ t2 = t1 / 100;
+ t2r = t1 % 100;
+ t3 = t1 + (t1 >> 2) - t2 + (t2 >> 2) - 1;
+ if ( ((t1 & 0x0003 == 0) && ((t2r != 0) || (t2 & 0x0003 == 0))) && (Date.month < 2) ) t3--;
+return (t3 + m[Date.month - 1] + Date.day) % 7;
+}
+
+uint8_t ParseVisualKBD_Str(void){ //parse to date
+register uint8_t i;  
+uint8_t Errors = 0;
+date_time_t Date; 
+
+const parseRules Rules[]={
+  {LESS,0x33,0},
+  {MORE,0x2A,0},
+  {LESS,0x3A,1},
+  {MORE,0x2A,1},
+  {EQUAL,':',2},
+  {MORE,0x2A,3},  
+  {LESS,0x36,3},
+  {MORE,0x2A,4},  
+  {LESS,0x3A,4},
+  {EQUAL,',',5},
+  {MORE,0x2A,6},  
+  {LESS,0x34,6},
+  {MORE,0x2A,7},  
+  {LESS,0x3A,7},  
+  {EQUAL,'.',8}, 
+  {MORE,0x2A,9}, 
+  {LESS,0x32,9}, 
+  {MORE,0x2A,10}, 
+  {LESS,0x3A,10},  
+  {EQUAL,'.',11}, 
+  {MORE,0x2A,12}, 
+  {LESS,0x3A,12},
+  {MORE,0x2A,13}, 
+  {LESS,0x3A,13},
+};
+
+const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
+
+  switch(VisualKBD.Type){
+    case KEYB_DATE:
+      for(i = 0; i < sizeof(Rules)/sizeof(parseRules); i++){
+        switch(Rules[i].Sign){
+          case LESS:
+            if(!(VisualKBD.Symbols[Rules[i].Index] < Rules[i].Value))Errors++;
+                 break;
+          case MORE:
+            if(!(VisualKBD.Symbols[Rules[i].Index] > Rules[i].Value))Errors++;
+                 break;                 
+          case EQUAL:
+            if(!(VisualKBD.Symbols[Rules[i].Index] == Rules[i].Value))Errors++;
+                 break;         
+        }
+       }
+   break;
+  }
+ 
+   Date.day =   (VisualKBD.Symbols[6] - 0x30)*10 + (VisualKBD.Symbols[7] - 0x30);
+   Date.month = (VisualKBD.Symbols[9] - 0x30)*10 + (VisualKBD.Symbols[10] - 0x30);
+   Date.year =  (VisualKBD.Symbols[12] - 0x30)*10 + (VisualKBD.Symbols[13] - 0x30);
+   Date.hours = (VisualKBD.Symbols[0] - 0x30)*10 + (VisualKBD.Symbols[1] - 0x30);
+   Date.minutes = (VisualKBD.Symbols[3] - 0x30)*10 + (VisualKBD.Symbols[4] - 0x30);
+  
+   if(Date.year > 0 && Date.year < 99){
+    if(Date.month > 0 && Date.month < 13){    
+      if(Date.day > 0 && Date.day < 32){ 
+       if((Date.month == 2)&&(!(Date.year%4))){
+         if (Date.day > 29) 
+           Errors++;
+        }
+        else{
+         if (Date.day > DaysRules[Date.month-1]) 
+           Errors++;
+       }
+      } else 
+        Errors++; 
+     }
+    else 
+      Errors++;
+   }
+   else 
+     Errors++;
+  
+   if(Date.hours > 23)Errors++;
+   if(Date.minutes > 59)Errors++;  
+   
+   if(!Errors) {
+   Date.weekday = TakeDayFromDate(Date);
+   dt = Date;
+   Date.seconds = 0;
+   PCF8563_set_datetime(&dt);
+   }
+ return Errors;
+}
+
 void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - eq  LANGUAGE EXCANGE; 2 - numberous/literals exchange
    switch(cmd){
    case 0: 
@@ -1171,7 +1277,15 @@ void ShowVisualKbdString(void){
   if(Counter%16 < 8){
     VisualKBD.Symbols[i] = '}' - 1;
      VisualKBD.Symbols[i + 1] = '\0'; 
-  };  
+  }; 
+  
+  if(VisualKBD.Type == KEYB_DATE){
+   LCD_InitParams(0, 0, 0xFFFFB500, &RIAD_20pt);
+   LCD_DisplayStringAt(32, 50, "¬ведите врем€ и дату в формате", LEFT_MODE, 3);
+   LCD_InitParams(0, 0, 0xFF00FFB5, &RIAD_20pt);
+   LCD_DisplayStringAt(445, 50, "08:02,01.09.16", LEFT_MODE, 3);
+  }
+  
   LCD_InitParams(0, 0, 0xFFFF0000, &RIAD_30pt);
   LCD_DisplayStringAt(KBD_STR_X, KBD_STR0_Y, VisualKBD.Symbols, LEFT_MODE, 3);
   if(Counter%16 < 8)
@@ -1217,14 +1331,16 @@ void RunVisualKBD(void){
           ExchangeScreensVisualKBD(2);
           break;
       case 36:
-          VisualKBD.Screen = 0;
-          DISP.Screen = 0;
+         VisualKBD.Screen = 0;
+         DISP.Screen = VisualKBD.EnteredFromDISP_Screen;
+         VisualKBD.EnteredFromDISP_Screen = 0;
           break;
       case 48:
          if(i)
           VisualKBD.Symbols[i-1] = '\0';
           break;
       case 60:
+        
           break;
       case 61:
         ExchangeScreensVisualKBD(0);
@@ -1438,7 +1554,7 @@ if(!Number && !Parm){ // inside the show level
       else{
         LCD_SetColorPixel(BHE_inactive_color );
       }
-      LCD_FillRect(Coords[j].X + EditStrokePaddingX_A , 
+      LCD_FillRectDMA(Coords[j].X + EditStrokePaddingX_A , 
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
                    Coords[j].X + EditStrokePaddingX_A + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
@@ -1449,14 +1565,14 @@ if(!Number && !Parm){ // inside the show level
       else{
         LCD_SetColorPixel(BHE_inactive_color );
       }
-      LCD_FillRect(Coords[j].X + EditStrokePaddingX_B , 
+      LCD_FillRectDMA(Coords[j].X + EditStrokePaddingX_B , 
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
                    Coords[j].X + EditStrokePaddingX_B + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
    }   
    else{
     LCD_SetColorPixel(BHE_inactive_color);
-    LCD_FillRect(Coords[j].X    + ShowStrokePaddingX , 
+    LCD_FillRectDMA(Coords[j].X    + ShowStrokePaddingX , 
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY, 
                    Coords[j].X + ShowStrokePaddingX + BHE_width_element,
                    Coords[j].Y + i * (BHE_height_element + GAP_elements) + ShowStrokePaddingY + BHE_height_element);
@@ -1500,7 +1616,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
+      LCD_FillRectDMA(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
 
       if ((PTZ.Hydroexits[j].B + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFFFF3333);
@@ -1508,7 +1624,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
+      LCD_FillRectDMA(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
 
     }
   }
@@ -2098,7 +2214,7 @@ register int32_t ReturnValue;
 static int16_t   step = 0;
 static uint8_t   indexImp = 0;
 
-if(     (OLD_Step == Step) 
+ if(     (OLD_Step == Step) 
      && (Counter_TIM11 - OLD_Counter < padPeriod )
     ){
   ReturnValue = inValue + step;
@@ -2107,16 +2223,16 @@ if(     (OLD_Step == Step)
             step += (maxVal - minVal)/STEPS_OF_ADD;
         else 
             step -= (maxVal - minVal)/STEPS_OF_ADD;
- }
-else{
+  }
+  else{
    step = Step;
    ReturnValue = inValue + Step;
-}
+ }
 
-OLD_Counter =  Counter_TIM11;  
-OLD_Step = Step;
-if(ReturnValue > maxVal) ReturnValue = maxVal;
-if(ReturnValue < minVal) ReturnValue = minVal;
-return ReturnValue;
+ OLD_Counter =  Counter_TIM11;  
+ OLD_Step = Step;
+ if(ReturnValue > maxVal) ReturnValue = maxVal;
+ if(ReturnValue < minVal) ReturnValue = minVal;
+ return ReturnValue;
 }
 

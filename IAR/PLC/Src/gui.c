@@ -86,7 +86,7 @@ void GUI_Release(){  // create GUI
             LCD_DrawFullCircle(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2]);
             break;
           case FILLED_RECT_TYPE:
-            LCD_FillRect(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2], GUI_Objects[i].params[3]);     
+            LCD_FillRectDMA(GUI_Objects[i].params[0], GUI_Objects[i].params[1], GUI_Objects[i].params[2], GUI_Objects[i].params[3]);     
             break;
           case RECT_TYPE:
             LCD_DrawRect((uint16_t)GUI_Objects[i].params[0], (uint16_t)GUI_Objects[i].params[1], (uint16_t)GUI_Objects[i].params[2], (uint16_t)GUI_Objects[i].params[3]);     
