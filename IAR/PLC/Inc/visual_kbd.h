@@ -27,4 +27,10 @@ uint8_t solveReturnCodeVisualKBD(void); // return the number of array position w
 void EraseStringVisualKBD(void);  // just string erasing
 uint8_t CheckAllowedZones(uint8_t IndexToCompare); //impose very filter
 void ResetParsedVisualKBD(void); // reset Parsed Flag // useful if we use queue
+inline void EraseStringVisualKBD(void){
+  uint8_t i;
+  for(i = 0; i< sizeof(VisualKBD.Symbols); i++)
+   VisualKBD.Symbols[i] = '\0'; 
+}
+
 #endif

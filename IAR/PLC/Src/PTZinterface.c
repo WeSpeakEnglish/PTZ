@@ -684,6 +684,8 @@ void ViewScreen(void){
       Images[0]->z_index = 0;
           switch(VisualKBD.Type){
       case KEYB_FULL:
+          VisualKBD.Screen = 1; // a bit strange exchange, maybe will modifyed in future
+          ExchangeScreensVisualKBD(0);
           _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
           break;
       case KEYB_DATE:
@@ -857,11 +859,16 @@ void actions(uint8_t deal){
      case 5:
        if( UserParamsCond.Screen == 2){ // we edit the params and switch to the visual kbd
          VisualKBD.EnteredFromDISP_Screen = DISP.Screen;
-         switch(UserParamsCond.AddActiveStr)
+         switch(UserParamsCond.AddActiveStr){
            case 1:
              VisualKBD.Type = KEYB_DATE;
              DISP.Screen = 6; 
             break; 
+           case 2:
+             VisualKBD.Type = KEYB_FULL;
+             DISP.Screen = 6; 
+            break; 
+         }
        }
      break;
    }
@@ -1263,22 +1270,22 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
        VisualKBD.Screen = 4; 
         break;
       case 4:  
-        if(VisualKBD.Lang){
-         _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-         if(VisualKBD.Type == KEYB_FULL)VisualKBD.Screen = 0;
-        }
-        else{
-         
          switch(VisualKBD.Type){
             case KEYB_FULL:
-              VisualKBD.Screen = 2;
-              _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+                     if(VisualKBD.Lang){
+                       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+                           if(VisualKBD.Type == KEYB_FULL)VisualKBD.Screen = 0;
+                              }
+                      else{ 
+                        VisualKBD.Screen = 2;
+                        _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+                        }
               break;
             case KEYB_DATE:
               VisualKBD.Screen = 4;
               _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[295].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
               break;
-         }
+         
 
         } 
         break;
@@ -1336,6 +1343,7 @@ void ShowVisualKbdString(void){
          UserParamsCond.GoesFromVirtualKB = 1; //we go from VirtualKBD
          DISP.Screen = VisualKBD.EnteredFromDISP_Screen;   //exit
          parsedFlag = 0;
+         EraseStringVisualKBD();
       }
     }
   }
