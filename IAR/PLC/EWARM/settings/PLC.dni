@@ -14,7 +14,7 @@ stlinkserialNo=48341187
 stlinkfoundProbes=
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=-369246321
+Checksum=-1035755812
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -137,7 +137,9 @@ Bp0=_ 0 "EMUL_DATA" "CAM_flag" 2 0 0 0 4294967295
 Bp1=_ 0 "EMUL_CODE" "0x08028E50" 0 0 1 "" 0 "" 0
 Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\can.c}.240.5" 0 0 1 "" 0 "" 0
 Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\can.c}.251.4" 0 0 1 "" 0 "" 0
-Count=4
+Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\PTZinterface.c}.1228.7" 0 0 1 "" 0 "" 0
+Bp5=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\PTZinterface.c}.1220.7" 0 0 1 "" 0 "" 0
+Count=6
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

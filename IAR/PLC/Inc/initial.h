@@ -37,6 +37,7 @@
 #include "OSDinitTable.h"
 #include "DispInfo.h"
 #include "sound.h"
+#include "systimer.h"
 
 #define PTZ_interface 1
 

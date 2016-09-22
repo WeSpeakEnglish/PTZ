@@ -1,19 +1,6 @@
 #include "rtc.h"
 #include "i2c.h"
 #include "core.h"
-// PCF8563.C
-// Command Set:
-// PCF8563_init(void)
-//PCF8563_write_byte(uint8_t address, uint8_t data)
-// PCF8563_read_byte(uint8_t address)
-// bin2bcd(uint8_t value)
-// bcd2bin(char bcd_value)
-// PCF8563_set_datetime(date_time_t *dt)
-// PCF8563_read_datetime(date_time_t *dt)
-// Set_Alarm(uint8_t AMode,PCF8563_Alarm *AT)
-// config_CLKOUT(uint8_t mode)
-// config_PCF8563_Timer(uint8_t mode)
-// config_PCF8563_Interrupt(uint8_t mode,ti_tp)
 
 #define PCF8563_WRITE_ADDRESS      0xA2
 #define PCF8563_READ_ADDRESS       0xA2
@@ -66,7 +53,8 @@
 #define Timer_INT_Pulse_on         0x10
 #define Timer_INT_Pulse_off        0x00
 
-volatile date_time_t dt;
+volatile date_time_t dt; // for get
+date_time_t DateSet; // for set
 
 char const weekday_names[7][10] =
 {
@@ -232,6 +220,11 @@ PCF8563_write_byte(PCF8563_CTRL_STATUS_REG1,PCF8563_START_COUNTING);
 //for queue edition
 void PCF8583_read_by_Q(void){
  PCF8563_read_datetime(&dt);
+}
+
+void PCF8583_set_by_Q(void){
+ PCF8563_set_datetime(&DateSet);
+
 }
 
 void PCF8563_read_datetime(date_time_t volatile *dt)

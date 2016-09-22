@@ -173,7 +173,7 @@ switch(VisualKBD.Type){
           for(i = 0; i < sizeof(AllowedZonesDate); i++){
             if(AllowedZonesDate[i] == IndexToCompare) Result = 1;
           }
-          if(VisualKBD.ReturnZone == 20)ParseVisualKBD_Str();
+          
          break;
          
  }
@@ -184,4 +184,8 @@ inline void EraseStringVisualKBD(void){
   uint8_t i;
   for(i = 0; i< sizeof(VisualKBD.Symbols); i++)
    VisualKBD.Symbols[i] = '\0'; 
+}
+
+void ResetParsedVisualKBD(void){
+ if( VisualKBD.Parsed ) VisualKBD.Parsed = 0;
 }

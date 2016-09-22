@@ -23,8 +23,10 @@ typedef struct
 
 extern volatile uint8_t TimeIsReady;
 extern volatile date_time_t dt;
+extern date_time_t DateSet;
 
 void PCF8583_read_by_Q(void);
+void PCF8583_set_by_Q(void);
 void CheckTheTick(void);
 void PCF8563_Init(void);
 void PCF8563_set_datetime(date_time_t volatile *dt);

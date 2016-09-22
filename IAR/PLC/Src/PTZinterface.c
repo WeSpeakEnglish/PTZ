@@ -334,7 +334,14 @@ void Run_GUI(void){
   if(TimeIsReady){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
-    PCF8583_read_by_Q();
+
+    if(VisualKBD.Parsed && (VisualKBD.Type == KEYB_DATE)) 
+    {
+      M_push(PCF8583_set_by_Q);
+      M_push(ResetParsedVisualKBD);
+    }
+     else
+      M_push(PCF8583_read_by_Q);
     //PCF8563_read_datetime(&dt);
     RESmutex_1 = 0;
 
@@ -653,7 +660,10 @@ void ViewScreen(void){
       //prepare the screen for display on this properties position    
       _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[272].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
       
-      if (!UserParamsCond.GoesFromVirtualKB)    UserParamsCond.Screen = 0;
+      if (!UserParamsCond.GoesFromVirtualKB){
+        UserParamsCond.Screen = 0;
+        UserParamsCond.GoesFromVirtualKB = 0;
+      }
       
         switch(UserParamsCond.Screen){
           case 0: // form the page of params
@@ -1105,7 +1115,7 @@ return (t3 + m[Date.month - 1] + Date.day) % 7;
 uint8_t ParseVisualKBD_Str(void){ //parse to date
 register uint8_t i;  
 uint8_t Errors = 0;
-date_time_t Date; 
+
 
 const parseRules Rules[]={
   {LESS,0x33,0},
@@ -1151,24 +1161,23 @@ const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
                  break;         
         }
        }
-   break;
-  }
+
  
-   Date.day =   (VisualKBD.Symbols[6] - 0x30)*10 + (VisualKBD.Symbols[7] - 0x30);
-   Date.month = (VisualKBD.Symbols[9] - 0x30)*10 + (VisualKBD.Symbols[10] - 0x30);
-   Date.year =  (VisualKBD.Symbols[12] - 0x30)*10 + (VisualKBD.Symbols[13] - 0x30);
-   Date.hours = (VisualKBD.Symbols[0] - 0x30)*10 + (VisualKBD.Symbols[1] - 0x30);
-   Date.minutes = (VisualKBD.Symbols[3] - 0x30)*10 + (VisualKBD.Symbols[4] - 0x30);
+   DateSet.day =   (VisualKBD.Symbols[6] - 0x30)*10 + (VisualKBD.Symbols[7] - 0x30);
+   DateSet.month = (VisualKBD.Symbols[9] - 0x30)*10 + (VisualKBD.Symbols[10] - 0x30);
+   DateSet.year =  (VisualKBD.Symbols[12] - 0x30)*10 + (VisualKBD.Symbols[13] - 0x30);
+   DateSet.hours = (VisualKBD.Symbols[0] - 0x30)*10 + (VisualKBD.Symbols[1] - 0x30);
+   DateSet.minutes = (VisualKBD.Symbols[3] - 0x30)*10 + (VisualKBD.Symbols[4] - 0x30);
   
-   if(Date.year > 0 && Date.year < 99){
-    if(Date.month > 0 && Date.month < 13){    
-      if(Date.day > 0 && Date.day < 32){ 
-       if((Date.month == 2)&&(!(Date.year%4))){
-         if (Date.day > 29) 
+   if(DateSet.year > 0 && DateSet.year < 99){
+    if(DateSet.month > 0 && DateSet.month < 13){    
+      if(DateSet.day > 0 && DateSet.day < 32){ 
+       if((DateSet.month == 2)&&(!(DateSet.year%4))){
+         if (DateSet.day > 29) 
            Errors++;
         }
         else{
-         if (Date.day > DaysRules[Date.month-1]) 
+         if (DateSet.day > DaysRules[DateSet.month-1]) 
            Errors++;
        }
       } else 
@@ -1180,15 +1189,21 @@ const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
    else 
      Errors++;
   
-   if(Date.hours > 23)Errors++;
-   if(Date.minutes > 59)Errors++;  
+   if(DateSet.hours > 23)Errors++;
+   if(DateSet.minutes > 59)Errors++;  
    
    if(!Errors) {
-   Date.weekday = TakeDayFromDate(Date);
-   dt = Date;
-   Date.seconds = 0;
-   PCF8563_set_datetime(&dt);
-   }
+     DateSet.weekday = TakeDayFromDate(DateSet);
+    
+     DateSet.seconds = 0;
+     //PCF8563_set_datetime(&dt);
+     VisualKBD.Parsed = 1;
+     }   
+     break;
+   case KEYB_FULL:
+     break;
+  }
+  if(!Errors) VisualKBD.Parsed = 1;
  return Errors;
 }
 
@@ -1250,11 +1265,21 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
       case 4:  
         if(VisualKBD.Lang){
          _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-         VisualKBD.Screen = 0;
+         if(VisualKBD.Type == KEYB_FULL)VisualKBD.Screen = 0;
         }
         else{
-         _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-         VisualKBD.Screen = 2;
+         
+         switch(VisualKBD.Type){
+            case KEYB_FULL:
+              VisualKBD.Screen = 2;
+              _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+              break;
+            case KEYB_DATE:
+              VisualKBD.Screen = 4;
+              _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[295].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+              break;
+         }
+
         } 
         break;
     }
@@ -1266,14 +1291,27 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
 #define KBD_STR0_Y      112
 #define KBD_STR1_Y      164
 
+#define DELAYED_HL_KB           500 // show, that data had approved by parser
+//#define EXIT_HL_KB_PERIOD       // waiting in approval mode for X ms
 void ShowVisualKbdString(void){
   uint8_t i;
+//  uint8_t Str_Length;
+  static uint32_t Delayed; // delay highlight
+  static uint8_t parsedFlag = 0;
   static uint8_t Counter = 0;
   
   for(i = 0; i < sizeof(VisualKBD.Symbols)-1; i++){
    if(VisualKBD.Symbols[i] == '\0') break;
   }
-
+ //Str_Length = i;
+ 
+  switch(VisualKBD.Type){
+    case KEYB_DATE:
+      if( i > 14)
+        VisualKBD.Symbols[i - 1] = '\0';
+         break;   
+  }
+  
   if(Counter%16 < 8){
     VisualKBD.Symbols[i] = '}' - 1;
      VisualKBD.Symbols[i + 1] = '\0'; 
@@ -1285,8 +1323,23 @@ void ShowVisualKbdString(void){
    LCD_InitParams(0, 0, 0xFF00FFB5, &RIAD_20pt);
    LCD_DisplayStringAt(445, 50, "08:02,01.09.16", LEFT_MODE, 3);
   }
-  
-  LCD_InitParams(0, 0, 0xFFFF0000, &RIAD_30pt);
+  if(VisualKBD.Parsed){
+    LCD_InitParams(0, 0, 0xFF00FF00, &RIAD_30pt);
+    parsedFlag = 1;
+    Delayed = timestamp + DELAYED_HL_KB;
+  }
+  else{
+    if(timestamp < Delayed){LCD_InitParams(0, 0, 0xFF00FF00, &RIAD_30pt);}
+    else{
+      if(!parsedFlag)LCD_InitParams(0, 0, 0xFFFF0000, &RIAD_30pt);
+      else {
+         UserParamsCond.GoesFromVirtualKB = 1; //we go from VirtualKBD
+         DISP.Screen = VisualKBD.EnteredFromDISP_Screen;   //exit
+         parsedFlag = 0;
+      }
+    }
+  }
+
   LCD_DisplayStringAt(KBD_STR_X, KBD_STR0_Y, VisualKBD.Symbols, LEFT_MODE, 3);
   if(Counter%16 < 8)
     VisualKBD.Symbols[i] = '\0';
@@ -1305,6 +1358,7 @@ void RunVisualKBD(void){
          VisualKBD.Symbols[i-1] = '\0';
           break;
       case 20:
+        ParseVisualKBD_Str();
           break;
       case 21:
          if(VisualKBD.Screen == 4){
@@ -1331,9 +1385,9 @@ void RunVisualKBD(void){
           ExchangeScreensVisualKBD(2);
           break;
       case 36:
-         VisualKBD.Screen = 0;
+         UserParamsCond.GoesFromVirtualKB = 1; //we go from VirtualKBD
          DISP.Screen = VisualKBD.EnteredFromDISP_Screen;
-         VisualKBD.EnteredFromDISP_Screen = 0;
+    //     VisualKBD.EnteredFromDISP_Screen = 0;
           break;
       case 48:
          if(i)

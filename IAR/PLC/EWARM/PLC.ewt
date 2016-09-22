@@ -1310,6 +1310,9 @@
         <name>$PROJ_DIR$\..\Src\stmpe811.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\systimer.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\tim.c</name>
       </file>
       <file>

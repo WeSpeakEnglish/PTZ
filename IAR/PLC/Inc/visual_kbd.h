@@ -10,6 +10,7 @@ typedef struct {
   uint8_t Screen        : 3; // which screen is active
   uint8_t Pressed       : 1; // is button pressed?
   uint8_t Lang          : 1; // here a two languages for switching
+  uint8_t Parsed        : 1; // is the string parsed?
 //  uint8_t Upper         : 1; // lower or upper case
   uint8_t ReturnZone;
   uint8_t EnteredFromDISP_Screen;
@@ -25,4 +26,5 @@ void ChangeColorKBD(void); // just highlite thr button what we need
 uint8_t solveReturnCodeVisualKBD(void); // return the number of array position with pressed button 
 void EraseStringVisualKBD(void);  // just string erasing
 uint8_t CheckAllowedZones(uint8_t IndexToCompare); //impose very filter
+void ResetParsedVisualKBD(void); // reset Parsed Flag // useful if we use queue
 #endif
