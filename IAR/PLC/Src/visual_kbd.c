@@ -169,6 +169,9 @@ switch(VisualKBD.Type){
   case KEYB_FULL:
         Result = 1;  
         break;
+  case KEYB_NAME:
+        Result = 1;  
+        break;      
   case KEYB_DATE:
           for(i = 0; i < sizeof(AllowedZonesDate); i++){
             if(AllowedZonesDate[i] == IndexToCompare) Result = 1;

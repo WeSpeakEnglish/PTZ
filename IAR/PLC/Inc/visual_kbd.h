@@ -14,7 +14,7 @@ typedef struct {
 //  uint8_t Upper         : 1; // lower or upper case
   uint8_t ReturnZone;
   uint8_t EnteredFromDISP_Screen;
-  enum {KEYB_FULL = 0, KEYB_DATE = 1} Type;
+  enum {KEYB_FULL = 0, KEYB_DATE = 1, KEYB_NAME} Type;
   uint8_t Symbols[MAXSTRINGLENGTH+1];
 }VKBD;
 

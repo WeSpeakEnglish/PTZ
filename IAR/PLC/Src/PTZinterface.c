@@ -21,6 +21,9 @@ struct{
   float WorkHours;                          // the time of work
   uint16_t SpeeedSensor;                    // the speed sensor here
   float TotalPatch;                         // the total patch of proceed
+  float Square;                         // the total patch of proceed
+  float EquipmentWide;                      // in meters how wide is our patch
+  int16_t Motorman;                        // in meters how wide is our patch
 }SaveParams;
 
 struct{
@@ -335,13 +338,7 @@ void Run_GUI(void){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
 
-    if(VisualKBD.Parsed && (VisualKBD.Type == KEYB_DATE)) 
-    {
-      M_push(PCF8583_set_by_Q);
-      M_push(ResetParsedVisualKBD);
-    }
-     else
-      M_push(PCF8583_read_by_Q);
+    M_push(PCF8583_read_by_Q);
     //PCF8563_read_datetime(&dt);
     RESmutex_1 = 0;
 
@@ -433,7 +430,7 @@ void PreLoadImages(void){
   FillStructIMG(SDRAM_BANK_ADDR + IMAGE_1_OFFSET, 0,   295);
 
   //image 006.bmp like base  
-  FillImageSoft(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, IMAGES.ImgArray[161].xsize, IMAGES.ImgArray[161].ysize); 
+  _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[161].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET);
   return;
 }
 
@@ -683,19 +680,24 @@ void ViewScreen(void){
     case 6:
       Images[0]->z_index = 0;
           switch(VisualKBD.Type){
-      case KEYB_FULL:
+            case KEYB_NAME:
+          VisualKBD.Screen = 0; // a bit strange exchange, maybe will modifyed in future
+          ExchangeScreensVisualKBD(1);
+       //   _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+             break;      
+            case KEYB_FULL:
           VisualKBD.Screen = 1; // a bit strange exchange, maybe will modifyed in future
           ExchangeScreensVisualKBD(0);
-          _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-          break;
-      case KEYB_DATE:
+       //   _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
+            break;
+           case KEYB_DATE:
           ExchangeScreensVisualKBD(2);
          _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 39 * 4 + 269 * 4* DisplayWIDTH, 142, 65, 0xFF333333); // gray rectangles overheaded backgroung image
          _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 248 * 4 + 269 * 4* DisplayWIDTH, 415, 65, 0xFF333333);
          _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 333 * 4* DisplayWIDTH, 203, 65, 0xFF333333);
          _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 354 * 4 + 333 * 4* DisplayWIDTH, 427, 65, 0xFF333333);
          _HW_Fill_Region(SDRAM_BANK_ADDR + LAYER_BACK_OFFSET + 16 * 4 + 397 * 4* DisplayWIDTH, 694, 65, 0xFF333333);
-          break;
+           break;
       }
 
           
@@ -865,7 +867,7 @@ void actions(uint8_t deal){
              DISP.Screen = 6; 
             break; 
            case 2:
-             VisualKBD.Type = KEYB_FULL;
+             VisualKBD.Type = KEYB_NAME;
              DISP.Screen = 6; 
             break; 
          }
@@ -1103,7 +1105,7 @@ void TEMP_Arrow(uint16_t SetValue) // in the parts of 0.1 of degrees kmph 40
 
 
 typedef struct {
-  enum  {LESS = 0, MORE, EQUAL}Sign; // border of threshold
+  enum  {LESS = 0, MORE, EQUAL, NOEQUAL}Sign; // border of threshold
   uint8_t Value; // comparing value
   uint8_t Index; // index in symbols array to apply the rule
 } parseRules;
@@ -1120,51 +1122,62 @@ return (t3 + m[Date.month - 1] + Date.day) % 7;
 }
 
 uint8_t ParseVisualKBD_Str(void){ //parse to date
-register uint8_t i;  
+register uint8_t i, j, size;  
 uint8_t Errors = 0;
 
 
-const parseRules Rules[]={
+const parseRules RulesDate[]={ // mean condition, value for compare, number of symbol
   {LESS,0x33,0},
-  {MORE,0x2A,0},
+  {MORE,0x2F,0},
   {LESS,0x3A,1},
-  {MORE,0x2A,1},
+  {MORE,0x2F,1},
   {EQUAL,':',2},
-  {MORE,0x2A,3},  
+  {MORE,0x2F,3},  
   {LESS,0x36,3},
-  {MORE,0x2A,4},  
+  {MORE,0x2F,4},  
   {LESS,0x3A,4},
   {EQUAL,',',5},
-  {MORE,0x2A,6},  
+  {MORE,0x2F,6},  
   {LESS,0x34,6},
-  {MORE,0x2A,7},  
+  {MORE,0x2F,7},  
   {LESS,0x3A,7},  
   {EQUAL,'.',8}, 
-  {MORE,0x2A,9}, 
+  {MORE,0x2F,9}, 
   {LESS,0x32,9}, 
-  {MORE,0x2A,10}, 
+  {MORE,0x2F,10}, 
   {LESS,0x3A,10},  
   {EQUAL,'.',11}, 
-  {MORE,0x2A,12}, 
+  {MORE,0x2F,12}, 
   {LESS,0x3A,12},
-  {MORE,0x2A,13}, 
+  {MORE,0x2F,13}, 
   {LESS,0x3A,13},
+};
+
+const parseRules RulesName[] = { // zero in the Index mean to all
+  {MORE,0x2F,0x00},
+  {NOEQUAL,0x3A,0x00},
+  {NOEQUAL,0x3B,0x00},
+  {NOEQUAL,0x3C,0x00},
+  {NOEQUAL,0x3D,0x00},
+  {NOEQUAL,0x3E,0x00},
+  {NOEQUAL,0x3F,0x00},
+  {NOEQUAL,0x40,0x00},
 };
 
 const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
   switch(VisualKBD.Type){
     case KEYB_DATE:
-      for(i = 0; i < sizeof(Rules)/sizeof(parseRules); i++){
-        switch(Rules[i].Sign){
+      for(i = 0; i < sizeof(RulesDate)/sizeof(parseRules); i++){
+        switch(RulesDate[i].Sign){
           case LESS:
-            if(!(VisualKBD.Symbols[Rules[i].Index] < Rules[i].Value))Errors++;
+            if(!(VisualKBD.Symbols[RulesDate[i].Index] < RulesDate[i].Value))Errors++;
                  break;
           case MORE:
-            if(!(VisualKBD.Symbols[Rules[i].Index] > Rules[i].Value))Errors++;
+            if(!(VisualKBD.Symbols[RulesDate[i].Index] > RulesDate[i].Value))Errors++;
                  break;                 
           case EQUAL:
-            if(!(VisualKBD.Symbols[Rules[i].Index] == Rules[i].Value))Errors++;
+            if(!(VisualKBD.Symbols[RulesDate[i].Index] == RulesDate[i].Value))Errors++;
                  break;         
         }
        }
@@ -1207,10 +1220,50 @@ const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
      VisualKBD.Parsed = 1;
      }   
      break;
-   case KEYB_FULL:
+   case KEYB_NAME:
+       for(size = 0; i < sizeof(VisualKBD.Symbols)-1; size++){
+           if(VisualKBD.Symbols[size] == '\0') break;
+       }
+      // we have a length of string, and...
+
+       if(!size) Errors++;
+       
+       else{
+         for(j = 0; j < size ; j++){ // all string long
+          for(i = 0; i < sizeof(RulesName)/sizeof(parseRules); i++){
+           switch(RulesName[i].Sign){
+            case MORE:
+             if(!(VisualKBD.Symbols[j] > RulesName[i].Value))
+                     Errors++;
+                 break;                 
+            case NOEQUAL:
+             if(VisualKBD.Symbols[j] == RulesName[i].Value)
+                     Errors++;
+                 break;         
+           }
+          }
+         }
+        } 
+       if(!Errors) VisualKBD.Parsed = 1;
      break;
   }
-  if(!Errors) VisualKBD.Parsed = 1;
+  
+ if(VisualKBD.Parsed) 
+    {
+      switch(VisualKBD.Type){
+         case KEYB_DATE:
+          M_push(PCF8583_set_by_Q);
+          break;
+         case KEYB_NAME: 
+          if(UserParamsCond.AddActiveStr == 2) 
+            FastStrCpy(VisualKBD.Symbols,SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
+      }     
+      
+      
+     
+    }
+ 
+    
  return Errors;
 }
 
@@ -1272,15 +1325,17 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
       case 4:  
          switch(VisualKBD.Type){
             case KEYB_FULL:
-                     if(VisualKBD.Lang){
+            case KEYB_NAME:
+                if(!VisualKBD.Lang){                        
+                       VisualKBD.Screen = 0;
                        _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[291].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
-                           if(VisualKBD.Type == KEYB_FULL)VisualKBD.Screen = 0;
+
                               }
                       else{ 
                         VisualKBD.Screen = 2;
                         _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[293].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
                         }
-              break;
+              break;  
             case KEYB_DATE:
               VisualKBD.Screen = 4;
               _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[295].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
@@ -1323,16 +1378,23 @@ void ShowVisualKbdString(void){
     VisualKBD.Symbols[i] = '}' - 1;
      VisualKBD.Symbols[i + 1] = '\0'; 
   }; 
-  
-  if(VisualKBD.Type == KEYB_DATE){
-   LCD_InitParams(0, 0, 0xFFFFB500, &RIAD_20pt);
-   LCD_DisplayStringAt(32, 50, "¬ведите врем€ и дату в формате", LEFT_MODE, 3);
-   LCD_InitParams(0, 0, 0xFF00FFB5, &RIAD_20pt);
-   LCD_DisplayStringAt(445, 50, "08:02,01.09.16", LEFT_MODE, 3);
+  switch(VisualKBD.Type){
+    case KEYB_DATE:
+     LCD_InitParams(0, 0, 0xFFFFB500, &RIAD_20pt);
+     LCD_DisplayStringAt(32, 50, "¬ведите врем€ и дату в формате", LEFT_MODE, 3);
+     LCD_InitParams(0, 0, 0xFF00FFB5, &RIAD_20pt);
+     LCD_DisplayStringAt(445, 50, "08:02,01.09.16", LEFT_MODE, 3);
+     break;
+    case KEYB_NAME:
+     LCD_InitParams(0, 0, 0xFFFFB500, &RIAD_20pt);
+     LCD_DisplayStringAt(32, 50, "¬ведите номер трактора", LEFT_MODE, 3);
+     break; 
   }
+
   if(VisualKBD.Parsed){
     LCD_InitParams(0, 0, 0xFF00FF00, &RIAD_30pt);
     parsedFlag = 1;
+    VisualKBD.Parsed = 0;
     Delayed = timestamp + DELAYED_HL_KB;
   }
   else{
@@ -1402,7 +1464,7 @@ void RunVisualKBD(void){
           VisualKBD.Symbols[i-1] = '\0';
           break;
       case 60:
-        
+        ParseVisualKBD_Str();
           break;
       case 61:
         ExchangeScreensVisualKBD(0);
@@ -1909,24 +1971,37 @@ ImParamsLoc[]={
   {271,{0,44}},    //0 the number in the image array and coords
   {195,{2,394}},   //1 field button dashed
   {192,{101,394}}, //2 the ham and skrudriver
-  {60,{696,394}},  //3 cross           // cross on all the pages, starts from zero ...(optimized)
-  {183,{200,394}}, //4 empty button 
-  {183,{398,394}}, //5 empty button
-  {183,{597,394}}, //6 empty button
+  {183,{200,394}}, //3 empty button 
+  {183,{299,394}}, //4 empty button   
+  {183,{398,394}}, //5 empty button 
+  {183,{498,394}}, //6 empty button
+  {183,{597,394}}, //7 empty button
+  {60,{696,394}},  //8 cross           // cross on all the pages, starts from zero ...(optimized)
   ////----------------------------- screen 1
-  {270,{0,44}},    //7 square calculation
-  {45,{2,394}},    //8 up button
-  {44,{101,394}},  //9 down button
-  {193,{200,394}}, //10 a man name edition  
-  ////----------------------------- screen 0
-  {209,{0,44}},    //11 square calculation
-  {45,{2,394}},    //12up button
-  {44,{101,394}},  //13 down button
+  {270,{0,44}},    //9 square calculation
+  {45,{2,394}},    //10 up button
+  {44,{101,394}},  //11 down button
+  {193,{200,394}}, //12 a man name edition  
+  {194,{299,394}}, //13 edit field  
+  {183,{398,394}}, //14 empty button 
+  {183,{498,394}}, //15 empty button
+  {42,{597,394}},  //16 empty button
+  {60,{696,394}},  //17 cross 
+  ////----------------------------- screen 2
+  {209,{0,44}},    //18 square calculation
+  {45,{2,394}},    //19 up button
+  {44,{101,394}},  //20 down button
+  {183,{200,394}}, //21 empty button 
+  {183,{299,394}}, //22 empty button   
+  {183,{398,394}}, //23 empty button 
+  {183,{498,394}}, //24 empty button
+  {183,{597,394}}, //25 empty button
+  {60,{696,394}},  //26 cross 
 };
 
 switch(Screen){
  case 0:          
-   for(Index = 0; Index < 7; Index++)   
+   for(Index = 0; Index < 9; Index++)   
            _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
                           4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
                           IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
@@ -1934,7 +2009,7 @@ switch(Screen){
            UserParamsCond.Screen = 0;
     break;
  case 1:
-     for(Index = 7; Index < 11; Index++)   
+     for(Index = 9; Index < 18; Index++)   
            _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
                           4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
                           IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
@@ -1944,7 +2019,7 @@ switch(Screen){
     break; 
     
   case 2:
-     for(Index = 11; Index < 14; Index++)   
+     for(Index = 18; Index < 27; Index++)   
            _HW_Fill_Image(IMAGES.ImgArray[ImParamsLoc[Index].N].address, 
                           4 * ImParamsLoc[Index].Coords.Y * DisplayWIDTH + 4 * ImParamsLoc[Index].Coords.X + SDRAM_BANK_ADDR + LAYER_BACK_OFFSET, 
                           IMAGES.ImgArray[ImParamsLoc[Index].N].xsize, 
@@ -2020,7 +2095,7 @@ uint8_t length = 0;
     case LEFT_MODE: //
       for(i = 0; i < SizeOfDst; i++){
         if(*Src != '\0' ) *Dst++ = *Src++;
-        else break;
+        else {*Dst='\0';}
      }
       break;
     case RIGHT_MODE:
@@ -2036,13 +2111,17 @@ void UserParamsInit(void){
  FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
  FastStrCpy("у567ен78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
  FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
- SaveParams.SpecialParam = -30000;
+ SaveParams.SpecialParam = 200;
  FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
  SaveParams.Generator = 0.17f;
  FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
  SaveParams.WorkHours = 34.3f; 
  SaveParams.SpeeedSensor = 30000;
+ SaveParams.Square = 100.2f;
+ SaveParams.Motorman = 1;
  SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
+ SaveParams.EquipmentWide = 3.75f;
+ 
 }
 
 
@@ -2113,7 +2192,14 @@ const pointANDcoords   // the menu coords
          LCD_DisplayStringAt(ParamsCoordsANDStr_0[i].Coords.X, ParamsCoordsANDStr_0[i].Coords.Y, ParamsCoordsANDStr_0[i].pStr, ParamsCoordsANDStr_0[i].TextAlignment, 1); //put in on the screen
           break;
     case 1:
-      
+      LCD_SetColorPixel(0xFF000000);
+      Itoa(StrDATA[0], SaveParams.Motorman);
+      LCD_DisplayStringAt(230, 113,StrDATA[0], RIGHT_MODE, 1); //put in on the screen
+      Ftoa_2(StrDATA[0], SaveParams.EquipmentWide);
+      LCD_DisplayStringAt(500, 113, StrDATA[0], RIGHT_MODE, 1); //put in on the screen
+      Ftoa_1(StrDATA[0], SaveParams.Square);
+      LCD_DisplayStringAt(730, 113, StrDATA[0], RIGHT_MODE, 1); //put in on the screen
+      LCD_SetColorPixel(0xFFFFFFFF);
           break;
     case 2:   
       LCD_Fill_Image(&IMAGES.ImgArray[ImParamsLoc[UserParamsCond.AddActiveStr].N], //show selected line
