@@ -101,30 +101,6 @@ void MX_USB_HOST_Process(void);
     Run_GUI();
     Show_GUI();
     
-    if(FlagCAN1_Transmit){
-      FlagCAN1_Transmit = 0; 
-       hcan1.pTxMsg->Data[0] = 0x10;
-       hcan1.pTxMsg->Data[1] = 0x11;
-       hcan1.pTxMsg->Data[2] = 0x12;
-       hcan1.pTxMsg->Data[3] = 0x13;
-       hcan1.pTxMsg->Data[4] = 0x14;
-       hcan1.pTxMsg->Data[5] = 0x10;
-       hcan1.pTxMsg->Data[6] = 0x11;
-       hcan1.pTxMsg->Data[7] = 0x12;
-       HAL_CAN_Transmit_IT(&hcan1);
-    }
-    if(FlagCAN2_Transmit){
-      FlagCAN2_Transmit = 0; 
-       hcan2.pTxMsg->Data[0] = 0x20;
-       hcan2.pTxMsg->Data[1] = 0x21;
-       hcan2.pTxMsg->Data[2] = 0x22;
-       hcan2.pTxMsg->Data[3] = 0x23;
-       hcan2.pTxMsg->Data[4] = 0x24;
-       hcan2.pTxMsg->Data[5] = 0x20;
-       hcan2.pTxMsg->Data[6] = 0x21;
-       hcan2.pTxMsg->Data[7] = 0x22;
-       HAL_CAN_Transmit_IT(&hcan2);
-    }
       /*##-3- Start the Transmission process ###############################*/
   }
   /* USER CODE END 3 */

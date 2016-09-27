@@ -38,7 +38,7 @@
 #include "DispInfo.h"
 #include "sound.h"
 #include "systimer.h"
-
+#include "spi_mem.h"
 #define PTZ_interface 1
 
 #define SDRAM_BANK_ADDR         0xC0000000

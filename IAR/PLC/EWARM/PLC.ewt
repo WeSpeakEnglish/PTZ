@@ -1187,6 +1187,9 @@
         <name>$PROJ_DIR$\..\Src\can.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\can_exchange.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\core.c</name>
       </file>
       <file>

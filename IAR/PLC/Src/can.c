@@ -1,7 +1,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "can.h"
-
+#include "can_exchange.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
@@ -200,9 +200,9 @@ void InitCANFilters(CAN_HandleTypeDef* hcan){
  
   sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
   sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-  sFilterConfig.FilterIdHigh = 0x0000;
+  sFilterConfig.FilterIdHigh = UC_ID << 5;// ID
   sFilterConfig.FilterIdLow = 0x0000;
-  sFilterConfig.FilterMaskIdHigh = 0x0000;
+  sFilterConfig.FilterMaskIdHigh = 0xFFE0;
   sFilterConfig.FilterMaskIdLow = 0x0000;
   sFilterConfig.FilterFIFOAssignment = 0;
   sFilterConfig.FilterActivation = ENABLE;
@@ -235,36 +235,6 @@ void InitCANFilters(CAN_HandleTypeDef* hcan){
 }
 
 
-void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle) {
-  if(CanHandle == &hcan1){
-    if ((CanHandle->pRxMsg->StdId == 0x321) && (CanHandle->pRxMsg->IDE == CAN_ID_STD) && (CanHandle->pRxMsg->DLC == 8)) {
-        if (CanHandle->pRxMsg->Data[0]) {
-        FlagCAN1_Transmit = 1;  
-         }
-    }
- // CAN1 -> RF0R |= CAN_RF0R_RFOM0; /* Release FIFO 0 Output Mailbox */
-   if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO0) != HAL_OK) {
-  //       /* Reception Error */
-    }
-  }
-  else{
-   if(CanHandle == &hcan2){
-    if ((CanHandle->pRxMsg->StdId == 0x321) && (CanHandle->pRxMsg->IDE == CAN_ID_STD) && (CanHandle->pRxMsg->DLC == 2)) {
-    if (CanHandle->pRxMsg->Data[0]) {
-              
-
-         HAL_CAN_Transmit_IT(&hcan2);
-        }
-    }
-   if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO1) != HAL_OK) {
-        /* Reception Error */
-   }
-  // CAN1 -> RF0R |= CAN_RF1R_RFOM1; /* Release FIFO 0 Output Mailbox */
-   }
-  }
-
-
-}
 
 void CAN1_ON_OFF(uint8_t cmd){
     if(cmd)HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);

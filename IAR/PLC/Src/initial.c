@@ -26,7 +26,7 @@ void InitPeriph(void){
 void HAL_Delay(__IO uint32_t Delay){
 
   static uint32_t OldTicksGlobal_mS   = 0x00000000;
-  uint32_t Difference     = 0x00000000;
+  uint32_t Difference     =             0x00000000;
 
   TicksGlobal_mS = HAL_GetTick();
   OldTicksGlobal_mS = TicksGlobal_mS; 

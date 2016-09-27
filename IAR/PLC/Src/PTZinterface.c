@@ -441,64 +441,13 @@ void KBD_Handle(uint8_t code){ //the handle of the keyboard
     DISP.Event = 1;
     DISP.KbdCode = KB_Status.code;
 
-    switch(DISP.SelectedField){
-    case 1:
-      break;
-    case 2:
-      break;
-    }
-
     switch(DISP.Screen){
     case 0:
-      switch(code){
-      case 0x31:
-      case 0x32:
-      case 0x33:
-      case 0x34:
-      case 0x35:
-      case 0x36:
-      case 0x37:
-
-        actions(code - 0x31);
-        break; 
-      case 0x38:
-        M_push(CAM_ON_OFF);
-        break;
-      }
-      break;
     case 1:
-      switch(code){
-      case 0x31:
-      case 0x32:
-      case 0x33:
-      case 0x34:
-      case 0x35:
-      case 0x36:
-      case 0x37:
-
-        actions(code - 0x31); 
-        break;
-      case 0x38:
-        M_push(CAM_ON_OFF);
-        break;                   
-      }
-      break;
     case 2: 
-      switch(code){
- 
-      case 0x31:
-      case 0x32:
-      case 0x33:
-      case 0x34:
-      case 0x35:
-      case 0x36:
-      case 0x37:
-      case 0x38:
-        actions(code - 0x31); 
-        break;                   
-      }
-      break;
     case 3: 
+    case 4: 
+    case 5:   
       switch(code){
  
       case 0x31:
@@ -930,6 +879,7 @@ void actions(uint8_t deal){
       case 5:
         if(UserParamsCond.Screen){
            UserParamsExchangeScreens(0);
+            sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
          }
         else{
           DISP.Screen = Flags.EnterScreen;
@@ -2107,21 +2057,23 @@ uint8_t length = 0;
 }
 
 void UserParamsInit(void){
- FastStrCpy("Russian", SaveParams.Language, sizeof(SaveParams.Language), LEFT_MODE);
- FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
- FastStrCpy("у567ен78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
- FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
- SaveParams.SpecialParam = 200;
- FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
- SaveParams.Generator = 0.17f;
- FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
- SaveParams.WorkHours = 34.3f; 
- SaveParams.SpeeedSensor = 30000;
- SaveParams.Square = 100.2f;
- SaveParams.Motorman = 1;
- SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
- SaveParams.EquipmentWide = 3.75f;
- 
+  uint16_t temp = sizeof(SaveParams);
+// FastStrCpy("Russian", SaveParams.Language, sizeof(SaveParams.Language), LEFT_MODE);
+// FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
+// FastStrCpy("у567ен78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
+// FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
+// SaveParams.SpecialParam = 200;
+// FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+// SaveParams.Generator = 0.17f;
+// FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+// SaveParams.WorkHours = 34.3f; 
+// SaveParams.SpeeedSensor = 30000;
+/// SaveParams.Square = 100.2f;
+// SaveParams.Motorman = 1;
+// SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
+// SaveParams.EquipmentWide = 3.75f;
+ sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
+                 
 }
 
 
