@@ -507,6 +507,7 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
                 DISP.TS_ZoneNumber = Index;
         if((DISP.TS_ZoneNumber != 7)&& CAM_flag)     
                 DISP.TS_ZoneNumber = 100;
+        break;
       }
     } 
 
@@ -825,7 +826,7 @@ void actions(uint8_t deal){
    }
     break;  
   case 5:
-    if(DISP.Screen == 0 || DISP.Screen == 1){
+    if(DISP.Screen == 0 || DISP.Screen == 1|| DISP.Screen == 4){
       if(Flags.WriteGo){ 
         PTZ.Passes++;
         Itoa_R(StrPasses, sizeof(StrPasses), PTZ.Passes);
