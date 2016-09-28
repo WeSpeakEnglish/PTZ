@@ -17,4 +17,22 @@ extern uint8_t CAN1_MSG_Received;
 extern uint8_t CAN2_MSG_Received;
 void pasreCAN(void);
 
+typedef enum {UINT8_T = 0,  INT8_T = 1, 
+              UINT16_T = 2, INT16_T = 3,   
+              UINT32_T = 4, INT32_T = 5,
+              UINT64_T = 6, INT64_T = 7, 
+              FLOAT = 8,    DOUBLE = 9,
+              }PointerType;
+
+#define SIZE_CAN_DATA  100
+typedef struct {
+  PointerType           dType[SIZE_CAN_DATA];                   // type of pointer to the data 
+  uint32_t              dData[SIZE_CAN_DATA];                   // data 
+  uint16_t              dID[SIZE_CAN_DATA];                     // indicates received channel and Type
+  uint16_t              dLength;                                // how much values of data we have?
+}CAN_Data_struct;
+
+
+
+extern CAN_Data_struct CAN_data;
 #endif

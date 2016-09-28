@@ -1271,6 +1271,9 @@
         <name>$PROJ_DIR$\..\Src\OSDinitTable.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\protocol_interface.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\PTZinterface.c</name>
       </file>
       <file>

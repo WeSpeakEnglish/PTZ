@@ -9,22 +9,8 @@
 #include "initial.h"
 // (c) RA3TVD code, 2016
 
-struct{
-  uint8_t TractorModel[MAXSTRINGLENGTH];
-  uint8_t Language[MAXSTRINGLENGTH];        // the language of UI
-  uint8_t TractorNumb[MAXSTRINGLENGTH];     // the number of Tractor
-  uint8_t Version[MAXSTRINGLENGTH];         // Software version
-  int16_t SpecialParam;                    // special parameter
-  uint8_t ManufactureDate[MAXSTRINGLENGTH]; // like "12.09.2016"
-  float Generator;                          // the current of generator
-  uint8_t FuelTank[MAXSTRINGLENGTH];        // the tank of gas
-  float WorkHours;                          // the time of work
-  uint16_t SpeeedSensor;                    // the speed sensor here
-  float TotalPatch;                         // the total patch of proceed
-  float Square;                         // the total patch of proceed
-  float EquipmentWide;                      // in meters how wide is our patch
-  int16_t Motorman;                        // in meters how wide is our patch
-}SaveParams;
+
+SAVE_Params SaveParams;
 
 struct{
   uint32_t Machinist; // a motorman
@@ -39,61 +25,7 @@ struct{
  uint8_t GoesFromVirtualKB : 1; // if we go from the KB the behaviour is different
 }UserParamsCond={0}; // conditions of the user control of showing parameters
 
-struct{
-  uint8_t PressTransmiss; // pressure in the transmission
-  uint8_t PressPneumosys; // pressuse in the pneumo system
-  uint8_t PressEngineOil; // the pressure of oil
-  uint8_t Speed;          //  the speed
-  uint8_t RateEngine;     // the RPM
-  float Square;           // the square, which have been prepared
-  float TimeOfRun;        // the total time of pass
-  uint16_t Passes;        // number of passes
-  float SquarePerHour;    // (100m)^2 per hour
-  float PetrolPerHour;    // litres per hour
-  float PetrolPerSquare;  // litres per (100m)^2
-  float TempEngine;       // the temperature of engine
-  float PressOilEngine;   // the pressure in engine oil tubes
-  float VolumeFuel;       // volume of gas in liters 
-  float Voltage;          // voltage in the system (volts)
-  float PressOilGearbox;  // the pressure in the gearbox 
-  float TempOilGearbox;   // the temperature in the gearbox (transmission)
-  float PressAir;         // the temperature of air in the ...
-  uint16_t Mileage;       // mileage in km
-  
-  uint8_t Slip; // slipping
-  int8_t Rising; // rasing/penetration(-)
-  int8_t Calibration; //in centimeters
-  struct{
-    uint8_t A;
-    uint8_t B;
-    uint8_t Lock : 1; // is it LOCK?
-    float Time;
-  }
-  Hydroexits[5];
-  //sensors: P means pressure and T means temperature
-  
-  struct{
-   uint8_t T_CoolingLiquid             : 1;
-   uint8_t P_Engine                    : 1;
-   uint8_t ImpurityPressureFilter      : 1;
-   uint8_t T_HydroSystem               : 1;
-   uint8_t Engine_Malfunction          : 1;
-   uint8_t ImpurityAirFilter           : 1;
-   uint8_t T_Engine                    : 1;
-   uint8_t ImpurityAttachments         : 1;
-   uint8_t P_First_Contour             : 1;
-   uint8_t EngineOilLevel              : 1;
-   uint8_t CoolingLiquidLevel          : 1;
-   uint8_t ImpurityEngineFilter        : 1;
-   uint8_t ImpurityDrainFilter         : 1;
-   uint8_t P_Second_Contour            : 1;
-   uint8_t ImpurityCoolingLiquid       : 1;
-   uint8_t ImpurityRudderFilter        : 1;
-   uint8_t HydrotankLevel              : 1;
-   uint8_t AccumulatorDischarge        : 1;
-  }Errors; 
-} 
- PTZ;
+PTZ_params PTZ;
                                                          // in the RIGHT text implementation mode
 static uint8_t StrPressTransmiss[] =      "     0.0";
 static uint8_t StrPressPneumosys[] =      "     0.0";
@@ -1209,10 +1141,7 @@ const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
           if(UserParamsCond.AddActiveStr == 2) 
             FastStrCpy(VisualKBD.Symbols,SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
       }     
-      
-      
-     
-    }
+ }
  
     
  return Errors;
@@ -1291,9 +1220,7 @@ void ExchangeScreensVisualKBD(uint8_t cmd){ // cmd is 0 eq SHIFT EXCHANGE; 1 - e
               VisualKBD.Screen = 4;
               _HW_Fill_RGB888_To_ARGB8888(IMAGES.ImgArray[295].address, SDRAM_BANK_ADDR + LAYER_BACK_OFFSET); //change the background
               break;
-         
-
-        } 
+       } 
         break;
     }
     break;
@@ -2074,7 +2001,7 @@ void UserParamsInit(void){
 // SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
 // SaveParams.EquipmentWide = 3.75f;
  sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
-                 
+  SaveParams.SpeeedSensor  =   1000;  // tune             
 }
 
 
@@ -2201,9 +2128,38 @@ const pointANDcoords   // the menu coords
   }
   return;
 }
+
+
+
 ///!---------------------------------------------------------------------------
 void UserControlsShow(void){
   switch(DISP.Screen){
+  case 0:
+    if(PTZ.Signals.ParkingLights) Images[20]->z_index = 1;
+    else                          Images[20]->z_index = 0;
+    
+    if(PTZ.Signals.LocalLight)    Images[21]->z_index = 1;
+    else                          Images[21]->z_index = 0;
+                                  
+    if(PTZ.Signals.FarLight)      Images[22]->z_index = 1;
+    else                          Images[22]->z_index = 0; 
+                                  
+    if(PTZ.Signals.PTO)           Images[18]->z_index = 1; 
+    else                          Images[18]->z_index = 0; 
+    
+    if(PTZ.Signals.RearAxle)      Images[19]->z_index = 1; 
+    else                          Images[19]->z_index = 0;     
+    
+    if(PTZ.Signals.ParkingBrake)  Images[30]->z_index = 1; 
+    else                          Images[30]->z_index = 0;
+    
+    if(PTZ.Errors.T_CoolingLiquid)Images[10]->z_index = 1;
+    else                          Images[10]->z_index = 0;
+   
+    if(PTZ.Errors.ImpurityAirFilter)Images[13]->z_index = 1;
+    else                            Images[13]->z_index = 0;
+ //   if(PTZ.Errors.ImpurityAirFilter) 
+    break;
   case 1:
     LittleHidroExitsShow();
     break;
