@@ -8,6 +8,7 @@
 Touch_Data_t Touch_Data;
 
 void P_Touch_Reset(void); // reset MC
+
 uint8_t P_Touch_FnctCmd(uint8_t Fct, FunctionalState NewState); 
 void P_Touch_Config(void);
 uint16_t P_Touch_ReadID(void);
@@ -29,6 +30,10 @@ ErrorStatus UB_Touch_Init(void){
 }
 
 uint8_t temp, temp2; 
+
+void P_Touch_ReEnter(void){
+ UB_Touch_Init();
+}
 
 void MX_Touch_Read(void){
   UB_Touch_Read();

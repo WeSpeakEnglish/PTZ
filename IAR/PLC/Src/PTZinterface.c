@@ -236,8 +236,8 @@ void Load_GUI_0(void){
   Images[16] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
   Images[17] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
 
-  Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[25], 36 , 320); // the counterclockwise gear and cap
-  Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[23], 86 , 320); // the tractor with clockwise arrow
+  Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[29], 34 , 318); // the counterclockwise gear and cap
+  Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[37], 74 , 318); // the tractor with clockwise arrow
 
   Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
   Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
@@ -248,9 +248,9 @@ void Load_GUI_0(void){
   Images[26] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[64], 474 , 324); // the Oil mark 
   Images[27] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[67], 534 , 324); // the breaker
 
-  Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[70], 314 , 267);            // the accumulator
-  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[6], 370 , 267);            // the coil
-  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[11], 431 , 267);            // the ((P)) sign
+  Images[28] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[70], 314 , 264);            // the accumulator
+  Images[29] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[6], 370 , 264);            // the coil
+  Images[30] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[12], 429 , 264);            // the ((P)) sign
 
   Images[31] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[186], 696 , 135);            // the red fuel sign
   Images[32] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[185], 696 , 323);            // the red temp sign
@@ -800,7 +800,11 @@ void actions(uint8_t deal){
     switch(DISP.Screen){
       case 2:  
         if(Condition.activity != 0)PenetrationRising(4,0);
-        else CAM_ON_OFF();
+        else{ 
+         
+          M_push(CAM_ON_OFF);
+
+        }
           break;
       case 3:
         if(!PoolOfExits.EditShow && !PoolOfExits.TimeEdit) DISP.Screen = 0; //if we in the edit mode
@@ -820,7 +824,9 @@ void actions(uint8_t deal){
          }
         break;
       default:
-          CAM_ON_OFF();
+         
+          M_push(CAM_ON_OFF);
+
     }
     break;
   }
@@ -944,9 +950,9 @@ void Test3(void){
 void Tests(void ){
   static uint32_t Counter = 0;
   if(StartTestFlag){
-    if(Counter%8 == 0) Test1();
-    if(! (Counter%16) )Test3();
-    Test2();
+    if(Counter%8 == 0)// Test1();
+    if(! (Counter%16) )//Test3();
+  //  Test2();
     Counter++; 
   }
 
@@ -2158,6 +2164,10 @@ void UserControlsShow(void){
    
     if(PTZ.Errors.ImpurityAirFilter)Images[13]->z_index = 1;
     else                            Images[13]->z_index = 0;
+    
+    if(PTZ.Errors.HydrotankLevel) Images[11]->z_index = 1;
+    else                          Images[11]->z_index = 0;
+   
  //   if(PTZ.Errors.ImpurityAirFilter) 
     break;
   case 1:

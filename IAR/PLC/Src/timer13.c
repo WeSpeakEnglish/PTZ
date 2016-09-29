@@ -2,6 +2,7 @@
 #include "initial.h"
 #include "keyboard.h"
 #include "can_exchange.h"
+#include "protocol_interface.h"
 
 void Timer13_Init(void){
   TIM13->PSC = 10;
@@ -81,7 +82,11 @@ void TIM13_IRQHandler(void){
     SOUND.CounterSound++;
   }
   Counter++;
-  if(Counter % 100 == 90) pasreCAN();
+  if(Counter % 100 == 90){
+    
+        M_push(CAN_GetValues);
+    
+  }
   Counter %= 100; 
   return;
 }

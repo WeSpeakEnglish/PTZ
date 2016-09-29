@@ -138,6 +138,7 @@ ErrorStatus UB_Touch_Read(void);
 void MX_Touch_Read(void); 
 void P_Touch_FreeIRQ(void);
 void P_Touch_Reset(void);
+void P_Touch_ReEnter(void);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

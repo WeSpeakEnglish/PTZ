@@ -43,11 +43,11 @@ enum {
 #define FUEL_MULTIPLIER         1.0f
 #define AIRPRESS_MULTIPLIER     1.0f
 
-void getValues(){
+void CAN_GetValues(){
   uint16_t i;
-  
-  for(i = 0; i < CAN_data.dLength; i++){
-    switch(CAN_data.dID[i]){
+  if(!pasreCAN()){
+  for(i = 0; i < SIZE_CAN_DATA; i++){
+    switch(CAN_Data_dID[i]){
     case Tachometer:
       break;
     case Spedometer:
@@ -92,5 +92,6 @@ void getValues(){
        else PTZ.Errors.ImpurityCoolingLiquid = 0;
       break;
     }
+  }
   }
 }

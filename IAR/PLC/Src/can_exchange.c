@@ -7,6 +7,12 @@ uint8_t CAN2_MSG_Received;
 
 typedef enum {Get = 0,Set,Single,Double,Quad,Flow,reserved,Error} ParameterType;
 
+const uint16_t  CAN_Data_dID[SIZE_CAN_DATA]={
+        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
+        0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F,
+        0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F,
+     };   
+
 typedef struct 
 	{
 		ParameterType	        type	:       3;
@@ -83,31 +89,40 @@ CAN_ReceivedData;
 
 CAN_Data_struct CAN_data;
 
-void pasreCAN(void){
-uint16_t i; 
+uint8_t pasreCAN(void){
+uint16_t i = 0;
 uint16_t Index = 0;
 
 CANbufT * parsingBuf;
 ParameterHeader * paramHead; // head of params
 uint8_t step = 3;            // step that use for going inside of the buffer (default)
+parsingBuf = &(CAN_ReceivedData.receiverBuf0);
+
 if(CAN_ReceivedData.receiverBuf0.messageNew){ 
-      parsingBuf = &(CAN_ReceivedData.receiverBuf0);
+    //  parsingBuf = &(CAN_ReceivedData.receiverBuf0);
       CAN_ReceivedData.receiverBuf0.messageNew = 0;
-      CAN_data.dLength = 0;
+    //  CAN_data.dLength = 0;
 }
 else{
-  if(CAN_ReceivedData.receiverBuf1.messageNew){
-      parsingBuf = &(CAN_ReceivedData.receiverBuf1);
-      CAN_ReceivedData.receiverBuf1.messageNew = 0;
-      CAN_data.dLength = 0;
-  }
-  else 
-    return;
+ // if(CAN_ReceivedData.receiverBuf1.messageNew){
+ //     parsingBuf = &(CAN_ReceivedData.receiverBuf1);
+ //     CAN_ReceivedData.receiverBuf1.messageNew = 0;
+    //  CAN_data.dLength = 0;
+ // }
+ // else 
+    return 1;
  }
 
 for(i = 0; i < parsingBuf->messageLength; i += step ){
  paramHead = (ParameterHeader *) &(parsingBuf->buf[i]);
- CAN_data.dID[Index] = paramHead->ID;
+ 
+
+ 
+ for(Index = 0; Index < SIZE_CAN_DATA; Index++){
+   if (CAN_Data_dID[Index] == paramHead->ID) break;
+
+ }
+ if(Index == SIZE_CAN_DATA) return 1;  //such error
  
  switch(paramHead->type){
  case (Single):
@@ -121,10 +136,9 @@ for(i = 0; i < parsingBuf->messageLength; i += step ){
    step = 4;
     break;   
   }
- Index++;
- CAN_data.dLength++;
+
  }
-return;
+return 0;
 }
 
 void CheckMessage(void){
@@ -132,9 +146,9 @@ void CheckMessage(void){
 //  if(CRCcalculateBuf(receiver.buf, receiver.messageLength) == receiver.messageCRC)messageReceived();
 }
 
-void CAN_PassData(uint8_t Param, uint8_t * pData){  // get data to a buffer //Param: zero - it is a head//pData - is pointer to array with a data
+void CAN_PassData(uint8_t Param, uint8_t * pData, uint8_t DLC){  // get data to a buffer //Param: zero - it is a head//pData - is pointer to array with a data
  static  uint16_t countCheck = 1; //(arrived counter)
- uint8_t i;
+ int8_t i;
    
 static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
  CANpackBody * MsgData;
@@ -142,10 +156,10 @@ static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
  
   switch(Param){
     case 0:  // it is a head
-      if(!CAN_ReceivedData.CurrentBuffer)
+     // if(!CAN_ReceivedData.CurrentBuffer)
         passingBuf =  &(CAN_ReceivedData.receiverBuf0);
-      else 
-        passingBuf =  &(CAN_ReceivedData.receiverBuf1);
+    //  else 
+     //   passingBuf =  &(CAN_ReceivedData.receiverBuf1);
       
       MsgHeader = (MessageHeader *) pData;
       passingBuf->group = (MsgHeader)->group;            //take the group   
@@ -159,7 +173,7 @@ static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
     case 1: //it is a data
       MsgData = (CANpackBody *)pData;
       if(MsgData->counter == countCheck++){ //we get the right counter
-        for(i=0; i < 6 ; i++){
+        for(i=0; i < DLC-2 ; i++){
           if((passingBuf->bufCounter) < (passingBuf->messageLength)){ 
           passingBuf->buf[passingBuf->bufCounter++] = MsgData->data[i];
           if((passingBuf->bufCounter) == (passingBuf->messageLength)){
@@ -174,19 +188,18 @@ static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
 }
 
 void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle) {
-  if(CanHandle == &hcan1){
+   if(CanHandle == &hcan1){
     if ((CanHandle->pRxMsg->StdId == UC_ID) && (CanHandle->pRxMsg->IDE == CAN_ID_STD))// && (CanHandle->pRxMsg->DLC == 8))
     {
         if (CanHandle->pRxMsg->Data[0] == 0) {  //HEAD of message
-         if(!CAN_ReceivedData.CurrentBuffer)
-           CAN_ReceivedData.CurrentBuffer = 1;
-         else 
-           CAN_ReceivedData.CurrentBuffer = 0;
-         
-         CAN_PassData(0, &(CanHandle->pRxMsg->Data[0]));
+     //    if(!CAN_ReceivedData.CurrentBuffer)
+      //     CAN_ReceivedData.CurrentBuffer = 1;
+      //   else 
+      //     CAN_ReceivedData.CurrentBuffer = 0;
+         CAN_PassData(0, &(CanHandle->pRxMsg->Data[0]), CanHandle->pRxMsg->DLC);
        }
         else{
-         CAN_PassData(1, &(CanHandle->pRxMsg->Data[0]));
+         CAN_PassData(1, &(CanHandle->pRxMsg->Data[0]), CanHandle->pRxMsg->DLC);
         }
     }
    if (HAL_CAN_Receive_IT(CanHandle, CAN_FIFO0) != HAL_OK) {

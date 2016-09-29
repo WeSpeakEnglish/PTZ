@@ -38,7 +38,7 @@ void TIM14_IRQHandler(void){
    // P_Touch_FreeIRQ();
   //  MX_Touch_Read();
  //   RESmutex_1 = 0;
-    M_push(P_Touch_FreeIRQ);
+  //M_push(P_Touch_FreeIRQ);
     Timer14_Init_Deal(100,2);
     break;
 
@@ -47,9 +47,9 @@ void TIM14_IRQHandler(void){
  //     Timer14_Init_Deal(100,2); 
  //     return;
  //   }
- //  M_push(P_Touch_FreeIRQ);
+   
    M_push(MX_Touch_Read); 
-
+   M_push(P_Touch_FreeIRQ);
    
    M_push(TouchScreen_Handle);    
     break;
