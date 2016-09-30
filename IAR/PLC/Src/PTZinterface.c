@@ -225,23 +225,25 @@ void Load_GUI_0(void){
   Images[6] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[288], 41, 185);   //the triangle nice pointer green
   Images[7] = GUI_SetObject(IMAGE_WITH_TRANSP,0xFF0A0C0B, 0, 3, &IMAGES.ImgArray[289], 126, 185); // the triangle nice pointer red
 
-  Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 126 , 0); // the signal red sign
-  Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 126 + 77 , 0); // the sattellite red sign
-  Images[10] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[177], 126 + 77*2 , 0); // the termometer red sign
-  Images[11] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[187], 126 + 77*3 , 0); // the pressure red sign
-  Images[12] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[188], 126 + 77*4 , 0); // the valve red sign
-  Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 126 + 77*5 , 0); // the filter red sign
-  Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 126 + 77*6 , 0); // the hydro red sign
+  Images[8] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[175], 127 , 0); // the signal red sign
+  Images[9] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[176], 127 + 77 , 0); // the sattellite red sign
+  Images[10] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[177], 127 + 77*2 , 0); // the termometer red sign
+  Images[11] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[187], 127 + 77*3 , 0); // the pressure red sign
+  Images[12] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[188], 127 + 77*4 , 0); // the valve red sign
+  Images[13] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[189], 127 + 77*5 , 0); // the filter red sign
+  Images[14] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[181], 127 + 77*6 , 0); // the hydro red sign
   Images[15] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[10], 46 , 89); // the gypo and drop
   Images[16] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[26], 46 , 89+55); // the gypo and integrals
   Images[17] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[15], 46 , 89+110); // the Engine Oil
 
-  Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[29], 34 , 318); // the counterclockwise gear and cap
-  Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[37], 74 , 318); // the tractor with clockwise arrow
-
-  Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 325); // the parking lights sign
-  Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[51], 276 , 325); // the near light sign
-  Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[56], 316 , 325); // the far light sign
+  Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[147], 35 , 319); // the counterclockwise gear and cap
+  Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[145], 80 , 319); // the tractor with clockwise arrow
+  
+  Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[139], 125 , 319); // the yellow FAN
+  
+  Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 324); // the parking lights sign
+  Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[52], 282 , 324); // the near light sign
+  Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[57], 322 , 324); // the far light sign
   Images[23] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[111], 359 , 320); // the FIRST big letter
   Images[24] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[111], 400 , 320); // the SECOND big letter
   Images[25] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[61], 440 , 324); // the T letter in the ring letter
@@ -269,15 +271,20 @@ void Run_GUI(void){
   if(TimeIsReady){
     while (RESmutex_1) ;
     RESmutex_1 = 1;
-
-    M_push(PCF8583_read_by_Q);
-    //PCF8563_read_datetime(&dt);
-    RESmutex_1 = 0;
-
+    
     GetDateToStr(StrDate, &dt);
     GetTimeToStr(StrTime, &dt);
+    
+    M_push(PCF8583_read_by_Q);
+    //PCF8563_read_datetime(&dt);
+ //   RESmutex_1 = 0;
+    
+
     TimeIsReady = 0;
   }
+//fill the strings  
+  Ftoa_1(StrPressPneumosys,PTZ.PressAir);  
+//////////////////////////////////////////////////////////////  
   if(DISP.Event && Touch_Data.status == TOUCH_PRESSED){ 
     switch(DISP.TS_ZoneNumber){
     case 0:  //toggle index of button
@@ -2072,7 +2079,7 @@ const pointANDcoords   // the menu coords
   
   switch(UserParamsCond.Screen){
     case 0:
-         
+
        //  Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
       for(i = 0; i < sizeof(ParamsCoordsANDStr_0)/sizeof(specMark); i++)
          LCD_DisplayStringAt(ParamsCoordsANDStr_0[i].Coords.X, ParamsCoordsANDStr_0[i].Coords.Y, ParamsCoordsANDStr_0[i].pStr, ParamsCoordsANDStr_0[i].TextAlignment, 1); //put in on the screen

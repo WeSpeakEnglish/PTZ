@@ -51,13 +51,16 @@ void CAN_GetValues(){
     case Tachometer:
       break;
     case Spedometer:
-      PTZ.Speed = (CAN_data.dData[i] * 3600)/SaveParams.SpeeedSensor;
+      PTZ.Speed = (float)CAN_data.dData[i] * 2.353f ;
+      BIG_Arrow((uint16_t)PTZ.Speed);
+    //  PTZ.Speed = (CAN_data.dData[i] * 3600)/SaveParams.SpeeedSensor;
       break;    
     case FuelLevel:
-      PTZ.VolumeFuel = CAN_data.dData[i] * FUEL_MULTIPLIER;
+      PTZ.VolumeFuel = CAN_data.dData[i] * 0.392;//FUEL_MULTIPLIER;
+      FUEL_Arrow((uint16_t)PTZ.VolumeFuel);
       break;  
     case PneumaticAirPress:
-      PTZ.PressAir = (float)CAN_data.dData[i] * AIRPRESS_MULTIPLIER;
+      PTZ.PressAir = (float)CAN_data.dData[i] * 0.0392;
       break;
     case FarLight:
       if(CAN_data.dData[i])PTZ.Signals.FarLight = 1; // swich on indicator
