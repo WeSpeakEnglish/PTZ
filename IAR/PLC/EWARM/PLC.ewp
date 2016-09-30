@@ -1012,6 +1012,9 @@
         <name>$PROJ_DIR$\..\Src\dac.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Src\delays.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Inc\delays.h</name>
       </file>
       <file>

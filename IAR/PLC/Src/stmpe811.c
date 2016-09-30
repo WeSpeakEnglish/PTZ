@@ -43,7 +43,7 @@ ErrorStatus UB_Touch_Read(void){
   uint32_t xDiff, yDiff , x , y;
   static uint32_t _x = 0, _y = 0;
   int16_t i2c_wert;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_TP_CTRL,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_TP_CTRL,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert = (int16_t) temp;
   if(i2c_wert<0) return(ERROR);
   if((i2c_wert&0x80)==0) {
@@ -66,23 +66,23 @@ ErrorStatus UB_Touch_Read(void){
     Touch_Data.yp = _y;
   }
   temp = 0x01; 
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   temp = 0x00; 
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   return(SUCCESS);
 }
 
 void P_Touch_Reset(void){
   temp = 0x02;
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   DelayOnFastQ(20);
   temp = 0x00;
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL1, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
 }
 
 uint8_t P_Touch_FnctCmd(uint8_t Fct, FunctionalState NewState){
   int16_t i2c_wert;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_SYS_CTRL2,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_SYS_CTRL2,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert = (int16_t)temp;
   if(i2c_wert<0) return(1);
   temp = (uint8_t)(i2c_wert);
@@ -92,33 +92,33 @@ uint8_t P_Touch_FnctCmd(uint8_t Fct, FunctionalState NewState){
   else {
     temp |= (uint8_t)Fct;
   }
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL2, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_SYS_CTRL2, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   return(0);
 }
 
 
 void P_Touch_FreeIRQ(void){
   const uint8_t RegValue = 0x01; 
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, (uint8_t*)&RegValue, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, (uint8_t*)&RegValue, 1, 20);
 }
 
 void P_Touch_Config(void){
   static uint8_t regArray[12]={
     0x50,0x00,0x9A,0x01,0x01,0x00,0x01,0x01,0x03,0xFF,1,1};
   P_Touch_FnctCmd(IOE_TP_FCT, ENABLE);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL1, I2C_MEMADD_SIZE_8BIT, &regArray[0], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[10], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_EN, I2C_MEMADD_SIZE_8BIT, &regArray[11], 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL1, I2C_MEMADD_SIZE_8BIT, &regArray[0], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[10], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_EN, I2C_MEMADD_SIZE_8BIT, &regArray[11], 1, 20);
   DelayOnFastQ(20);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL2, I2C_MEMADD_SIZE_8BIT, &regArray[1], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_CFG, I2C_MEMADD_SIZE_8BIT, &regArray[2], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_TH, I2C_MEMADD_SIZE_8BIT, &regArray[3], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &regArray[4], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &regArray[5], 1, 2);   
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_FRACT_XYZ, I2C_MEMADD_SIZE_8BIT, &regArray[6], 1, 2);   
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_I_DRIVE, I2C_MEMADD_SIZE_8BIT, &regArray[7], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[8], 1, 2);
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, &regArray[9], 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_ADC_CTRL2, I2C_MEMADD_SIZE_8BIT, &regArray[1], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_CFG, I2C_MEMADD_SIZE_8BIT, &regArray[2], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_TH, I2C_MEMADD_SIZE_8BIT, &regArray[3], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &regArray[4], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &regArray[5], 1, 20);   
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_FRACT_XYZ, I2C_MEMADD_SIZE_8BIT, &regArray[6], 1, 20);   
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_I_DRIVE, I2C_MEMADD_SIZE_8BIT, &regArray[7], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_TP_CTRL, I2C_MEMADD_SIZE_8BIT, &regArray[8], 1, 20);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_INT_STA, I2C_MEMADD_SIZE_8BIT, &regArray[9], 1, 20);
   Touch_Data.status = TOUCH_RELEASED;
   Touch_Data.xp = 0;
   Touch_Data.yp = 0;
@@ -128,9 +128,9 @@ uint16_t P_Touch_ReadID(void){
   uint16_t tmp = 0;
   int16_t i2c_wert1, i2c_wert2;
 
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,0x00,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,0x00,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert1 = (int16_t)temp;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,0x01,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,0x01,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert2 = (int16_t)temp;
 
   if(i2c_wert1<0) return 0;
@@ -146,7 +146,7 @@ uint16_t P_Touch_ReadID(void){
 
 uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState){
   int16_t i2c_wert;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_GPIO_AF,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_GPIO_AF,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert = (int16_t) temp;
 
   if(i2c_wert<0) return(1);
@@ -160,7 +160,7 @@ uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState){
     temp &= ~(uint8_t)IO_Pin;
   }
 
-  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_GPIO_AF, I2C_MEMADD_SIZE_8BIT, &temp, 1, 2);
+  HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_GPIO_AF, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   return(0);
 }
 //#define DISPLAY_8IN             1U 
@@ -232,9 +232,9 @@ uint16_t P_Touch_Read_16b(uint32_t RegisterAddr){
   uint16_t ret_wert=0;
   int16_t i2c_wert1, i2c_wert2;
 
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)RegisterAddr,I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)RegisterAddr,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert1 = (int16_t) temp;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)(RegisterAddr+1),I2C_MEMADD_SIZE_8BIT,&temp,1,2);
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)(RegisterAddr+1),I2C_MEMADD_SIZE_8BIT,&temp,1,20);
   i2c_wert2 = (int16_t) temp;
 
   if(i2c_wert1<0) return 0;

@@ -238,9 +238,9 @@ void Load_GUI_0(void){
 
   Images[18] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[147], 35 , 319); // the counterclockwise gear and cap
   Images[19] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[145], 80 , 319); // the tractor with clockwise arrow
-  
+ 
   Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[139], 125 , 319); // the yellow FAN
-  
+ 
   Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 324); // the parking lights sign
   Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[52], 282 , 324); // the near light sign
   Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[57], 322 , 324); // the far light sign
@@ -269,22 +269,18 @@ void Run_GUI(void){
   ViewScreen();
 
   if(TimeIsReady){
-    while (RESmutex_1) ;
-    RESmutex_1 = 1;
-    
-    GetDateToStr(StrDate, &dt);
-    GetTimeToStr(StrTime, &dt);
-    
+   // while (RESmutex_1) ;
+    //RESmutex_1 = 1;
+
     M_push(PCF8583_read_by_Q);
     //PCF8563_read_datetime(&dt);
- //   RESmutex_1 = 0;
-    
+    //RESmutex_1 = 0;
 
+    GetDateToStr(StrDate, &dt);
+    GetTimeToStr(StrTime, &dt);
     TimeIsReady = 0;
   }
-//fill the strings  
   Ftoa_1(StrPressPneumosys,PTZ.PressAir);  
-//////////////////////////////////////////////////////////////  
   if(DISP.Event && Touch_Data.status == TOUCH_PRESSED){ 
     switch(DISP.TS_ZoneNumber){
     case 0:  //toggle index of button
@@ -439,13 +435,14 @@ void TouchScreen_Handle(void){ //the handle of Touch Screen
   if(Touch_Data.status == TOUCH_PRESSED){
     DISP.TS_ZoneNumber = -1;
 
-    for(Index = 0; Index < sizeof(ZonesTS_0)/8; Index++){
+    for(Index = 0; Index < ( sizeof(ZonesTS_0)/sizeof(ZonesTS_0[0])); Index++){
       if(ZonesTS_0[Index].PagesActivities & (1<<DISP.Screen)) // are we allowed here?
       if((x > ZonesTS_0[Index].LeftTop.X  && x < ZonesTS_0[Index].RightBottom.X)&&
             (y > ZonesTS_0[Index].LeftTop.Y  && y < ZonesTS_0[Index].RightBottom.Y)){
                 DISP.TS_ZoneNumber = Index;
-        if((DISP.TS_ZoneNumber != 7)&& CAM_flag)     
-                DISP.TS_ZoneNumber = 100;
+        if(CAM_flag)     
+          if(DISP.TS_ZoneNumber != 7)
+                 DISP.TS_ZoneNumber = -1;
         break;
       }
     } 
@@ -809,7 +806,7 @@ void actions(uint8_t deal){
         if(Condition.activity != 0)PenetrationRising(4,0);
         else{ 
          
-          M_push(CAM_ON_OFF);
+          CAM_ON_OFF();
 
         }
           break;
@@ -832,7 +829,7 @@ void actions(uint8_t deal){
         break;
       default:
          
-          M_push(CAM_ON_OFF);
+          CAM_ON_OFF();
 
     }
     break;
@@ -1999,20 +1996,20 @@ uint8_t length = 0;
 
 void UserParamsInit(void){
   uint16_t temp = sizeof(SaveParams);
-// FastStrCpy("Russian", SaveParams.Language, sizeof(SaveParams.Language), LEFT_MODE);
-// FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
-// FastStrCpy("у567ен78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
-// FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
-// SaveParams.SpecialParam = 200;
-// FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
-// SaveParams.Generator = 0.17f;
-// FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
-// SaveParams.WorkHours = 34.3f; 
-// SaveParams.SpeeedSensor = 30000;
-/// SaveParams.Square = 100.2f;
-// SaveParams.Motorman = 1;
-// SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
-// SaveParams.EquipmentWide = 3.75f;
+ FastStrCpy("Russian", SaveParams.Language, sizeof(SaveParams.Language), LEFT_MODE);
+ FastStrCpy("Kirovec", SaveParams.TractorModel, sizeof(SaveParams.TractorModel), LEFT_MODE);
+ FastStrCpy("у567ен78rus",SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
+ FastStrCpy("0.10.1",SaveParams.Version, sizeof(SaveParams.Version), LEFT_MODE);
+ SaveParams.SpecialParam = 200;
+ FastStrCpy("19.09.2016",SaveParams.ManufactureDate, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+ SaveParams.Generator = 0.17f;
+ FastStrCpy("V400", SaveParams.FuelTank, sizeof(SaveParams.ManufactureDate), LEFT_MODE); 
+ SaveParams.WorkHours = 34.3f; 
+ SaveParams.SpeeedSensor = 30000;
+ SaveParams.Square = 100.2f;
+ SaveParams.Motorman = 1;
+ SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
+ SaveParams.EquipmentWide = 3.75f;
  sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
   SaveParams.SpeeedSensor  =   1000;  // tune             
 }
@@ -2079,7 +2076,7 @@ const pointANDcoords   // the menu coords
   
   switch(UserParamsCond.Screen){
     case 0:
-
+         
        //  Ftoa_R(StrRightView, sizeof(StrRightView), (float)PTZ.Hydroexits[j].Time); // calculate the time in modyfied mode
       for(i = 0; i < sizeof(ParamsCoordsANDStr_0)/sizeof(specMark); i++)
          LCD_DisplayStringAt(ParamsCoordsANDStr_0[i].Coords.X, ParamsCoordsANDStr_0[i].Coords.Y, ParamsCoordsANDStr_0[i].pStr, ParamsCoordsANDStr_0[i].TextAlignment, 1); //put in on the screen

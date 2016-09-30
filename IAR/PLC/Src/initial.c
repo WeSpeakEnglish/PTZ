@@ -30,19 +30,20 @@ void HAL_Delay(__IO uint32_t Delay){
 
   TicksGlobal_mS = HAL_GetTick();
   OldTicksGlobal_mS = TicksGlobal_mS; 
+  WaitWhileSysTick(MAXDELAY_SYSTICK);  
   
-  while(Difference < Delay)  {
-    TicksGlobal_mS = HAL_GetTick();
-  if(OldTicksGlobal_mS > TicksGlobal_mS ){
+   while(Difference < Delay)  {
+     TicksGlobal_mS = HAL_GetTick();
+   if(OldTicksGlobal_mS > TicksGlobal_mS ){
     Difference = 0xFFFFFFFF - OldTicksGlobal_mS + TicksGlobal_mS + 1;
   }
   else Difference = TicksGlobal_mS - OldTicksGlobal_mS;
 
-  WaitWhileSysTick(MAXDELAY_SYSTICK);      
+      
 
       M_pull()(); // pull medium
       if(!WaitWhileSysTick(0)) return;
     }
-}
+ }
 
 
