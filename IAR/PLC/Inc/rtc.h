@@ -22,7 +22,7 @@ typedef struct
 }PCF8563_Alarm;
 
 extern volatile uint8_t TimeIsReady;
-extern volatile date_time_t dt;
+extern date_time_t dt;
 extern date_time_t DateSet;
 
 void PCF8583_read_by_Q(void);

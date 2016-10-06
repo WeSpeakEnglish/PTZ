@@ -268,18 +268,19 @@ void Run_GUI(void){
 
   ViewScreen();
 
-  if(TimeIsReady){
+ // if(TimeIsReady){
    // while (RESmutex_1) ;
     //RESmutex_1 = 1;
 
-    M_push(PCF8583_read_by_Q);
+   // M_push(PCF8583_read_by_Q);
     //PCF8563_read_datetime(&dt);
     //RESmutex_1 = 0;
-
+    UNIXToDate(UNIXTime,&dt);
+    
     GetDateToStr(StrDate, &dt);
     GetTimeToStr(StrTime, &dt);
-    TimeIsReady = 0;
-  }
+ //   TimeIsReady = 0;
+ // }
   Ftoa_1(StrPressPneumosys,PTZ.PressAir);  
   if(DISP.Event && Touch_Data.status == TOUCH_PRESSED){ 
     switch(DISP.TS_ZoneNumber){

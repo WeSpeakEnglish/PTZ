@@ -53,11 +53,10 @@ void TIM14_IRQHandler(void){
 
     break;
   case 3: 
-    // ReleaseFunction();
-   
+    DISP.ReleaseFlag = 1;   
     break;
   case 4:  
-    DISP.ReleaseFlag = 1;
+
     break;
   case 5: 
     break;

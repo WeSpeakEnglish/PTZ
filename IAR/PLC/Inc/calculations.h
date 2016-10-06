@@ -4,6 +4,7 @@
 #include <arm_math.h>
 #include "lcd.h"
 #include "gui.h"
+#include "rtc.h"
 
 #define MAX_POLY_POINTS 24
 extern Point StoreArrayOfPoly[MAX_POLY_POINTS];
@@ -57,4 +58,6 @@ uint8_t * Ftoa_2(uint8_t * StrDst, float NumberF);
 uint8_t * Itoa(uint8_t * StrDst, int16_t Number);  // convert int16 into string 
 uint8_t * Utoa(uint8_t * StrDst, uint16_t Number); // convert unsigned int 16 into string 
 uint8_t * Ftoa_R(uint8_t * StrDst, uint8_t SizeOfStr, float NumberF);
+void UNIXToDate(volatile uint32_t utc, date_time_t * dt); 
+uint32_t DateToUNIX(date_time_t * dt);
 #endif

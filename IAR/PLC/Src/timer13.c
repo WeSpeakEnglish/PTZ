@@ -56,7 +56,7 @@ void TIM13_IRQHandler(void){
       KB_Status.ENTER = 1;
     }
     else
-        if(SOUND.CounterSound == SOUND.SoundPeriod){
+      if(SOUND.CounterSound == SOUND.SoundPeriod){
       if(DISP.ReleaseTask && (Touch_Data.status == TOUCH_RELEASED) && (!DISP.ReleaseFlag))           ReleaseFunction();
     }
     if((KB_Status.EVENT && KB_Status.PRESSED) &&((CounterUPD % 20) == 18))    { 

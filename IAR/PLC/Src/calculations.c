@@ -1,6 +1,8 @@
 #include "calculations.h"
 #include <math.h>
 
+#include "rtc.h"
+
 const uint16_t SineTable[256] = {
   0x0000,  0x0192,  0x0324,  0x04b6,  0x0648,  0x07da,  0x096c,  0x0afe,
   0x0c90,  0x0e21,  0x0fb3,  0x1144,  0x12d5,  0x1466,  0x15f7,  0x1787,
@@ -305,6 +307,51 @@ uint8_t * Utoa(uint8_t * StrDst, uint16_t Number){ // convert int into string
   *pStrDst++ = Tmp + 0x30;
   *pStrDst = '\0';
   return StrDst;
+}
+
+const unsigned char numofdays[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+
+
+ void UNIXToDate(volatile uint32_t utc, date_time_t * dt){
+//  struct RTC* rtc = & rtcVar;
+  uint32_t n,d,i;
+  uint16_t year;
+  dt->seconds = (uint8_t)(utc % 60); utc /= 60;
+  dt->minutes = (uint8_t)(utc % 60); utc /= 60;
+  dt->hours = (uint8_t)(utc % 24); utc /= 24;
+  dt->weekday = (uint8_t)((utc + 4) % 7);
+  year = (uint8_t)((1970 + utc / 1461 * 4)); utc %= 1461;
+  n = ((utc >= 1096) ? utc - 1 : utc) / 365;
+  year += n;
+  dt->year = (uint8_t)(year - 2000);
+  utc -= n * 365 + (n > 2 ? 1 : 0);
+  for (i = 0; i < 12; i++) {
+    d = numofdays[i];
+    if (i == 1 && n == 2) d++;
+    if (utc < d) break;
+    utc -= d;
+   }
+  dt->month = (uint8_t)(1 + i);
+  dt->day = (uint8_t)(1 + utc);
+}
+
+uint32_t DateToUNIX(date_time_t * dt){
+uint32_t yDay = 0;
+uint8_t i;
+uint8_t DaysOfMounth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+for(i = 0; i < (dt->month) - 1; i++){
+   yDay += DaysOfMounth[i];
+}
+
+
+//if((!((dt->year)%4))
+//   &&((dt->month)>2)) yDay++;
+
+yDay += dt->day;
+
+ return 31536000 * ((dt->year) + 2000 - 1970) + ((yDay) + (uint32_t)(floor((double)(((dt->year) + 2000 - 1972)/4))))*86400 + (dt->hours) * 3600 + (dt->minutes)*60 + (dt->seconds);
+
 }
 ///////
  

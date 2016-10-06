@@ -1,6 +1,8 @@
 #include "rtc.h"
 #include "i2c.h"
 #include "core.h"
+#include "systimer.h"
+#include "calculations.h"
 
 #define PCF8563_WRITE_ADDRESS      0xA2
 #define PCF8563_READ_ADDRESS       0xA2
@@ -53,7 +55,7 @@
 #define Timer_INT_Pulse_on         0x10
 #define Timer_INT_Pulse_off        0x00
 
-volatile date_time_t dt; // for get
+date_time_t dt; // for get
 date_time_t DateSet; // for set
 
 char const weekday_names[7][10] =
@@ -224,7 +226,7 @@ void PCF8583_read_by_Q(void){
 
 void PCF8583_set_by_Q(void){
  PCF8563_set_datetime(&DateSet);
-
+ UNIXTime = DateToUNIX(&DateSet);
 }
 
 void PCF8563_read_datetime(date_time_t volatile *dt)

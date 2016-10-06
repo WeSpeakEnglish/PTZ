@@ -3,5 +3,5 @@
 
 
 void Delay100ms(void){
-  HAL_Delay(100);
+ // HAL_Delay(100);
 }
