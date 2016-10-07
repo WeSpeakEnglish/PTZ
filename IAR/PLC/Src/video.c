@@ -27,7 +27,7 @@ uint8_t _HW_DrawLine( int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t c
         WaitWhileDMA2D(MAXDELAY_DMA2D);
         while(PLC_DMA2D_Status.Ready == 0){ 
           //    M_pull()();
-           DelayOnMediumQ(1);
+           DelayOnFastQ(1);
           if(!WaitWhileDMA2D(0)) return 1;
         }
       }  

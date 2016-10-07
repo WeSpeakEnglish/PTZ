@@ -3,8 +3,8 @@
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   NVIC_ClearPendingIRQ (EXTI0_IRQn);
-  EXTI->PR |= (1<<0);
-  Timer14_Init_Deal(200, 1);
+//  EXTI->PR |= EXTI_PR_PR0 ;
+  Timer14_Init_Deal(150, 1);
   return;
 }
 

@@ -241,7 +241,7 @@ void Load_GUI_0(void){
  
   Images[3] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[139], 125 , 319); // the yellow FAN
  
-  Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[46], 230 , 324); // the parking lights sign
+  Images[20] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[47], 230 , 324); // the parking lights sign
   Images[21] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[52], 282 , 324); // the near light sign
   Images[22] = GUI_SetObject(IMAGE_FAST_FILL,0, 0, 3, &IMAGES.ImgArray[57], 322 , 324); // the far light sign
   Images[23] = GUI_SetObject(IMAGE_FAST_FILL,0, 1, 3, &IMAGES.ImgArray[111], 359 , 320); // the FIRST big letter
@@ -922,7 +922,7 @@ void Test3(void){
             break;     
     case 6:   PTZ.Errors.ImpurityAirFilter = 1;
             break;  
-    case 7:   PTZ.Errors.T_Engine = 1;
+    case 7:   PTZ.Errors.T_Engine = 1; //oil
             break;       
     case 8:   PTZ.Errors.ImpurityAttachments = 1;
             break;            
@@ -1629,7 +1629,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRectDMA(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE, pos_y_controlHE + i*10, pos_x_controlHE + longierSquareW + j * x_stepHE, pos_y_controlHE + y_stepHE + i*10);
 
       if ((PTZ.Hydroexits[j].B + 5) / (100 - i*10)){ //math.round :)
         LCD_SetColorPixel(0xFFFF3333);
@@ -1637,7 +1637,7 @@ void LittleHidroExitsShow(void){
       else{
         LCD_SetColorPixel(0xFF999999);
       }
-      LCD_FillRectDMA(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
+      LCD_FillRect(pos_x_controlHE + j * x_stepHE + x_step_secondHE, pos_y_controlHE + i*10, pos_x_controlHE + shorherSquareW + j * x_stepHE + x_step_secondHE, pos_y_controlHE + y_stepHE + i*10);
 
     }
   }
@@ -1922,7 +1922,8 @@ switch(Screen){
 }
 
 // exchange parameters screens
-#define USERCONTROLSTRINGS 11 // how much strings we have here on screen 1 of our control 
+#define USERCONTROLSTRINGS 11 // how much strings we have here on screen 1 of our control
+
 void UserParamsExchangeScreens(uint8_t ControlVar){
        switch(UserParamsCond.Screen){
           case 0:  
@@ -2144,10 +2145,27 @@ const pointANDcoords   // the menu coords
 
 ///!---------------------------------------------------------------------------
 void UserControlsShow(void){
+  
+  if(DISP.Screen < 6){
+    if(PTZ.Errors.T_CoolingLiquid)Images[10]->z_index = 1;
+    else                          Images[10]->z_index = 0;
+   
+    if(PTZ.Errors.ImpurityAirFilter)Images[13]->z_index = 1;
+    else                            Images[13]->z_index = 0;
+    
+    if(PTZ.Errors.HydrotankLevel) Images[11]->z_index = 1;
+    else                          Images[11]->z_index = 0;
+  }
+  
   switch(DISP.Screen){
-  case 0:
-    if(PTZ.Signals.ParkingLights) Images[20]->z_index = 1;
-    else                          Images[20]->z_index = 0;
+  case 0: 
+  case 1:
+    ShowAlertWindow();
+    
+    if(DISP.Screen == 0){
+      if(PTZ.Signals.ParkingLights) Images[20]->z_index = 1;
+      else                          Images[20]->z_index = 0;
+    }
     
     if(PTZ.Signals.LocalLight)    Images[21]->z_index = 1;
     else                          Images[21]->z_index = 0;
@@ -2163,20 +2181,7 @@ void UserControlsShow(void){
     
     if(PTZ.Signals.ParkingBrake)  Images[30]->z_index = 1; 
     else                          Images[30]->z_index = 0;
-    
-    if(PTZ.Errors.T_CoolingLiquid)Images[10]->z_index = 1;
-    else                          Images[10]->z_index = 0;
-   
-    if(PTZ.Errors.ImpurityAirFilter)Images[13]->z_index = 1;
-    else                            Images[13]->z_index = 0;
-    
-    if(PTZ.Errors.HydrotankLevel) Images[11]->z_index = 1;
-    else                          Images[11]->z_index = 0;
-   
- //   if(PTZ.Errors.ImpurityAirFilter) 
-    break;
-  case 1:
-    LittleHidroExitsShow();
+   if(DISP.Screen == 1) LittleHidroExitsShow();
     break;
   case 2:
     PenetrationRising(0, 0);
@@ -2203,6 +2208,7 @@ void UserControlsShow(void){
     }
      break;
       }
+  
    DISP.TS_ZoneNumber = -1; 
   return;
 }
@@ -2258,6 +2264,63 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
   else Ys = y2 - k*(X - x1);
   if((uint16_t)Ys > Y) return 1; 
   return 0;
+}
+/////////////////////////////////this parameters point to acoording pictures
+uint32_t ShowAlertWindow(void){
+  uint32_t Errors = 0;
+  static uint8_t Flip = 0;
+  uint8_t i; // just inner counter
+  pointANDcoords Images[]={
+    {74,{30,140}},    // PTZ.Errors.T_CoolingLiquid
+    {84,{85,140}},    // PTZ.Errors.ImpurityAirFilter
+    {85,{140,140}},   // PTZ.Errors.CoolingLiquidLevel
+    {86,{30,178}},    // PTZ.Errors.ImpurityCoolingLiquid
+    {87,{85,178}},    // PTZ.Errors.P_Engine
+    {88,{140,178}},   // PTZ.Errors.T_Engine
+    {89,{30, 216}},   // PTZ.Errors.ImpurityEngineFilter
+    {90,{85, 216}},   // PTZ.Errors.ImpurityRudderFilter
+    {91,{140, 216}},  // PTZ.Errors.ImpurityPressureFilter
+    {75,{30, 254}},   // PTZ.Errors.ImpurityAttachments
+    {76,{85, 254}},   // PTZ.Errors.ImpurityDrainFilter
+    {77,{140, 254}},  // PTZ.Errors.HydrotankLevel
+    {78,{30, 292}},   // PTZ.Errors.T_HydroSystem
+    {79,{85, 292}},   // PTZ.Errors.P_First_Contour
+    {80,{140, 292}},  // PTZ.Errors.P_Second_Contour    
+    {81,{30, 330}},   // PTZ.Errors.AccumulatorDischarge 
+    {82,{85, 330}},   // PTZ.Errors.Engine_Malfunction
+    {83,{140, 330}},  // PTZ.Errors.EngineOilLevel
+//    {256,{31,67}},    //   the background image
+  };   
+ Flip++; 
+ if(Flip%2) Errors = 262143;
+ else Errors = 1;
+  
+  if(PTZ.Errors.T_CoolingLiquid)                Errors |= (1<<0); // es first one (bit means the error)
+  if(PTZ.Errors.ImpurityAirFilter)              Errors |= (1<<1);
+  if(PTZ.Errors.CoolingLiquidLevel)             Errors |= (1<<2);  
+  if(PTZ.Errors.ImpurityCoolingLiquid)          Errors |= (1<<3);
+  if(PTZ.Errors.P_Engine)                       Errors |= (1<<4);
+  if(PTZ.Errors.T_Engine)                       Errors |= (1<<5);  
+  if(PTZ.Errors.ImpurityEngineFilter)           Errors |= (1<<6);    
+  if(PTZ.Errors.ImpurityRudderFilter)           Errors |= (1<<7);
+  if(PTZ.Errors.ImpurityPressureFilter)         Errors |= (1<<8);  
+  if(PTZ.Errors.ImpurityAttachments)            Errors |= (1<<9);  
+  if(PTZ.Errors.ImpurityDrainFilter)            Errors |= (1<<10); 
+  if(PTZ.Errors.HydrotankLevel)                 Errors |= (1<<11); 
+  if(PTZ.Errors.T_HydroSystem)                  Errors |= (1<<12);  
+  if(PTZ.Errors.P_First_Contour)                Errors |= (1<<13);  
+  if(PTZ.Errors.P_Second_Contour)               Errors |= (1<<14);
+  if(PTZ.Errors.AccumulatorDischarge)           Errors |= (1<<15); 
+  if(PTZ.Errors.Engine_Malfunction)             Errors |= (1<<16);   
+  if(PTZ.Errors.EngineOilLevel)                 Errors |= (1<<17);  
+  
+  if(Errors) LCD_Fill_Image(&IMAGES.ImgArray[256], 31, 67);  // show a backgroung of the control
+  
+  for(i = 0; i < 18; i++){
+    if(Errors & (1<<i)) LCD_Fill_Image(&IMAGES.ImgArray[Images[i].N], Images[i].Coords.X, Images[i].Coords.Y);
+   }
+  
+  return Errors;
 }
 
 ///------- Extended addition

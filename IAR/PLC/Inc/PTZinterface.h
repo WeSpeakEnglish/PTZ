@@ -120,6 +120,7 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
 void KBD_Repeat_Handle(void);
 uint32_t FillStructIMG(uint32_t address, uint16_t startIndex, uint16_t stopIndex);
 
+uint32_t ShowAlertWindow(void);
 void FastStrCpy(const uint8_t * Src, uint8_t * Dst, uint8_t SizeOfDst, Text_AlignModeTypdef Direction);
 void UserParamsPreparingScreens(uint8_t Screen);
 void BIG_Arrow(uint16_t SetValue);

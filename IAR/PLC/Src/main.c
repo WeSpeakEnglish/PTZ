@@ -29,7 +29,8 @@ void MX_USB_HOST_Process(void);
 
 /* USER CODE END 0 */
 
- int main(void)
+ 
+int main(void)
 {
   HAL_StatusTypeDef  A;
   /* USER CODE BEGIN 1 */
@@ -150,7 +151,7 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_USART6
                               |RCC_PERIPHCLK_I2C2|RCC_PERIPHCLK_SDMMC1
                               |RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 300;// 220;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 250;// 220;
   PeriphClkInitStruct.PLLSAI.PLLSAIR = 4;
   PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
   PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;
@@ -171,7 +172,7 @@ void SystemClock_Config(void)
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
   /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+  //HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
 /* USER CODE BEGIN 4 */

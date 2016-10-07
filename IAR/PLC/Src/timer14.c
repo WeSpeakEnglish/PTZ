@@ -39,7 +39,7 @@ void TIM14_IRQHandler(void){
   //  MX_Touch_Read();
  //   RESmutex_1 = 0;
     M_push(P_Touch_FreeIRQ);
-    Timer14_Init_Deal(200,2);  
+    Timer14_Init_Deal(100,2);  
     break;
 
   case 2: 

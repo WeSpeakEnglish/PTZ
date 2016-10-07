@@ -161,9 +161,9 @@ void Show_GUI(void){
    
    if(!LayerOfView){
       _HW_Fill_Display_From_Mem_565(SDRAM_BANK_ADDR + LAYER_1_OFFSET, SDRAM_BANK_ADDR + FB_565_1);
-               WaitWhileDMA2D(MAXDELAY_DMA2D); 
-               while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
-           DelayOnMediumQ(1);
+          WaitWhileDMA2D(MAXDELAY_DMA2D); 
+         while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
+           DelayOnFastQ(1);
            if(!WaitWhileDMA2D(0))break;
            } 
       HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + FB_565_1, 0); // set the present layer address
@@ -172,8 +172,8 @@ void Show_GUI(void){
       _HW_Fill_Display_From_Mem_565(SDRAM_BANK_ADDR + LAYER_2_OFFSET, SDRAM_BANK_ADDR + FB_565_2);
          WaitWhileDMA2D(MAXDELAY_DMA2D); 
            
-      while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
-          DelayOnMediumQ(1);
+        while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS)) { 
+          DelayOnFastQ(1);
           if(!WaitWhileDMA2D(0))break;
          } 
       HAL_LTDC_SetAddress(&hltdc, SDRAM_BANK_ADDR + FB_565_2, 0); // set the present layer address

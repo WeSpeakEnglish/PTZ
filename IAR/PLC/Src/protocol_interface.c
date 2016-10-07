@@ -59,8 +59,8 @@ void CAN_GetValues(){
       FUEL_Arrow((uint16_t)PTZ.VolumeFuel);
       break;  
     case PneumaticAirPress:
-      PTZ.PressAir = (float)CAN_data.dData[i] * AIRPRESS_MULTIPLIER;
-      PTZ.PressAir = (float)CAN_data.dData[i] * 0.0392;
+ //     PTZ.PressAir = (float)CAN_data.dData[i] * AIRPRESS_MULTIPLIER;
+      PTZ.PressAir = (float)CAN_data.dData[i] * 0.04062;// 0.0392;
       break;
     case FarLight:
       if(CAN_data.dData[i])PTZ.Signals.FarLight = 1; // swich on indicator

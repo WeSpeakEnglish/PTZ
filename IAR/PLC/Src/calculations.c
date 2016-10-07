@@ -312,8 +312,7 @@ uint8_t * Utoa(uint8_t * StrDst, uint16_t Number){ // convert int into string
 const unsigned char numofdays[12]={31,28,31,30,31,30,31,31,30,31,30,31};
 
 
- void UNIXToDate(volatile uint32_t utc, date_time_t * dt){
-//  struct RTC* rtc = & rtcVar;
+void UNIXToDate(volatile uint32_t utc, date_time_t * dt){
   uint32_t n,d,i;
   uint16_t year;
   dt->seconds = (uint8_t)(utc % 60); utc /= 60;
@@ -338,20 +337,15 @@ const unsigned char numofdays[12]={31,28,31,30,31,30,31,31,30,31,30,31};
 uint32_t DateToUNIX(date_time_t * dt){
 uint32_t yDay = 0;
 uint8_t i;
-uint8_t DaysOfMounth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
 
 for(i = 0; i < (dt->month) - 1; i++){
-   yDay += DaysOfMounth[i];
+   yDay += numofdays[i];
 }
-
-
-//if((!((dt->year)%4))
-//   &&((dt->month)>2)) yDay++;
 
 yDay += dt->day;
 
  return 31536000 * ((dt->year) + 2000 - 1970) + ((yDay) + (uint32_t)(floor((double)(((dt->year) + 2000 - 1972)/4))))*86400 + (dt->hours) * 3600 + (dt->minutes)*60 + (dt->seconds);
 
 }
-///////
+
  
