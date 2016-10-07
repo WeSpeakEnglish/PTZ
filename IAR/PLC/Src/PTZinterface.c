@@ -1146,11 +1146,13 @@ const uint8_t DaysRules[]={31,28,31,30,31,30,31,31,30,31,30,31};
     {
       switch(VisualKBD.Type){
          case KEYB_DATE:
+          if(UserParamsCond.AddActiveStr == 1) 
           M_push(PCF8583_set_by_Q);
           break;
          case KEYB_NAME: 
           if(UserParamsCond.AddActiveStr == 2) 
             FastStrCpy(VisualKBD.Symbols,SaveParams.TractorNumb, sizeof(SaveParams.TractorNumb), LEFT_MODE);
+            
       }     
  }
  
