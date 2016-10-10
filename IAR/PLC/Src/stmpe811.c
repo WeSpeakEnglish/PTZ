@@ -29,6 +29,11 @@ ErrorStatus UB_Touch_Init(void){
   return(SUCCESS);
 }
 
+void UB_Touch_InitQ(void){
+   UB_Touch_Init();
+ }
+
+
 uint8_t temp, temp2; 
 
 void P_Touch_ReEnter(void){
@@ -43,7 +48,9 @@ ErrorStatus UB_Touch_Read(void){
   uint32_t xDiff, yDiff , x , y;
   static uint32_t _x = 0, _y = 0;
   int16_t i2c_wert;
-  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_TP_CTRL,I2C_MEMADD_SIZE_8BIT,&temp,1,20);
+  static Touch_Status_t OldStatus = TOUCH_RELEASED;
+  
+  HAL_I2C_Mem_Read(&hi2c2,(uint16_t)STMPE811_I2C_ADDR,(uint16_t)IOE_REG_TP_CTRL,I2C_MEMADD_SIZE_8BIT,&temp,1,10);
   i2c_wert = (int16_t) temp;
   if(i2c_wert<0) return(ERROR);
   if((i2c_wert&0x80)==0) {
@@ -69,6 +76,14 @@ ErrorStatus UB_Touch_Read(void){
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   temp = 0x00; 
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
+  
+  if(OldStatus != Touch_Data.status){
+    if(Touch_Data.status == TOUCH_PRESSED) TouchScreen_Handle();
+    else DISP.ReleaseFlag = 1;  //ReleaseFunction();
+    OldStatus = Touch_Data.status;
+    P_Touch_FreeIRQ();DISP.ReleaseFlag = 1;  
+  }
+    
   return(SUCCESS);
 }
 
@@ -163,8 +178,8 @@ uint8_t P_Touch_IOAFConfig(uint8_t IO_Pin, FunctionalState NewState){
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_GPIO_AF, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   return(0);
 }
-//#define DISPLAY_8IN             1U 
-#define DISPLAY_9IN           1U 
+#define DISPLAY_8IN             1U 
+//#define DISPLAY_9IN           1U 
 
 ///CALIBRATING DATA
 #ifdef DISPLAY_8IN

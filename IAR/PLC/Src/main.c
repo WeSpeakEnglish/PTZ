@@ -30,7 +30,7 @@ void MX_USB_HOST_Process(void);
 /* USER CODE END 0 */
 
  
-int main(void)
+  int main(void)
 {
   HAL_StatusTypeDef  A;
   /* USER CODE BEGIN 1 */
@@ -73,7 +73,9 @@ int main(void)
 
   InitCANFilters(&hcan1);
   CAN1_ON_OFF(1);
-  CAN2_ON_OFF(1);
+  CAN2_ON_OFF(1); 
+//  VideoCAMOnOff(4, 1); //number four on 
+//  VideoCAMOnOff(4, 0); //number four on
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -96,8 +98,9 @@ int main(void)
   PCF8563_read_datetime(&dt); // (uint32_t utc, date_time_t * dt)
   UNIXTime = DateToUNIX(&dt); //UNIXTime
   UNIXToDate(UNIXTime,&dt);
-  Load_GUI_0();  
-  ////////////////////////////////////////////////////////////////////////////////////////       
+  Load_GUI_0();
+ // P_Touch_Reset();
+////////////////////////////////////////////////////////////////////////////////////////       
   while(1){
   /* USER CODE END WHILE */
     MX_USB_HOST_Process();

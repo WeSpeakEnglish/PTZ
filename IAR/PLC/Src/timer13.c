@@ -16,7 +16,8 @@ void Timer13_Init(void){
 void TIM13_IRQHandler(void){
   static uint32_t Counter = 0;
   static uint32_t CounterUPD = 0;
-
+  static uint32_t CounterTscr = 0;
+ // static uint8_t OldTouchStatus = 0;
  // static uint8_t Repeat = 0;
   TIM13->SR &= ~TIM_SR_UIF; // UIF
 
@@ -83,10 +84,12 @@ void TIM13_IRQHandler(void){
   }
   Counter++;
   if(Counter % 100 == 90){
-    
-        M_push(CAN_GetValues);
-    
+
+  }
+  if(CounterTscr % 1000 == 91){
+ //    M_push(MX_Touch_Read);
   }
   Counter %= 100; 
+  CounterTscr++;
   return;
 }
