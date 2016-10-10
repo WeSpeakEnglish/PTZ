@@ -99,17 +99,17 @@ uint8_t step = 3;            // step that use for going inside of the buffer (de
 parsingBuf = &(CAN_ReceivedData.receiverBuf0);
 
 if(CAN_ReceivedData.receiverBuf0.messageNew){ 
-    //  parsingBuf = &(CAN_ReceivedData.receiverBuf0);
+      parsingBuf = &(CAN_ReceivedData.receiverBuf0);
       CAN_ReceivedData.receiverBuf0.messageNew = 0;
     //  CAN_data.dLength = 0;
 }
 else{
- // if(CAN_ReceivedData.receiverBuf1.messageNew){
- //     parsingBuf = &(CAN_ReceivedData.receiverBuf1);
- //     CAN_ReceivedData.receiverBuf1.messageNew = 0;
-    //  CAN_data.dLength = 0;
- // }
- // else 
+  if(CAN_ReceivedData.receiverBuf1.messageNew){
+      parsingBuf = &(CAN_ReceivedData.receiverBuf1);
+      CAN_ReceivedData.receiverBuf1.messageNew = 0;
+  //    CAN_data.dLength = 0;
+  }
+  else 
     return 1;
  }
 
@@ -156,10 +156,10 @@ static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
  
   switch(Param){
     case 0:  // it is a head
-     // if(!CAN_ReceivedData.CurrentBuffer)
+      if(!CAN_ReceivedData.CurrentBuffer)
         passingBuf =  &(CAN_ReceivedData.receiverBuf0);
-    //  else 
-     //   passingBuf =  &(CAN_ReceivedData.receiverBuf1);
+      else 
+        passingBuf =  &(CAN_ReceivedData.receiverBuf1);
       
       MsgHeader = (MessageHeader *) pData;
       passingBuf->group = (MsgHeader)->group;            //take the group   
@@ -178,6 +178,8 @@ static CANbufT * passingBuf = &(CAN_ReceivedData.receiverBuf0);
           passingBuf->buf[passingBuf->bufCounter++] = MsgData->data[i];
           if((passingBuf->bufCounter) == (passingBuf->messageLength)){
             passingBuf->messageNew = 1;
+            if(!CAN_ReceivedData.CurrentBuffer)CAN_ReceivedData.CurrentBuffer = 1;
+            else CAN_ReceivedData.CurrentBuffer = 0;
            }
           }
          else passingBuf->overflow = 1;   

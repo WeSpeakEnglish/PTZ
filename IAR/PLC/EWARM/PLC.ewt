@@ -1205,9 +1205,6 @@
         <name>$PROJ_DIR$\..\Src\DispInfo.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\dma.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\Src\dma2d.c</name>
       </file>
       <file>
@@ -1515,6 +1512,9 @@
       </file>
     </group>
   </group>
+  <file>
+    <name>$PROJ_DIR$\..\Src\dma.c</name>
+  </file>
 </project>
 
 

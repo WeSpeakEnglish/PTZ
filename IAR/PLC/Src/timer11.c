@@ -21,18 +21,10 @@ void Timer11_Init(void){
 }
 
 void TIM11_IRQHandler(void){
-
-static uint32_t Counter_TIM11 = 0; // base for 13+ years overflow timer with 0.1 sec tick
-
  TIM11->SR &= ~TIM_SR_UIF; //—брасываем флаг UIF
- 
- 
- //if(Counter_TIM11%100 == 0){
-   
-// }
- Counter_TIM11++;  
+ Counter_TIM11++;
  //F_push(Run_GUI);
 // F_push(Show_GUI);
- if(Counter_TIM11%2 == 0)UpdateScreen = 1;
+ UpdateScreen = 1;
  return;
 }

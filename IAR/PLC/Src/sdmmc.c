@@ -29,11 +29,11 @@ uint8_t SD_state;
 
   if (SD_state == HAL_OK)
   {
-   if (HAL_SD_WideBusOperation_Config(&hsd1, SDMMC_BUS_WIDE_4B) != SD_OK)
+    if (HAL_SD_WideBusOperation_Config(&hsd1, SDMMC_BUS_WIDE_4B) != SD_OK)
     {
       SD_state = HAL_ERROR;
-   }
-   else
+    }
+    else
     {
       SD_state = HAL_OK;
     }

@@ -135,7 +135,6 @@ extern Touch_Data_t Touch_Data;
 
 ErrorStatus UB_Touch_Init(void);
 ErrorStatus UB_Touch_Read(void);
-void UB_Touch_InitQ(void);
 void MX_Touch_Read(void); 
 void P_Touch_FreeIRQ(void);
 void P_Touch_Reset(void);

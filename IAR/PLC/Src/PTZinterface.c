@@ -2014,8 +2014,10 @@ void UserParamsInit(void){
  SaveParams.Motorman = 1;
  SaveParams.TotalPatch = 400.0; // it crossing with String... StrTotalPatch
  SaveParams.EquipmentWide = 3.75f;
- //sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
-  SaveParams.SpeeedSensor  =   1000;  // tune             
+
+  SaveParams.SpeeedSensor  =   1000;  // tune     
+   sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
+//  sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
 }
 
 
@@ -2200,12 +2202,10 @@ void UserControlsShow(void){
      break;
      
   case 6:
-    if(V_KBD_Fill_button){
+    if(V_KBD_Fill_button)
        ChangeColorKBD();
-       if(Touch_Data.status == TOUCH_RELEASED)
-         V_KBD_Fill_button = 0;
-    
-    }
+          if(Touch_Data.status == TOUCH_RELEASED)
+           V_KBD_Fill_button = 0;
     else{
       if(VisualKBD.Pressed){ 
         VisualKBD.Pressed = 0;
@@ -2274,7 +2274,6 @@ uint8_t solveTriangleZones(const Zone * pZone, uint8_t Type, const uint16_t X,  
 /////////////////////////////////this parameters point to acoording pictures
 uint32_t ShowAlertWindow(void){
   uint32_t Errors = 0;
- // static uint8_t Flip = 0;
   uint8_t i; // just inner counter
   pointANDcoords Images[]={
     {74,{30,140}},    // PTZ.Errors.T_CoolingLiquid
@@ -2297,9 +2296,6 @@ uint32_t ShowAlertWindow(void){
     {83,{140, 330}},  // PTZ.Errors.EngineOilLevel
 //    {256,{31,67}},    //   the background image
   };   
- //Flip++; 
- //if(Flip%2) Errors = 262143;
- //else Errors = 1;
   
   if(PTZ.Errors.T_CoolingLiquid)                Errors |= (1<<0); // es first one (bit means the error)
   if(PTZ.Errors.ImpurityAirFilter)              Errors |= (1<<1);
