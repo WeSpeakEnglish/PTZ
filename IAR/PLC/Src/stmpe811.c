@@ -17,6 +17,8 @@ static uint16_t P_Touch_Read_X(void);
 static uint16_t P_Touch_Read_Y(void);
 uint16_t P_Touch_Read_16b(uint32_t RegisterAddr);
 
+uint8_t vkbd_Event = 0;
+
 ErrorStatus UB_Touch_Init(void){
   uint16_t stmpe_id=0;
   stmpe_id=P_Touch_ReadID();
@@ -74,8 +76,13 @@ ErrorStatus UB_Touch_Read(void){
   HAL_I2C_Mem_Write(&hi2c2, (uint16_t)STMPE811_I2C_ADDR, (uint16_t)IOE_REG_FIFO_STA, I2C_MEMADD_SIZE_8BIT, &temp, 1, 20);
   
   if(OldStatus != Touch_Data.status){
-     if(Touch_Data.status == TOUCH_PRESSED) TouchScreen_Handle();
-     else DISP.ReleaseFlag = 1;  //ReleaseFunction();
+    if(Touch_Data.status == TOUCH_PRESSED){
+      TouchScreen_Handle();
+      vkbd_Event = 1;
+    }
+     else{
+        DISP.ReleaseFlag = 1;
+     }  //ReleaseFunction();
      OldStatus = Touch_Data.status;
      P_Touch_FreeIRQ();DISP.ReleaseFlag = 1;  
    }

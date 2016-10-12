@@ -2016,8 +2016,8 @@ void UserParamsInit(void){
  SaveParams.EquipmentWide = 3.75f;
 
   SaveParams.SpeeedSensor  =   1000;  // tune     
-   sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
-//  sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
+ sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
+// sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
 }
 
 
@@ -2182,9 +2182,10 @@ void UserControlsShow(void){
     
     if(PTZ.Signals.RearAxle)      Images[19]->z_index = 1; 
     else                          Images[19]->z_index = 0;     
-    
+ if(DISP.Screen == 0){   
     if(PTZ.Signals.ParkingBrake)  Images[30]->z_index = 1; 
     else                          Images[30]->z_index = 0;
+ }
    if(DISP.Screen == 1) LittleHidroExitsShow();
     break;
   case 2:

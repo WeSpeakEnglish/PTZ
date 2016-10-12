@@ -132,6 +132,7 @@ typedef struct {
 #define TOUCH_IO_ALL               (uint32_t)(IO_Pin_1 | IO_Pin_2 | IO_Pin_3 | IO_Pin_4)
 
 extern Touch_Data_t Touch_Data;
+extern uint8_t vkbd_Event;
 
 ErrorStatus UB_Touch_Init(void);
 ErrorStatus UB_Touch_Read(void);

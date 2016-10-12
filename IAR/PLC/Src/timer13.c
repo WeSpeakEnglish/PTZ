@@ -88,7 +88,7 @@ void TIM13_IRQHandler(void){
         M_push(CAN_GetValues);
     
   }
-   if(CounterTscr % 1000 == 91){
+   if(CounterTscr % 500 == 91){
                 M_push(MX_Touch_Read);
     }
   Counter %= 100; 

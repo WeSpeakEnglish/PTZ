@@ -70,7 +70,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   InitPeriph();
-
+  Load_GUI_0();  
   InitCANFilters(&hcan1);
   CAN1_ON_OFF(1);
   CAN2_ON_OFF(1);
@@ -96,7 +96,7 @@ int main(void)
   PCF8563_read_datetime(&dt); // (uint32_t utc, date_time_t * dt)
   UNIXTime = DateToUNIX(&dt); //UNIXTime
   UNIXToDate(UNIXTime,&dt);
-  Load_GUI_0();  
+  
   ////////////////////////////////////////////////////////////////////////////////////////       
   while(1){
   /* USER CODE END WHILE */

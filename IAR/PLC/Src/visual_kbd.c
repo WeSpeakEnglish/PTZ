@@ -103,7 +103,9 @@ void ChangeColorKBD(void){
  ZoneKBD * InsideZone;
  uint32_t ColorToChange;
  
- solveReturnCodeVisualKBD();
+ if(vkbd_Event){
+   solveReturnCodeVisualKBD();
+
  InsideZone = (ZoneKBD *) &ZonesKBD[VisualKBD.ReturnZone];
    
  Offset = DisplayWIDTH - (InsideZone->RightBottom.X - InsideZone->LeftTop.X);
@@ -139,7 +141,10 @@ void ChangeColorKBD(void){
    }
    pChange += Offset;
  }
- VisualKBD.Pressed = 1;
+
+     VisualKBD.Pressed = 1;
+     vkbd_Event = 0;
+  }
  return;
 }
 
