@@ -10,11 +10,11 @@ LimitSize=0
 ByteLimit=50
 [StLinkDriver]
 CStepIntDis=_ 0
-stlinkserialNo=10190667
+stlinkserialNo=37490787
 stlinkfoundProbes=
 LeaveTargetRunning=_ 0
 [DebugChecksum]
-Checksum=2044330507
+Checksum=1623405203
 [CodeCoverage]
 Enabled=_ 0
 [Exceptions]
@@ -135,6 +135,10 @@ ShowTimeLog=1
 SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -148,10 +152,6 @@ Exclusions=
 Enabled=0
 [CallStackStripe]
 ShowTiming=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
 [Disassemble mode]
 mode=1
 [Breakpoints2]

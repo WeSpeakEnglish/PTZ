@@ -31,6 +31,7 @@ static uint8_t StrPressTransmiss[] =      "     0.0";
 static uint8_t StrPressPneumosys[] =      "     0.0";
 static uint8_t StrPressEngineOil[] =      "     0.0";
 static uint8_t StrSpeed[] =               "       0";
+static uint8_t StrOdometer[] =            "       0";
 static uint8_t StrRPM[] =                 "       0";
 static uint8_t StrTIME[] =                "     0.0";
 static uint8_t StrSquare[] =              "     0.0";
@@ -1621,8 +1622,7 @@ return;
 
 void LittleHidroExitsShow(void){
   uint16_t i,j;
-  PTZ.Hydroexits[0].A = 100;
-  PTZ.Hydroexits[2].B = 0;
+
   for(i = 0; i < 10; i++ ){ 
     for(j = 0; j < 5; j++){
       if ((PTZ.Hydroexits[j].A + 5) / (100 - i*10)){ //math.round :)
@@ -2186,7 +2186,9 @@ void UserControlsShow(void){
     if(PTZ.Signals.ParkingBrake)  Images[30]->z_index = 1; 
     else                          Images[30]->z_index = 0;
  }
-   if(DISP.Screen == 1) LittleHidroExitsShow();
+ if(DISP.Screen == 1){ LittleHidroExitsShow();
+ Itoa_R(StrSpeed, sizeof(StrSpeed), (uint16_t)(PTZ.Speed));
+ }
     break;
   case 2:
     PenetrationRising(0, 0);

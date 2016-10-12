@@ -51,8 +51,8 @@ void CAN_GetValues(){
     case Tachometer:
       break;
     case Spedometer:
-      PTZ.Speed = (float)CAN_data.dData[i] * 2.353f ;
-      BIG_Arrow((uint16_t)PTZ.Speed);
+      PTZ.Speed = (float)CAN_data.dData[i] * 0.2353f ;
+      BIG_Arrow((uint16_t)(PTZ.Speed * 10.0f));
       break;    
     case FuelLevel:
       PTZ.VolumeFuel = CAN_data.dData[i] * 0.392;//FUEL_MULTIPLIER;
