@@ -57,8 +57,8 @@ static GUI_Object* Text[80];
 static GUI_Object* Polygons[6];
 //static GUI_Object* Triangles[8];
 
-static uint8_t StrDate[11]="25.04.2016";
-static uint8_t StrTime[9]="20:00:00";
+static uint8_t StrDate[11] = "25.04.2016";
+static uint8_t StrTime[9] =  "20:00:00";
 static uint8_t StrDATA[8][16];
 
 
@@ -207,7 +207,7 @@ void Load_GUI_0(void){
   Text[9] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 360, 275, StrPasses, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[10] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 755, 210, StrTIME, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[11] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 205, StrSquarePerHour, RIGHT_MODE, 1, &RIAD_20pt,0);
-  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 405, 232, StrSpeed, RIGHT_MODE, 1, &RIAD_16pt,0);
+  Text[12] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 405, 232, StrOdometer, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[13] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 240, PetrolPerHour, RIGHT_MODE, 1, &RIAD_20pt,0);
   Text[14] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 3, 7, 576, 170, StrRPM, RIGHT_MODE, 1, &RIAD_16pt,0);
   Text[15] = GUI_SetObject(TEXT_STRING ,0xFFFFFFFF, 0, 7, 530, 275, PetrolPerSquare, RIGHT_MODE, 1, &RIAD_20pt,0);
@@ -2016,8 +2016,8 @@ void UserParamsInit(void){
  SaveParams.EquipmentWide = 3.75f;
 
   SaveParams.SpeeedSensor  =   1000;  // tune     
- sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
-// sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
+  sEE_ReadBuffer((uint8_t *)&SaveParams,0x0000, &temp );
+ // sEE_WriteBuffer((uint8_t *)&SaveParams,0x0000, sizeof(SaveParams));
 }
 
 

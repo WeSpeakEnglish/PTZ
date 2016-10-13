@@ -6,6 +6,7 @@
 #include "initial.h"
 #include "keyboard.h"
 #include "dma.h"
+#include "spi_mem.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
